@@ -29,6 +29,26 @@ class TestField(object):
         assert_that(User().name, is_('anonymous'))
 
 
+class TestFieldChoices(object):
+    def test_empty_list(self):
+        class User(Model):
+            name = StringField(choices=[])
+
+        assert_that(User(name='foo').name, is_('foo'))
+
+    def test_not_in_choices_raises_value_error(self):
+        class User(Model):
+            name = StringField(choices=['foo', 'bar'])
+
+        with assert_raises_regexp(ValueError, 'Invalid value: foobar'):
+            User(name='foobar')
+
+    def test_not_sequence_raises_value_error(self):
+        with assert_raises_regexp(TypeError, "'choices' should be a sequence type"):
+            class User(Model):
+                name = StringField(choices=object())
+
+
 class TestStringField(object):
     def test_invalid_default_raises_value_error(self):
         with assert_raises_regexp(ValueError, "Invalid value: 1"):
