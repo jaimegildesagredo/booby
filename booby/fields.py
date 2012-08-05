@@ -11,7 +11,10 @@ class Field(object):
             raise TypeError("'choices' should be a sequence type")
 
         default = kwargs.get('default')
-        self.default = self.validate(default) if default is not None else default
+        try:
+            self.default = self.validate(default) if default is not None else default
+        except ValueError:
+            raise ValueError('Invalid default value: {0}'.format(default))
 
     def __get__(self, instance, owner):
         if instance is not None:
@@ -28,7 +31,8 @@ class Field(object):
             return value
 
         if self.choices and value not in self.choices:
-            raise ValueError('Invalid value: {0}'.format(value))
+            raise ValueError("Invalid value for field '{0}': {1}".format(
+                self.name, value))
 
         return self.validate(value)
 
@@ -39,5 +43,6 @@ class Field(object):
 class StringField(Field):
     def validate(self, value):
         if not isinstance(value, basestring):
-            raise ValueError('Invalid value: {0}'.format(value))
+            raise ValueError("Invalid value for field '{0}': {1}".format(
+                self.name, value))
         return value

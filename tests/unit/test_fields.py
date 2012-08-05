@@ -40,7 +40,7 @@ class TestFieldChoices(object):
         class User(Model):
             name = StringField(choices=['foo', 'bar'])
 
-        with assert_raises_regexp(ValueError, 'Invalid value: foobar'):
+        with assert_raises_regexp(ValueError, "Invalid value for field 'name': foobar"):
             User(name='foobar')
 
     def test_not_sequence_raises_value_error(self):
@@ -51,6 +51,6 @@ class TestFieldChoices(object):
 
 class TestStringField(object):
     def test_invalid_default_raises_value_error(self):
-        with assert_raises_regexp(ValueError, "Invalid value: 1"):
+        with assert_raises_regexp(ValueError, 'Invalid default value: 1'):
             class User(Model):
                 name = StringField(default=1)
