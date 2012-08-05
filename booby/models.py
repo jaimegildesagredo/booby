@@ -28,5 +28,15 @@ class Model(object):
                 raise ValueError("Invalid field '{0}'".format(k))
             setattr(self, k, v)
 
+    def __getitem__(self, k):
+        if k not in self._fields:
+            raise KeyError(k)
+        return getattr(self, k)
+
+    def __setitem__(self, k, v):
+        if k not in self._fields:
+            raise KeyError(k)
+        setattr(self, k, v)
+
     def __iter__(self):
         return iter((x, getattr(self, x)) for x in self._fields)

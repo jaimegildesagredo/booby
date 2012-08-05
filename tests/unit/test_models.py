@@ -65,6 +65,27 @@ class TestModel(object):
             email=UserWithEmail.email))
 
 
+class TestDictModel(object):
+    def test_get_field_value(self):
+        assert_that(self.user['name'], is_(u'foo'))
+
+    def test_get_invalid_field_raises_key_error(self):
+        with assert_raises_regexp(KeyError, 'invalid'):
+            self.user['invalid']
+
+    def test_set_field_value(self):
+        self.user['name'] = u'bar'
+
+        assert_that(self.user['name'], is_(u'bar'))
+
+    def test_set_invalid_field_raises_key_error(self):
+        with assert_raises_regexp(KeyError, 'invalid'):
+            self.user['invalid'] = u'foo'
+
+    def setup(self):
+        self.user = User(name=u'foo')
+
+
 class User(Model):
     name = StringField()
     email = StringField()
