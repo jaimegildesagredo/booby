@@ -26,6 +26,13 @@ class TestModel(object):
         assert_that(user.name, is_(None))
         assert_that(user.email, is_(None))
 
+    def test_init_without_required_values_raises_value_error(self):
+        class UserWithRequiredName(User):
+            name = StringField(required=True)
+
+        with assert_raises_regexp(ValueError, ''):
+            UserWithRequiredName(email='foo@example.com')
+
     def test_stored_data(self):
         user = User(name=u'foo')
         another = User(name=u'bar')
