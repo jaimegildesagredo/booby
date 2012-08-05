@@ -29,4 +29,4 @@ class Model(object):
             setattr(self, k, v)
 
     def __iter__(self):
-        return iter((x, getattr(self, x)) for x in self.__dict__)
+        return iter((x, getattr(self, x)) for x in self._fields)
