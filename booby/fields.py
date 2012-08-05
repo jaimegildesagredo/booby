@@ -14,8 +14,8 @@ class Field(object):
         except TypeError:
             raise TypeError("'choices' is not iterable")
 
-        default = kwargs.get('default')
         try:
+            default = kwargs.get('default')
             self.default = self.validate(default) if default is not None else default
         except ValueError:
             raise ValueError('Invalid default value: {0}'.format(default))
