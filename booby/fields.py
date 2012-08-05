@@ -50,3 +50,11 @@ class StringField(Field):
             raise ValueError("Invalid value for field '{0}': {1}".format(
                 self.name, value))
         return value
+
+
+class IntegerField(Field):
+    def validate(self, value):
+        if not isinstance(value, (int, float)):
+            raise ValueError("Invalid value for field '{0}': {1}".format(
+                self.name, value))
+        return int(value)
