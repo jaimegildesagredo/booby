@@ -44,7 +44,7 @@ class TestFieldChoices(object):
             User(name='foobar')
 
     def test_not_sequence_raises_value_error(self):
-        with assert_raises_regexp(TypeError, "'choices' should be a sequence type"):
+        with assert_raises_regexp(TypeError, "'choices' is not iterable"):
             class User(Model):
                 name = StringField(choices=object())
 
@@ -54,3 +54,8 @@ class TestStringField(object):
         with assert_raises_regexp(ValueError, 'Invalid default value: 1'):
             class User(Model):
                 name = StringField(default=1)
+
+    def test_invalid_choices_raises_value_error(self):
+        with assert_raises_regexp(ValueError, "Invalid choices:"):
+            class User(Model):
+                name = StringField(choices=[1, 'foo'])

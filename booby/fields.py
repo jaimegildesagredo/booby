@@ -5,10 +5,14 @@ class Field(object):
     def __init__(self, **kwargs):
         self.name = None
         self.required = kwargs.get('required', False)
-        self.choices = kwargs.get('choices')
 
-        if self.choices and not isinstance(self.choices, (list, tuple)):
-            raise TypeError("'choices' should be a sequence type")
+        try:
+            choices = kwargs.get('choices', [])
+            self.choices = set(self.validate(x) for x in choices)
+        except ValueError:
+            raise ValueError('Invalid choices: {0}'.format(choices))
+        except TypeError:
+            raise TypeError("'choices' is not iterable")
 
         default = kwargs.get('default')
         try:
