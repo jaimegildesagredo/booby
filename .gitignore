@@ -2,3 +2,5 @@
 *.py[co]
 .*.swp
 *.egg-info/
+build/
+dist/
