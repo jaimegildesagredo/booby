@@ -10,10 +10,12 @@ class ModelMeta(type):
         for base in bases:
             for k, v in base.__dict__.iteritems():
                 if isinstance(v, fields.Field):
+                    v.name = k
                     attrs['_fields'][k] = v
 
         for k, v in attrs.iteritems():
             if isinstance(v, fields.Field):
+                v.name = k
                 attrs['_fields'][k] = v
 
         return super(ModelMeta, cls).__new__(cls, name, bases, attrs)
@@ -23,6 +25,8 @@ class Model(object):
     __metaclass__ = ModelMeta
 
     def __init__(self, **kwargs):
+        self._data = {}
+
         for k, v in kwargs.iteritems():
             if k not in self._fields:
                 raise ValueError("Invalid field '{0}'".format(k))

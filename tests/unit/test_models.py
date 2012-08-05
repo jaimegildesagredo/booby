@@ -10,6 +10,10 @@ class TestModel(object):
     def test_fields(self):
         assert_that(User._fields, has_entries(name=User.name, email=User.email))
 
+    def test_sets_fields_names(self):
+        assert_that(User.name.name, is_('name'))
+        assert_that(User.email.name, is_('email'))
+
     def test_init_fields(self):
         user = User(name=u'foo', email=u'foo@example.com')
 
@@ -48,6 +52,14 @@ class TestModel(object):
         assert_that(UserWithPage._fields, has_entries(name=UserWithPage.name,
             email=UserWithPage.email))
 
+    def test_sets_inherited_model_fields_names(self):
+        class UserWithPage(User):
+            page = StringField()
+
+        assert_that(UserWithPage.page.name, is_('page'))
+        assert_that(UserWithPage.name.name, is_('name'))
+        assert_that(UserWithPage.email.name, is_('email'))
+
     def test_inherit_mixin_fields(self):
         class UserWithEmail(Model, UserMixin):
             email = StringField()
@@ -63,6 +75,13 @@ class TestModel(object):
         assert_that(UserWithEmail.name, is_not(UserMixin.name))
         assert_that(UserWithEmail._fields, has_entries(name=UserWithEmail.name,
             email=UserWithEmail.email))
+
+    def test_sets_inherited_mixin_fields_names(self):
+        class UserWithEmail(UserMixin, Model):
+            email = StringField()
+
+        assert_that(UserWithEmail.name.name, is_('name'))
+        assert_that(UserWithEmail.email.name, is_('email'))
 
 
 class TestDictModel(object):
