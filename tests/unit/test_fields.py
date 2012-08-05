@@ -21,3 +21,16 @@ class TestField(object):
         user = User(name=None)
 
         assert_that(user.name, is_(None))
+
+    def test_default(self):
+        class User(Model):
+            name = StringField(default='anonymous')
+
+        assert_that(User().name, is_('anonymous'))
+
+
+class TestStringField(object):
+    def test_invalid_default_raises_value_error(self):
+        with assert_raises_regexp(ValueError, "Invalid value: 1"):
+            class User(Model):
+                name = StringField(default=1)
