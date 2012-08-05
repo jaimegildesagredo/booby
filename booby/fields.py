@@ -8,7 +8,7 @@ class Field(object):
 
         try:
             choices = kwargs.get('choices', [])
-            self.choices = set(self.validate(x) for x in choices)
+            self.choices = set(self.validation(x) for x in choices)
         except ValueError:
             raise ValueError('Invalid choices: {0}'.format(choices))
         except TypeError:
@@ -16,7 +16,7 @@ class Field(object):
 
         try:
             default = kwargs.get('default')
-            self.default = self.validate(default) if default is not None else default
+            self.default = self.validation(default) if default is not None else default
         except ValueError:
             raise ValueError('Invalid default value: {0}'.format(default))
 
@@ -26,9 +26,9 @@ class Field(object):
         return self
 
     def __set__(self, instance, value):
-        instance._data[self] = self._validate(value)
+        instance._data[self] = self.validate(value)
 
-    def _validate(self, value):
+    def validate(self, value):
         if value is None:
             if self.required:
                 raise ValueError("Field '{0}' is required".format(self.name))
@@ -38,14 +38,14 @@ class Field(object):
             raise ValueError("Invalid value for field '{0}': {1}".format(
                 self.name, value))
 
-        return self.validate(value)
+        return self.validation(value)
 
-    def validate(self, value):
+    def validation(self, value):
         raise NotImplementedError()
 
 
 class StringField(Field):
-    def validate(self, value):
+    def validation(self, value):
         if not isinstance(value, basestring):
             raise ValueError("Invalid value for field '{0}': {1}".format(
                 self.name, value))
@@ -53,7 +53,7 @@ class StringField(Field):
 
 
 class IntegerField(Field):
-    def validate(self, value):
+    def validation(self, value):
         if not isinstance(value, (int, float)):
             raise ValueError("Invalid value for field '{0}': {1}".format(
                 self.name, value))
@@ -61,7 +61,7 @@ class IntegerField(Field):
 
 
 class BoolField(Field):
-    def validate(self, value):
+    def validation(self, value):
         if not isinstance(value, (bool, int)):
             raise ValueError("Invalid value for field '{0}': {1}".format(
                 self.name, value))
