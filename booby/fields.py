@@ -58,3 +58,11 @@ class IntegerField(Field):
             raise ValueError("Invalid value for field '{0}': {1}".format(
                 self.name, value))
         return int(value)
+
+
+class BoolField(Field):
+    def validate(self, value):
+        if not isinstance(value, (bool, int)):
+            raise ValueError("Invalid value for field '{0}': {1}".format(
+                self.name, value))
+        return bool(value)

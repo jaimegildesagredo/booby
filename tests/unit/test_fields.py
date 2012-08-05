@@ -3,7 +3,7 @@
 from hamcrest import *
 from nose.tools import assert_raises_regexp
 
-from booby import Model, StringField, IntegerField
+from booby import Model, StringField, IntegerField, BoolField
 
 
 class TestField(object):
@@ -91,3 +91,29 @@ class TestIntegerField(object):
             karma = IntegerField()
 
         assert_that(User(karma=2.7).karma, is_(2))
+
+
+class TestBoolField(object):
+    def test_invalid_default_raises_value_error(self):
+        with assert_raises_regexp(ValueError, 'Invalid default value: foo'):
+            class User(Model):
+                is_active = BoolField(default='foo')
+
+    def test_invalid_choices_raises_value_error(self):
+        with assert_raises_regexp(ValueError, "Invalid choices:"):
+            class User(Model):
+                is_active = BoolField(choices=[True, 'foo'])
+
+    def test_invalid_value_raises_value_error(self):
+        class User(Model):
+            is_active = BoolField()
+
+        with assert_raises_regexp(ValueError, "Invalid value for field 'is_active':"):
+            User(is_active='foo')
+
+    def test_int(self):
+        class User(Model):
+            is_active = BoolField()
+
+        assert_that(User(is_active=1).is_active, is_(True))
+        assert_that(User(is_active=1).is_active, instance_of(bool))
