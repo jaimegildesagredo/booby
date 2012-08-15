@@ -34,6 +34,21 @@ class TestResource(object):
             User(name=u'foo', email=u'foo@example.com', invalid=u'foo')
 
 
+class TestDictResource(object):
+    def test_update_with_custom_parse_method(self):
+        class UserWithCustomParseMethod(User):
+            def parse(self, raw):
+                return {
+                    'name': raw['name'],
+                    'email': raw['email']}
+
+        user = UserWithCustomParseMethod(name=u'foo', email='roo@example.com')
+        user.update({'name': u'foobar', 'email': u'foo@bar.com', 'invalid': u'foo'})
+
+        assert_that(user.name, is_(u'foobar'))
+        assert_that(user.email, is_(u'foo@bar.com'))
+
+
 class User(Resource):
     name = StringField()
     email = StringField()
