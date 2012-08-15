@@ -96,7 +96,7 @@ class TestDictModel(object):
         assert_that(self.user['name'], is_(u'foo'))
 
     def test_get_invalid_field_raises_key_error(self):
-        with assert_raises_regexp(KeyError, 'invalid'):
+        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
             self.user['invalid']
 
     def test_set_field_value(self):
@@ -105,11 +105,27 @@ class TestDictModel(object):
         assert_that(self.user['name'], is_(u'bar'))
 
     def test_set_invalid_field_raises_key_error(self):
-        with assert_raises_regexp(KeyError, 'invalid'):
+        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
             self.user['invalid'] = u'foo'
 
+    def test_update_updates_fields(self):
+        self.user.update({'name': u'foobar', 'email': u'foo@bar.com'})
+
+        assert_that(self.user.name, is_(u'foobar'))
+        assert_that(self.user.email, is_(u'foo@bar.com'))
+
+    def test_update_kw_fields_updates_fields(self):
+        self.user.update(name=u'foobar', email=u'foo@bar.com')
+
+        assert_that(self.user.name, is_(u'foobar'))
+        assert_that(self.user.email, is_(u'foo@bar.com'))
+
+    def test_update_invalid_field_raises_value_error(self):
+        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
+            self.user.update(invalid=u'foo')
+
     def setup(self):
-        self.user = User(name=u'foo')
+        self.user = User(name=u'foo', email='roo@example.com')
 
 
 class User(Model):

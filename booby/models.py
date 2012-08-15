@@ -37,16 +37,26 @@ class Model(object):
 
     def __getitem__(self, k):
         if k not in self._fields:
-            raise KeyError(k)
+            raise ValueError("Invalid field '{0}'".format(k))
         return getattr(self, k)
 
     def __setitem__(self, k, v):
         if k not in self._fields:
-            raise KeyError(k)
+            raise ValueError("Invalid field '{0}'".format(k))
         setattr(self, k, v)
 
     def __iter__(self):
         return iter((x, getattr(self, x)) for x in self._fields)
+
+    def update(self, dict_=None, **kwargs):
+        if dict_ is not None:
+            self._update(dict_)
+        else:
+            self._update(kwargs)
+
+    def _update(self, values):
+        for k, v in values.iteritems():
+            self[k] = v
 
 
 class Resource(Model):
