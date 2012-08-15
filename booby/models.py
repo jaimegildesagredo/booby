@@ -47,3 +47,11 @@ class Model(object):
 
     def __iter__(self):
         return iter((x, getattr(self, x)) for x in self._fields)
+
+
+class Resource(Model):
+    def __init__(self, **kwargs):
+        super(Resource, self).__init__(**self.parse(kwargs))
+
+    def parse(self, raw):
+        return raw
