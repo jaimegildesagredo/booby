@@ -32,9 +32,6 @@ class Model(object):
                 raise ValueError("Invalid field '{0}'".format(k))
             setattr(self, k, v)
 
-        for k, v in self._fields.iteritems():
-            v.validate(getattr(self, k))
-
     def __getitem__(self, k):
         if k not in self._fields:
             raise ValueError("Invalid field '{0}'".format(k))
@@ -57,6 +54,10 @@ class Model(object):
     def _update(self, values):
         for k, v in values.iteritems():
             self[k] = v
+
+    def validate(self):
+        for k, v in self._fields.iteritems():
+            v.validate(getattr(self, k))
 
 
 class Resource(Model):

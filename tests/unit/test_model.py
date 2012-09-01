@@ -26,22 +26,20 @@ class TestModel(object):
         assert_that(user.name, is_(None))
         assert_that(user.email, is_(None))
 
-    def test_init_without_required_values_raises_value_error(self):
-        class UserWithRequiredName(User):
-            name = StringField(required=True)
+    def test_init_without_required_values(self):
+        user = UserWithRequiredName(email='foo@example.com')
 
-        with assert_raises_regexp(ValueError, ''):
-            UserWithRequiredName(email='foo@example.com')
+        assert_that(user.name, is_(None))
+
+    def test_init_invalid_field_raises_value_error(self):
+        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
+            User(invalid=u'foo')
 
     def test_stored_data(self):
         user = User(name=u'foo')
         another = User(name=u'bar')
 
         assert_that(user.name, is_not(another.name))
-
-    def test_init_invalid_field_raises_value_error(self):
-        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
-            User(invalid=u'foo')
 
     def test_inherit_model_fields(self):
         class UserWithPage(User):
@@ -90,6 +88,12 @@ class TestModel(object):
         assert_that(UserWithEmail.name.name, is_('name'))
         assert_that(UserWithEmail.email.name, is_('email'))
 
+    def test_validate_without_required_values_raises_value_error(self):
+        user = UserWithRequiredName(email='foo@example.com')
+
+        with assert_raises_regexp(ValueError, ''):
+            user.validate()
+
 
 class TestDictModel(object):
     def test_get_field_value(self):
@@ -135,3 +139,7 @@ class User(Model):
 
 class UserMixin(object):
     name = StringField()
+
+
+class UserWithRequiredName(User):
+    name = StringField(required=True)
