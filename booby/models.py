@@ -58,15 +58,3 @@ class Model(object):
     def validate(self):
         for k, v in self._fields.iteritems():
             v.validate(getattr(self, k))
-
-
-class Resource(Model):
-    def __init__(self, **kwargs):
-        super(Resource, self).__init__(**self.parse(kwargs))
-
-    def _update(self, values):
-        for k, v in self.parse(values).iteritems():
-            self[k] = v
-
-    def parse(self, raw):
-        return raw
