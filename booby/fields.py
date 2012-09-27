@@ -54,10 +54,11 @@ class StringField(Field):
 
 class IntegerField(Field):
     def validation(self, value):
-        if not isinstance(value, (int, float)):
+        try:
+            return int(value)
+        except ValueError:
             raise ValueError("Invalid value for field '{0}': {1}".format(
                 self.name, value))
-        return int(value)
 
 
 class BoolField(Field):

@@ -35,6 +35,9 @@ class TestModel(object):
         with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
             User(invalid=u'foo')
 
+    def test_init_reference_field(self):
+        pass
+
     def test_stored_data(self):
         user = User(name=u'foo')
         another = User(name=u'bar')

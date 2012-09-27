@@ -92,6 +92,12 @@ class TestIntegerField(object):
 
         assert_that(User(karma=2.7).karma, is_(2))
 
+    def test_numeric_string_converts_to_int(self):
+        class User(Model):
+            karma = IntegerField()
+
+        assert_that(User(karma='2').karma, is_(2))
+
 
 class TestBoolField(object):
     def test_invalid_default_raises_value_error(self):
