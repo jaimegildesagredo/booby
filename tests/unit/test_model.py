@@ -128,6 +128,12 @@ class TestDictModel(object):
         with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
             self.user.update(invalid=u'foo')
 
+    def test_to_dict_returns_dict_with_field_values(self):
+        assert_that(self.user.to_dict(), has_entries(
+            name=u'foo',
+            email='roo@example.com'
+        ))
+
     def setup(self):
         self.user = User(name=u'foo', email='roo@example.com')
 

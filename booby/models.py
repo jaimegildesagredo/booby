@@ -42,9 +42,6 @@ class Model(object):
             raise ValueError("Invalid field '{0}'".format(k))
         setattr(self, k, v)
 
-    def __iter__(self):
-        return iter((x, getattr(self, x)) for x in self._fields)
-
     def update(self, dict_=None, **kwargs):
         if dict_ is not None:
             self._update(dict_)
@@ -58,6 +55,17 @@ class Model(object):
     def validate(self):
         for k, v in self._fields.iteritems():
             v.validate(getattr(self, k))
+
+    def to_dict(self):
+        result = {}
+        for field in self._fields:
+            value = getattr(self, field)
+
+            if isinstance(value, Model):
+                result[field] = value.to_dict()
+            else:
+                result[field] = getattr(self, field)
+        return result
 
 
 class EmbeddedModel(fields.Field):

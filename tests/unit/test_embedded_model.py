@@ -81,6 +81,16 @@ class TestEmbeddedModel(object):
             issue.validate()
 
 
+class TestDictEmbeddedModel(object):
+    def test_to_dict_returns_dict_with_field_values(self):
+        issue = Issue(title=u'foo', user={'name': u'Jack'})
+
+        assert_that(issue.to_dict(), has_entries(
+            title=u'foo',
+            user=has_entry('name', u'Jack')
+        ))
+
+
 class User(Model):
     name = StringField(required=True)
 
