@@ -2,6 +2,10 @@
 
 
 class Field(object):
+    pass
+
+
+class TypeField(Field):
     def __init__(self, **kwargs):
         self.name = None
         self.required = kwargs.get('required', False)
@@ -44,7 +48,7 @@ class Field(object):
         raise NotImplementedError()
 
 
-class StringField(Field):
+class StringField(TypeField):
     def validation(self, value):
         if not isinstance(value, basestring):
             raise ValueError("Invalid value for field '{0}': {1}".format(
@@ -52,7 +56,7 @@ class StringField(Field):
         return value
 
 
-class IntegerField(Field):
+class IntegerField(TypeField):
     def validation(self, value):
         try:
             return int(value)
@@ -61,7 +65,7 @@ class IntegerField(Field):
                 self.name, value))
 
 
-class BoolField(Field):
+class BoolField(TypeField):
     def validation(self, value):
         if not isinstance(value, (bool, int)):
             raise ValueError("Invalid value for field '{0}': {1}".format(

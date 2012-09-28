@@ -58,3 +58,28 @@ class Model(object):
     def validate(self):
         for k, v in self._fields.iteritems():
             v.validate(getattr(self, k))
+
+
+class EmbeddedModel(fields.Field):
+    def __init__(self, model):
+        self.model = model
+
+    def __get__(self, instance, owner):
+        if instance is not None:
+            if instance._data.get(self) is None:
+                instance._data[self] = self.model()
+            return instance._data[self]
+        return self
+
+    def __set__(self, instance, value):
+        if isinstance(value, dict):
+            if instance._data.get(self) is None:
+                instance._data[self] = self.model()
+            instance._data[self].update(value)
+        else:
+            if not isinstance(value, self.model):
+                raise ValueError()
+            instance._data[self] = value
+
+    def validate(self, value):
+        value.validate()
