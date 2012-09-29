@@ -64,7 +64,7 @@ class Model(object):
             if isinstance(value, Model):
                 result[field] = value.to_dict()
             else:
-                result[field] = getattr(self, field)
+                result[field] = value
         return result
 
 
