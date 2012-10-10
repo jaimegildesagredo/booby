@@ -33,6 +33,11 @@ class ModelMeta(type):
                 v.name = k
                 attrs['_fields'][k] = v
 
+            if isinstance(v, ModelMeta):
+                v = EmbeddedModel(v)
+                attrs[k] = v
+                attrs['_fields'][k] = v
+
         return super(ModelMeta, cls).__new__(cls, name, bases, attrs)
 
 
