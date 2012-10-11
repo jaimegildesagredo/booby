@@ -54,8 +54,6 @@ class TestModel(object):
             page = StringField()
 
         assert_that(UserWithPage.name, is_not(User.name))
-        assert_that(UserWithPage._fields, has_entries(name=UserWithPage.name,
-            email=UserWithPage.email))
 
     def test_sets_inherited_model_fields_names(self):
         class UserWithPage(User):
@@ -78,8 +76,6 @@ class TestModel(object):
             email = StringField()
 
         assert_that(UserWithEmail.name, is_not(UserMixin.name))
-        assert_that(UserWithEmail._fields, has_entries(name=UserWithEmail.name,
-            email=UserWithEmail.email))
 
     def test_sets_inherited_mixin_fields_names(self):
         class UserWithEmail(UserMixin, Model):

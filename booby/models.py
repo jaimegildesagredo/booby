@@ -28,6 +28,11 @@ class ModelMeta(type):
                     v.name = k
                     attrs['_fields'][k] = v
 
+                if isinstance(v, ModelMeta):
+                    v = EmbeddedModel(v)
+                    attrs[k] = v
+                    attrs['_fields'][k] = v
+
         for k, v in attrs.iteritems():
             if isinstance(v, fields.Field):
                 v.name = k

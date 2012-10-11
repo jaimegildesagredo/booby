@@ -19,6 +19,9 @@ class TestEmbeddedModel(object):
     Issue = Issue
     User = User
 
+    class UserMixin(object):
+        user = EmbeddedModel(User)
+
     def test_fields(self):
         assert_that(self.Issue._fields, has_entries(title=self.Issue.title,
             user=self.Issue.user))
@@ -85,6 +88,38 @@ class TestEmbeddedModel(object):
         another.user.name = u'Bob'
 
         assert_that(issue.user.name, is_not(another.user.name))
+
+    def test_inherit_embedded_models(self):
+        class IssueWithSummary(self.Issue):
+            summary = StringField()
+
+        assert_that(IssueWithSummary._fields, has_entries(
+            user=IssueWithSummary.user,
+            title=IssueWithSummary.title,
+            summary=IssueWithSummary.summary)
+        )
+
+    def test_overwrite_inherited_embedded_models(self):
+        class IssueWithSummary(self.Issue):
+            summary = StringField()
+            user = StringField()
+
+        assert_that(IssueWithSummary.user, is_not(self.Issue.user))
+
+    def test_inherit_mixin_embedded_models(self):
+        class Issue(Model, self.UserMixin):
+            title = StringField()
+
+        assert_that(Issue._fields, has_entries(
+            user=Issue.user,
+            title=Issue.title))
+
+    def test_overwrite_inherited_mixin_embedded_models(self):
+        class Issue(Model, self.UserMixin):
+            title = StringField()
+            user = StringField()
+
+        assert_that(Issue.user, is_not(self.UserMixin.user))
 
     def test_validate_without_required_field_in_embedded_model_raises_value_error(self):
         issue = self.Issue()

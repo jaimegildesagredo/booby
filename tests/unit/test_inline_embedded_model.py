@@ -17,6 +17,9 @@ class TestInlineEmbeddedModel(TestEmbeddedModel):
     Issue = Issue
     User = Issue.user.model
 
+    class UserMixin(object):
+        user = Issue.user.model
+
 
 class TestInlineDictEmbeddedModel(TestDictEmbeddedModel):
     Issue = Issue
