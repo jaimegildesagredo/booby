@@ -6,7 +6,7 @@ long_description = open('README.md').read()
 
 setup(
     name='booby',
-    version='0.1.2',
+    version='0.1.3',
     description='A standalone data modeling and validation Python framework',
     long_description=long_description,
     author='Jaime Gil de Sagredo Luna',
