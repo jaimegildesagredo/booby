@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from hamcrest import *
 from nose.tools import assert_raises_regexp
 
@@ -132,6 +134,13 @@ class TestDictModel(object):
 
     def setup(self):
         self.user = User(name=u'foo', email='roo@example.com')
+
+
+class TestJSONModel(object):
+    def test_to_json_returns_a_json_string_with_field_values(self):
+        user = User(name=u'Jack', email=u'jack@example.com')
+
+        assert_that(json.loads(user.to_json()), is_(user.to_dict()))
 
 
 class User(Model):

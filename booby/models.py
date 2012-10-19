@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 
 from booby import fields
 
@@ -91,6 +92,9 @@ class Model(object):
             else:
                 result[field] = value
         return result
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
 
 class EmbeddedModel(fields.Field):
