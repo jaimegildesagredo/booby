@@ -1,2 +1,2 @@
 # Booby
-A standalone data modeling and validation Python framework
+Standalone data modeling and validation Python library.
