@@ -16,7 +16,7 @@
 
 import json
 
-from booby import fields
+from booby import fields, errors
 
 
 class ModelMeta(type):
@@ -55,7 +55,7 @@ class Model(object):
 
         for k, v in kwargs.iteritems():
             if k not in self._fields:
-                raise ValueError("Invalid field '{0}'".format(k))
+                raise errors.FieldError("'{}' model has no field '{}'".format(type(self).__name__, k))
             setattr(self, k, v)
 
     def __getitem__(self, k):

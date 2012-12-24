@@ -6,6 +6,24 @@ from hamcrest import *
 from nose.tools import assert_raises_regexp
 
 from booby import Model, StringField
+from booby.errors import FieldError
+
+
+class TestDefaultModelInit(object):
+    def test_when_pass_kwargs_then_set_fields_values(self):
+        user = User(name=u'foo', email=u'foo@example.com')
+
+        assert_that(user.name, is_(u'foo'))
+        assert_that(user.email, is_(u'foo@example.com'))
+
+    def test_when_pass_kwargs_without_required_field_then_required_field_is_none(self):
+        user = UserWithRequiredName(email='foo@example.com')
+
+        assert_that(user.name, is_(None))
+
+    def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
+        with assert_raises_regexp(FieldError, "'User' model has no field 'foo'"):
+            User(foo=u'bar')
 
 
 class TestModel(object):
@@ -15,27 +33,6 @@ class TestModel(object):
     def test_sets_fields_names(self):
         assert_that(User.name.name, is_('name'))
         assert_that(User.email.name, is_('email'))
-
-    def test_init_fields(self):
-        user = User(name=u'foo', email=u'foo@example.com')
-
-        assert_that(user.name, is_(u'foo'))
-        assert_that(user.email, is_(u'foo@example.com'))
-
-    def test_init_default_values(self):
-        user = User()
-
-        assert_that(user.name, is_(None))
-        assert_that(user.email, is_(None))
-
-    def test_init_without_required_values(self):
-        user = UserWithRequiredName(email='foo@example.com')
-
-        assert_that(user.name, is_(None))
-
-    def test_init_invalid_field_raises_value_error(self):
-        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
-            User(invalid=u'foo')
 
     def test_stored_data(self):
         user = User(name=u'foo')
