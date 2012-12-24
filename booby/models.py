@@ -50,9 +50,13 @@ class ModelMeta(type):
 class Model(object):
     __metaclass__ = ModelMeta
 
-    def __init__(self, **kwargs):
-        self._data = {}
+    def __new__(cls, *args, **kwargs):
+        model = super(Model, cls).__new__(cls)
+        model._data = {}
 
+        return model
+
+    def __init__(self, **kwargs):
         for k, v in kwargs.iteritems():
             if k not in self._fields:
                 raise errors.FieldError("'{}' model has no field '{}'".format(type(self).__name__, k))

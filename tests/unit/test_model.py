@@ -26,6 +26,14 @@ class TestDefaultModelInit(object):
             User(foo=u'bar')
 
 
+class TestOverridenModelInit(object):
+    def test_when_pass_args_then_set_fields_values(self):
+        user = UserWithOverridenInit(u'foo', u'foo@example.com')
+
+        assert_that(user.name, is_(u'foo'))
+        assert_that(user.email, is_(u'foo@example.com'))
+
+
 class TestModel(object):
     def test_fields(self):
         assert_that(User._fields, has_entries(name=User.name, email=User.email))
@@ -143,6 +151,12 @@ class TestJSONModel(object):
 class User(Model):
     name = StringField()
     email = StringField()
+
+
+class UserWithOverridenInit(User):
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
 
 
 class UserMixin(object):
