@@ -28,41 +28,25 @@ class TestDefaultModelInit(object):
 
 class TestOverridenModelInit(object):
     def test_when_pass_args_then_set_fields_values(self):
+        class UserWithOverridenInit(User):
+            def __init__(self, name, email):
+                self.name = name
+                self.email = email
+
         user = UserWithOverridenInit(u'foo', u'foo@example.com')
 
         assert_that(user.name, is_(u'foo'))
         assert_that(user.email, is_(u'foo@example.com'))
 
 
-class TestModel(object):
-    def test_fields(self):
-        assert_that(User._fields, has_entries(name=User.name, email=User.email))
-
-    def test_sets_fields_names(self):
+class TestModelDeclaration(object):
+    def test_when_added_field_without_name_then_field_name_is_set_with_the_attribute_name(self):
         assert_that(User.name.name, is_('name'))
         assert_that(User.email.name, is_('email'))
 
-    def test_stored_data(self):
-        user = User(name=u'foo')
-        another = User(name=u'bar')
 
-        assert_that(user.name, is_not(another.name))
-
-    def test_inherit_model_fields(self):
-        class UserWithPage(User):
-            page = StringField()
-
-        assert_that(UserWithPage._fields, has_entries(name=UserWithPage.name,
-            email=UserWithPage.email, page=UserWithPage.page))
-
-    def test_overwrite_inherited_model_fields(self):
-        class UserWithPage(User):
-            name = StringField()
-            page = StringField()
-
-        assert_that(UserWithPage.name, is_not(User.name))
-
-    def test_sets_inherited_model_fields_names(self):
+class TestInheritedModelDeclaration(object):
+    def test_when_added_field_without_name_then_field_name_is_set_with_the_attribute_name(self):
         class UserWithPage(User):
             page = StringField()
 
@@ -70,28 +54,38 @@ class TestModel(object):
         assert_that(UserWithPage.name.name, is_('name'))
         assert_that(UserWithPage.email.name, is_('email'))
 
-    def test_inherit_mixin_fields(self):
-        class UserWithEmail(Model, UserMixin):
-            email = StringField()
-
-        assert_that(UserWithEmail._fields, has_entries(name=UserWithEmail.name,
-            email=UserWithEmail.email))
-
-    def test_overwrite_inherited_mixin_fields(self):
-        class UserWithEmail(UserMixin, Model):
+    def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
+        class UserWithPage(User):
             name = StringField()
-            email = StringField()
+            page = StringField()
 
-        assert_that(UserWithEmail.name, is_not(UserMixin.name))
+        assert_that(UserWithPage.name, is_not(User.name))
 
-    def test_sets_inherited_mixin_fields_names(self):
+
+class TestInheritedMixinDeclaration(object):
+    def test_when_added_field_without_name_then_field_name_is_set_with_the_attribute_name(self):
         class UserWithEmail(UserMixin, Model):
             email = StringField()
 
         assert_that(UserWithEmail.name.name, is_('name'))
         assert_that(UserWithEmail.email.name, is_('email'))
 
-    def test_validate_without_required_values_raises_value_error(self):
+    def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
+        class UserWithEmail(UserMixin, Model):
+            name = StringField()
+            email = StringField()
+
+        assert_that(UserWithEmail.name, is_not(UserMixin.name))
+
+
+class TestModelData(object):
+    def test_when_set_field_value_then_another_model_shouldnt_have_the_same_value(self):
+        user = User(name=u'foo')
+        another = User(name=u'bar')
+
+        assert_that(user.name, is_not(another.name))
+
+    def test_when_validate_without_required_fields_then_raises_value_error(self):
         user = UserWithRequiredName(email='foo@example.com')
 
         with assert_raises_regexp(ValueError, ''):
@@ -151,12 +145,6 @@ class TestJSONModel(object):
 class User(Model):
     name = StringField()
     email = StringField()
-
-
-class UserWithOverridenInit(User):
-    def __init__(self, name, email):
-        self.name = name
-        self.email = email
 
 
 class UserMixin(object):
