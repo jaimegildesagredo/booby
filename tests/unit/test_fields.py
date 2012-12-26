@@ -33,7 +33,7 @@ class TestValidateField(object):
         validator1 = Stub()
         validator2 = Stub()
 
-        field = fields.Field(validators=[validator1, validator2])
+        field = fields.Field(validator1, validator2)
 
         field.validate('foo')
 
@@ -43,7 +43,7 @@ class TestValidateField(object):
         with Stub() as validator2:
             validator2.validate('foo').raises(errors.ValidationError)
 
-        field = fields.Field(validators=[validator1, validator2])
+        field = fields.Field(validator1, validator2)
 
         with assert_raises(errors.ValidationError):
             field.validate('foo')
