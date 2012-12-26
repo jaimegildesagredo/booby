@@ -26,7 +26,6 @@ class ModelMeta(type):
         for base in bases:
             for k, v in base.__dict__.iteritems():
                 if isinstance(v, fields.Field):
-                    v.name = k
                     attrs['_fields'][k] = v
 
                 if isinstance(v, ModelMeta):
@@ -36,7 +35,6 @@ class ModelMeta(type):
 
         for k, v in attrs.iteritems():
             if isinstance(v, fields.Field):
-                v.name = k
                 attrs['_fields'][k] = v
 
             if isinstance(v, ModelMeta):

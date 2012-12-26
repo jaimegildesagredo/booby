@@ -5,8 +5,7 @@ import json
 from hamcrest import *
 from nose.tools import assert_raises_regexp
 
-from booby import Model, StringField
-from booby.errors import FieldError
+from booby import errors, Model, StringField
 
 
 class TestDefaultModelInit(object):
@@ -22,7 +21,7 @@ class TestDefaultModelInit(object):
         assert_that(user.name, is_(None))
 
     def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
-        with assert_raises_regexp(FieldError, "'User' model has no field 'foo'"):
+        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
             User(foo=u'bar')
 
 
@@ -40,20 +39,11 @@ class TestOverridenModelInit(object):
 
 
 class TestModelDeclaration(object):
-    def test_when_added_field_without_name_then_field_name_is_set_with_the_attribute_name(self):
-        assert_that(User.name.name, is_('name'))
-        assert_that(User.email.name, is_('email'))
+    pass
 
 
 class TestInheritedModelDeclaration(object):
-    def test_when_added_field_without_name_then_field_name_is_set_with_the_attribute_name(self):
-        class UserWithPage(User):
-            page = StringField()
-
-        assert_that(UserWithPage.page.name, is_('page'))
-        assert_that(UserWithPage.name.name, is_('name'))
-        assert_that(UserWithPage.email.name, is_('email'))
-
+    # TODO: This test case should be the same tests for models but using an inherited model
     def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
         class UserWithPage(User):
             name = StringField()
@@ -63,13 +53,7 @@ class TestInheritedModelDeclaration(object):
 
 
 class TestInheritedMixinDeclaration(object):
-    def test_when_added_field_without_name_then_field_name_is_set_with_the_attribute_name(self):
-        class UserWithEmail(UserMixin, Model):
-            email = StringField()
-
-        assert_that(UserWithEmail.name.name, is_('name'))
-        assert_that(UserWithEmail.email.name, is_('email'))
-
+    # TODO: This test case should be the same tests for models but using an inherited mixin
     def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
         class UserWithEmail(UserMixin, Model):
             name = StringField()
@@ -85,10 +69,11 @@ class TestModelData(object):
 
         assert_that(user.name, is_not(another.name))
 
-    def test_when_validate_without_required_fields_then_raises_value_error(self):
+    # TODO: Is this an itegration test?
+    def test_when_validate_without_required_fields_then_raises_validation_error(self):
         user = UserWithRequiredName(email='foo@example.com')
 
-        with assert_raises_regexp(ValueError, ''):
+        with assert_raises_regexp(errors.ValidationError, 'required'):
             user.validate()
 
 

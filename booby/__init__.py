@@ -16,5 +16,6 @@
 
 
 from booby.models import Model, EmbeddedModel
+from booby.fields import StringField
 
-__all__ = ['Model', 'EmbeddedModel']
+__all__ = ['Model', 'EmbeddedModel', 'StringField']

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from hamcrest import *
-from nose.tools import assert_raises
+from nose.tools import assert_raises, assert_raises_regexp
 
-from booby import Model, EmbeddedModel, StringField
+from booby import errors, Model, EmbeddedModel, StringField
 
 
 class User(Model):
@@ -121,10 +121,10 @@ class TestEmbeddedModel(object):
 
         assert_that(Issue.user, is_not(self.UserMixin.user))
 
-    def test_validate_without_required_field_in_embedded_model_raises_value_error(self):
+    def test_validate_without_required_field_in_embedded_model_raises_validation_error(self):
         issue = self.Issue()
 
-        with assert_raises(ValueError):
+        with assert_raises_regexp(errors.ValidationError, 'required'):
             issue.validate()
 
 
