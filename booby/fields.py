@@ -18,8 +18,8 @@ from booby import validators as builtin_validators
 
 
 class Field(object):
-    def __init__(self, default=None, *validators, **kwargs):
-        self.default = default
+    def __init__(self, *validators, **kwargs):
+        self.default = kwargs.get('default')
 
         # Setup field validators
         self.validators = []

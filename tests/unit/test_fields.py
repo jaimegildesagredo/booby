@@ -37,7 +37,18 @@ class TestValidateField(object):
 
         field.validate('foo')
 
-    def test_when_validate_with_validation_error_then_raises_exception(self):
+    def test_when_first_validator_raises_validation_error_then_raises_exception(self):
+        with Stub() as validator1:
+            validator1.validate('foo').raises(errors.ValidationError)
+
+        validator2 = Stub()
+
+        field = fields.Field(validator1, validator2)
+
+        with assert_raises(errors.ValidationError):
+            field.validate('foo')
+
+    def test_when_second_validator_raises_validation_error_then_raises_exception(self):
         validator1 = Stub()
 
         with Stub() as validator2:
