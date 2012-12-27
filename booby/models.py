@@ -78,8 +78,8 @@ class Model(object):
             self[k] = v
 
     def validate(self):
-        for k, v in self._fields.iteritems():
-            v.validate(getattr(self, k))
+        for name, field in self._fields.iteritems():
+            field.validate(getattr(self, name))
 
     def to_dict(self):
         result = {}
