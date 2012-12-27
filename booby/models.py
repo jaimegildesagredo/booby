@@ -28,18 +28,8 @@ class ModelMeta(type):
                 if isinstance(v, fields.Field):
                     attrs['_fields'][k] = v
 
-                if isinstance(v, ModelMeta):
-                    v = EmbeddedModel(v)
-                    attrs[k] = v
-                    attrs['_fields'][k] = v
-
         for k, v in attrs.iteritems():
             if isinstance(v, fields.Field):
-                attrs['_fields'][k] = v
-
-            if isinstance(v, ModelMeta):
-                v = EmbeddedModel(v)
-                attrs[k] = v
                 attrs['_fields'][k] = v
 
         return super(ModelMeta, cls).__new__(cls, name, bases, attrs)
@@ -97,28 +87,3 @@ class Model(object):
 
     def to_json(self):
         return json.dumps(self.to_dict())
-
-
-class EmbeddedModel(fields.Field):
-    def __init__(self, model):
-        self.model = model
-
-    def __get__(self, instance, owner):
-        if instance is not None:
-            if instance._data.get(self) is None:
-                instance._data[self] = self.model()
-            return instance._data[self]
-        return self
-
-    def __set__(self, instance, value):
-        if isinstance(value, dict):
-            if instance._data.get(self) is None:
-                instance._data[self] = self.model()
-            instance._data[self].update(value)
-        else:
-            if not isinstance(value, self.model):
-                raise ValueError()
-            instance._data[self] = value
-
-    def validate(self, value):
-        value.validate()

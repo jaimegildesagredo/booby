@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-from booby.models import Model, EmbeddedModel
+from booby.models import Model
 from booby.fields import StringField
 
-__all__ = ['Model', 'EmbeddedModel', 'StringField']
+__all__ = ['Model', 'StringField']
