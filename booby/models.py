@@ -47,17 +47,24 @@ class Model(object):
     def __init__(self, **kwargs):
         for k, v in kwargs.iteritems():
             if k not in self._fields:
-                raise errors.FieldError("'{}' model has no field '{}'".format(type(self).__name__, k))
+                self.__raise_field_error(k)
+
             setattr(self, k, v)
+
+    def __raise_field_error(self, name):
+        raise errors.FieldError("'{}' model has no field '{}'".format(
+            type(self).__name__, name))
 
     def __getitem__(self, k):
         if k not in self._fields:
-            raise ValueError("Invalid field '{0}'".format(k))
+            self.__raise_field_error(k)
+
         return getattr(self, k)
 
     def __setitem__(self, k, v):
         if k not in self._fields:
-            raise ValueError("Invalid field '{0}'".format(k))
+            self.__raise_field_error(k)
+
         setattr(self, k, v)
 
     def update(self, dict_=None, **kwargs):

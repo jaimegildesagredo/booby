@@ -95,37 +95,37 @@ class TestInheritedMixin(object):
 
 
 class TestDictModel(object):
-    def test_get_field_value(self):
+    def test_when_get_field_then_returns_value(self):
         assert_that(self.user['name'], is_(u'foo'))
 
-    def test_get_invalid_field_raises_key_error(self):
-        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
-            self.user['invalid']
+    def test_when_get_invalid_field_then_raises_field_error(self):
+        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
+            self.user['foo']
 
-    def test_set_field_value(self):
+    def test_when_set_field_then_update_field_value(self):
         self.user['name'] = u'bar'
 
-        assert_that(self.user['name'], is_(u'bar'))
+        assert_that(self.user.name, is_(u'bar'))
 
-    def test_set_invalid_field_raises_key_error(self):
-        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
-            self.user['invalid'] = u'foo'
+    def test_when_set_invalid_field_then_raises_field_error(self):
+        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
+            self.user['foo'] = u'bar'
 
-    def test_update_updates_fields(self):
+    def test_when_update_with_dict_then_update_fields_values(self):
         self.user.update({'name': u'foobar', 'email': u'foo@bar.com'})
 
         assert_that(self.user.name, is_(u'foobar'))
         assert_that(self.user.email, is_(u'foo@bar.com'))
 
-    def test_update_kw_fields_updates_fields(self):
+    def test_when_update_kw_arguments_then_update_fields_values(self):
         self.user.update(name=u'foobar', email=u'foo@bar.com')
 
         assert_that(self.user.name, is_(u'foobar'))
         assert_that(self.user.email, is_(u'foo@bar.com'))
 
-    def test_update_invalid_field_raises_value_error(self):
-        with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
-            self.user.update(invalid=u'foo')
+    def test_when_update_invalid_field_then_raises_field_error(self):
+        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
+            self.user.update(foo=u'bar')
 
     def setup(self):
         self.user = User(name=u'foo', email='roo@example.com')
