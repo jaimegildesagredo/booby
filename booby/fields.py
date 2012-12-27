@@ -48,4 +48,20 @@ class Field(object):
 
 
 class StringField(Field):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(StringField, self).__init__(builtin_validators.String(), *args, **kwargs)
+
+
+class IntegerField(Field):
+    def __init__(self, *args, **kwargs):
+        super(IntegerField, self).__init__(builtin_validators.Integer(), *args, **kwargs)
+
+
+class FloatField(Field):
+    def __init__(self, *args, **kwargs):
+        super(FloatField, self).__init__(builtin_validators.Float(), *args, **kwargs)
+
+
+class BooleanField(Field):
+    def __init__(self, *args, **kwargs):
+        super(BooleanField, self).__init__(builtin_validators.Boolean(), *args, **kwargs)
