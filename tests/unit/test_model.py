@@ -38,30 +38,6 @@ class TestOverridenModelInit(object):
         assert_that(user.email, is_(u'foo@example.com'))
 
 
-class TestModelDeclaration(object):
-    pass
-
-
-class TestInheritedModelDeclaration(object):
-    # TODO: This test case should be the same tests for models but using an inherited model
-    def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
-        class UserWithPage(User):
-            name = fields.StringField()
-            page = fields.StringField()
-
-        assert_that(UserWithPage.name, is_not(User.name))
-
-
-class TestInheritedMixinDeclaration(object):
-    # TODO: This test case should be the same tests for models but using an inherited mixin
-    def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
-        class UserWithEmail(UserMixin, Model):
-            name = fields.StringField()
-            email = fields.StringField()
-
-        assert_that(UserWithEmail.name, is_not(UserMixin.name))
-
-
 class TestModelData(object):
     def test_when_set_field_value_then_another_model_shouldnt_have_the_same_value(self):
         user = User(name=u'foo')
@@ -72,6 +48,47 @@ class TestModelData(object):
     # TODO: Is this an itegration test?
     def test_when_validate_without_required_fields_then_raises_validation_error(self):
         user = UserWithRequiredName(email='foo@example.com')
+
+        with assert_raises_regexp(errors.ValidationError, 'required'):
+            user.validate()
+
+
+class TestInheritedModel(object):
+    def test_when_pass_kwargs_then_set_fields_values(self):
+        user = UserWithPage(name=u'foo', email=u'foo@example.com', page=u'example.com')
+
+        assert_that(user.name, is_(u'foo'))
+        assert_that(user.email, is_(u'foo@example.com'))
+        assert_that(user.page, is_(u'example.com'))
+
+    def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
+        with assert_raises_regexp(errors.FieldError, "'UserWithPage' model has no field 'foo'"):
+            UserWithPage(foo=u'bar')
+
+    def test_when_override_superclass_field_then_validates_subclass_field(self):
+        class UserWithoutRequiredName(UserWithRequiredName):
+            name = fields.StringField()
+
+        user = UserWithoutRequiredName()
+        user.validate()
+
+
+class TestInheritedMixin(object):
+    def test_when_pass_kwargs_then_set_fields_values(self):
+        user = UserWithEmail(name=u'foo', email=u'foo@example.com')
+
+        assert_that(user.name, is_(u'foo'))
+        assert_that(user.email, is_(u'foo@example.com'))
+
+    def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
+        with assert_raises_regexp(errors.FieldError, "'UserWithEmail' model has no field 'foo'"):
+            UserWithEmail(foo=u'bar')
+
+    def test_when_override_mixin_field_then_validates_subclass_field(self):
+        class User(UserMixin, Model):
+            name = fields.StringField(required=True)
+
+        user = User()
 
         with assert_raises_regexp(errors.ValidationError, 'required'):
             user.validate()
@@ -156,9 +173,17 @@ class User(Model):
     email = fields.StringField()
 
 
+class UserWithRequiredName(User):
+    name = fields.StringField(required=True)
+
+
+class UserWithPage(User):
+    page = fields.StringField()
+
+
 class UserMixin(object):
     name = fields.StringField()
 
 
-class UserWithRequiredName(User):
-    name = fields.StringField(required=True)
+class UserWithEmail(UserMixin, Model):
+    email = fields.StringField()
