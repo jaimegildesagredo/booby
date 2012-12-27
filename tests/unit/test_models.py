@@ -5,7 +5,7 @@ import json
 from hamcrest import *
 from nose.tools import assert_raises_regexp
 
-from booby import errors, fields, Model
+from booby import errors, fields, models
 
 
 class TestDefaultModelInit(object):
@@ -85,7 +85,7 @@ class TestInheritedMixin(object):
             UserWithEmail(foo=u'bar')
 
     def test_when_override_mixin_field_then_validates_subclass_field(self):
-        class User(UserMixin, Model):
+        class User(UserMixin, models.Model):
             name = fields.StringField(required=True)
 
         user = User()
@@ -141,7 +141,7 @@ class TestModelToDict(object):
         ))
 
     def test_when_model_has_embedded_model_field_then_returns_dict_with_inner_dict(self):
-        class Token(Model):
+        class Token(models.Model):
             key = fields.StringField()
             secret = fields.StringField()
 
@@ -168,7 +168,7 @@ class TestModelToJSON(object):
         assert_that(user.to_json(), is_(json.dumps(user.to_dict())))
 
 
-class User(Model):
+class User(models.Model):
     name = fields.StringField()
     email = fields.StringField()
 
@@ -185,5 +185,5 @@ class UserMixin(object):
     name = fields.StringField()
 
 
-class UserWithEmail(UserMixin, Model):
+class UserWithEmail(UserMixin, models.Model):
     email = fields.StringField()

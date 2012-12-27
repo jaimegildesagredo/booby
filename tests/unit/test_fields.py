@@ -4,8 +4,7 @@ from hamcrest import *
 from doublex import Stub
 from nose.tools import assert_raises, assert_raises_regexp
 
-from booby import fields, errors
-from booby.models import Model
+from booby import fields, errors, models
 
 
 class TestFieldDescriptor(object):
@@ -24,7 +23,7 @@ class TestFieldDescriptor(object):
         assert_that(User.name, instance_of(fields.Field))
 
 
-class User(Model):
+class User(models.Model):
     name = fields.Field(default='nobody')
 
 
