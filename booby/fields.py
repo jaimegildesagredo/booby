@@ -39,6 +39,9 @@ class Field(object):
             return instance._data.get(self, self.default)
         return self
 
+    def __set__(self, instance, value):
+        instance._data[self] = value
+
     def validate(self, value):
         for validator in self.validators:
             validator.validate(value)
