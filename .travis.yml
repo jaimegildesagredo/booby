@@ -1,0 +1,8 @@
+language: python
+
+install:
+ - pip install -r requirements-devel.txt --user-mirrors
+ - python setup.py develop
+
+script:
+ - nosetests tests/unit
