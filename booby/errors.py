@@ -21,3 +21,7 @@ class BoobyError(Exception):
 
 class FieldError(BoobyError):
     pass
+
+
+class ValidationError(BoobyError):
+    pass

@@ -26,22 +26,10 @@ class ModelMeta(type):
         for base in bases:
             for k, v in base.__dict__.iteritems():
                 if isinstance(v, fields.Field):
-                    v.name = k
-                    attrs['_fields'][k] = v
-
-                if isinstance(v, ModelMeta):
-                    v = EmbeddedModel(v)
-                    attrs[k] = v
                     attrs['_fields'][k] = v
 
         for k, v in attrs.iteritems():
             if isinstance(v, fields.Field):
-                v.name = k
-                attrs['_fields'][k] = v
-
-            if isinstance(v, ModelMeta):
-                v = EmbeddedModel(v)
-                attrs[k] = v
                 attrs['_fields'][k] = v
 
         return super(ModelMeta, cls).__new__(cls, name, bases, attrs)
@@ -59,17 +47,24 @@ class Model(object):
     def __init__(self, **kwargs):
         for k, v in kwargs.iteritems():
             if k not in self._fields:
-                raise errors.FieldError("'{}' model has no field '{}'".format(type(self).__name__, k))
+                self.__raise_field_error(k)
+
             setattr(self, k, v)
+
+    def __raise_field_error(self, name):
+        raise errors.FieldError("'{}' model has no field '{}'".format(
+            type(self).__name__, name))
 
     def __getitem__(self, k):
         if k not in self._fields:
-            raise ValueError("Invalid field '{0}'".format(k))
+            self.__raise_field_error(k)
+
         return getattr(self, k)
 
     def __setitem__(self, k, v):
         if k not in self._fields:
-            raise ValueError("Invalid field '{0}'".format(k))
+            self.__raise_field_error(k)
+
         setattr(self, k, v)
 
     def update(self, dict_=None, **kwargs):
@@ -83,8 +78,8 @@ class Model(object):
             self[k] = v
 
     def validate(self):
-        for k, v in self._fields.iteritems():
-            v.validate(getattr(self, k))
+        for name, field in self._fields.iteritems():
+            field.validate(getattr(self, name))
 
     def to_dict(self):
         result = {}
@@ -99,28 +94,3 @@ class Model(object):
 
     def to_json(self):
         return json.dumps(self.to_dict())
-
-
-class EmbeddedModel(fields.Field):
-    def __init__(self, model):
-        self.model = model
-
-    def __get__(self, instance, owner):
-        if instance is not None:
-            if instance._data.get(self) is None:
-                instance._data[self] = self.model()
-            return instance._data[self]
-        return self
-
-    def __set__(self, instance, value):
-        if isinstance(value, dict):
-            if instance._data.get(self) is None:
-                instance._data[self] = self.model()
-            instance._data[self].update(value)
-        else:
-            if not isinstance(value, self.model):
-                raise ValueError()
-            instance._data[self] = value
-
-    def validate(self, value):
-        value.validate()

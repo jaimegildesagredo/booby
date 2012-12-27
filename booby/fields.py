@@ -14,29 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from booby import validators as builtin_validators
+
 
 class Field(object):
-    pass
+    def __init__(self, *validators, **kwargs):
+        self.default = kwargs.get('default')
 
+        # Setup field validators
+        self.validators = []
 
-class TypeField(Field):
-    def __init__(self, **kwargs):
-        self.name = None
-        self.required = kwargs.get('required', False)
+        if kwargs.get('required'):
+            self.validators.append(builtin_validators.Required())
 
-        try:
-            choices = kwargs.get('choices', [])
-            self.choices = set(self.validation(x) for x in choices)
-        except ValueError:
-            raise ValueError('Invalid choices: {0}'.format(choices))
-        except TypeError:
-            raise TypeError("'choices' is not iterable")
+        choices = kwargs.get('choices')
 
-        try:
-            default = kwargs.get('default')
-            self.default = self.validation(default) if default is not None else default
-        except ValueError:
-            raise ValueError('Invalid default value: {0}'.format(default))
+        if choices:
+            self.validators.append(builtin_validators.In(choices))
+
+        self.validators.extend(validators)
 
     def __get__(self, instance, owner):
         if instance is not None:
@@ -44,44 +40,28 @@ class TypeField(Field):
         return self
 
     def __set__(self, instance, value):
-        instance._data[self] = self.validate(value)
+        instance._data[self] = value
 
     def validate(self, value):
-        if value is None:
-            if self.required:
-                raise ValueError("Field '{0}' is required".format(self.name))
-            return value
-
-        if self.choices and value not in self.choices:
-            raise ValueError("Invalid value for field '{0}': {1}".format(
-                self.name, value))
-
-        return self.validation(value)
-
-    def validation(self, value):
-        raise NotImplementedError()
+        for validator in self.validators:
+            validator.validate(value)
 
 
-class StringField(TypeField):
-    def validation(self, value):
-        if not isinstance(value, basestring):
-            raise ValueError("Invalid value for field '{0}': {1}".format(
-                self.name, value))
-        return value
+class StringField(Field):
+    def __init__(self, *args, **kwargs):
+        super(StringField, self).__init__(builtin_validators.String(), *args, **kwargs)
 
 
-class IntegerField(TypeField):
-    def validation(self, value):
-        try:
-            return int(value)
-        except ValueError:
-            raise ValueError("Invalid value for field '{0}': {1}".format(
-                self.name, value))
+class IntegerField(Field):
+    def __init__(self, *args, **kwargs):
+        super(IntegerField, self).__init__(builtin_validators.Integer(), *args, **kwargs)
 
 
-class BoolField(TypeField):
-    def validation(self, value):
-        if not isinstance(value, (bool, int)):
-            raise ValueError("Invalid value for field '{0}': {1}".format(
-                self.name, value))
-        return bool(value)
+class FloatField(Field):
+    def __init__(self, *args, **kwargs):
+        super(FloatField, self).__init__(builtin_validators.Float(), *args, **kwargs)
+
+
+class BooleanField(Field):
+    def __init__(self, *args, **kwargs):
+        super(BooleanField, self).__init__(builtin_validators.Boolean(), *args, **kwargs)

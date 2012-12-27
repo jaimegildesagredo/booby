@@ -1,125 +1,88 @@
 # -*- coding: utf-8 -*-
 
 from hamcrest import *
-from nose.tools import assert_raises_regexp
+from doublex import Stub
+from nose.tools import assert_raises, assert_raises_regexp
 
-from booby import Model, StringField, IntegerField, BoolField
-
-
-class TestField(object):
-    def test_required(self):
-        class User(Model):
-            name = StringField(required=True)
-
-        with assert_raises_regexp(ValueError, "Field 'name' is required"):
-            User(name=None)
-
-    def test_required_default_is_false(self):
-        class User(Model):
-            name = StringField()
-
-        user = User(name=None)
-
-        assert_that(user.name, is_(None))
-
-    def test_default(self):
-        class User(Model):
-            name = StringField(default='anonymous')
-
-        assert_that(User().name, is_('anonymous'))
+from booby import fields, errors, models
 
 
-class TestFieldChoices(object):
-    def test_empty_list(self):
-        class User(Model):
-            name = StringField(choices=[])
+class TestFieldDescriptor(object):
+    def test_when_access_obj_field_and_value_is_not_assigned_yet_then_is_default(self):
+        user = User()
 
-        assert_that(User(name='foo').name, is_('foo'))
+        assert_that(user.name, is_('nobody'))
 
-    def test_not_in_choices_raises_value_error(self):
-        class User(Model):
-            name = StringField(choices=['foo', 'bar'])
+    def test_when_access_obj_field_and_value_is_already_assigned_then_is_value(self):
+        user = User()
+        user.name = 'Jack'
 
-        with assert_raises_regexp(ValueError, "Invalid value for field 'name': foobar"):
-            User(name='foobar')
+        assert_that(user.name, is_('Jack'))
 
-    def test_not_sequence_raises_value_error(self):
-        with assert_raises_regexp(TypeError, "'choices' is not iterable"):
-            class User(Model):
-                name = StringField(choices=object())
+    def test_when_access_class_field_then_is_field_object(self):
+        assert_that(User.name, instance_of(fields.Field))
 
 
-class TestStringField(object):
-    def test_invalid_default_raises_value_error(self):
-        with assert_raises_regexp(ValueError, 'Invalid default value: 1'):
-            class User(Model):
-                name = StringField(default=1)
-
-    def test_invalid_choices_raises_value_error(self):
-        with assert_raises_regexp(ValueError, "Invalid choices:"):
-            class User(Model):
-                name = StringField(choices=[1, 'foo'])
-
-    def test_invalid_value(self):
-        class User(Model):
-            name = StringField()
-
-        with assert_raises_regexp(ValueError, "Invalid value for field 'name': 1"):
-            User(name=1)
+class User(models.Model):
+    name = fields.Field(default='nobody')
 
 
-class TestIntegerField(object):
-    def test_invalid_default_raises_value_error(self):
-        with assert_raises_regexp(ValueError, 'Invalid default value: foo'):
-            class User(Model):
-                karma = IntegerField(default='foo')
+class TestValidateField(object):
+    def test_when_validate_without_validation_errors_then_does_not_raise(self):
+        validator1 = Stub()
+        validator2 = Stub()
 
-    def test_invalid_choices_raises_value_error(self):
-        with assert_raises_regexp(ValueError, "Invalid choices:"):
-            class User(Model):
-                karma = IntegerField(choices=['foo', 'bar'])
+        field = fields.Field(validator1, validator2)
 
-    def test_invalid_value_raises_value_error(self):
-        class User(Model):
-            karma = IntegerField()
+        field.validate('foo')
 
-        with assert_raises_regexp(ValueError, "Invalid value for field 'karma': foo"):
-            User(karma='foo')
+    def test_when_first_validator_raises_validation_error_then_raises_exception(self):
+        with Stub() as validator1:
+            validator1.validate('foo').raises(errors.ValidationError)
 
-    def test_float(self):
-        class User(Model):
-            karma = IntegerField()
+        validator2 = Stub()
 
-        assert_that(User(karma=2.7).karma, is_(2))
+        field = fields.Field(validator1, validator2)
 
-    def test_numeric_string_converts_to_int(self):
-        class User(Model):
-            karma = IntegerField()
+        with assert_raises(errors.ValidationError):
+            field.validate('foo')
 
-        assert_that(User(karma='2').karma, is_(2))
+    def test_when_second_validator_raises_validation_error_then_raises_exception(self):
+        validator1 = Stub()
+
+        with Stub() as validator2:
+            validator2.validate('foo').raises(errors.ValidationError)
+
+        field = fields.Field(validator1, validator2)
+
+        with assert_raises(errors.ValidationError):
+            field.validate('foo')
 
 
-class TestBoolField(object):
-    def test_invalid_default_raises_value_error(self):
-        with assert_raises_regexp(ValueError, 'Invalid default value: foo'):
-            class User(Model):
-                is_active = BoolField(default='foo')
+class TestFieldBuiltinValidations(object):
+    def test_when_required_is_true_then_value_shouldnt_be_none(self):
+        field = fields.Field(required=True)
 
-    def test_invalid_choices_raises_value_error(self):
-        with assert_raises_regexp(ValueError, "Invalid choices:"):
-            class User(Model):
-                is_active = BoolField(choices=[True, 'foo'])
+        with assert_raises_regexp(errors.ValidationError, 'required'):
+            field.validate(None)
 
-    def test_invalid_value_raises_value_error(self):
-        class User(Model):
-            is_active = BoolField()
+    def test_when_required_is_false_then_value_can_be_none(self):
+        field = fields.Field(required=False)
 
-        with assert_raises_regexp(ValueError, "Invalid value for field 'is_active':"):
-            User(is_active='foo')
+        field.validate(None)
 
-    def test_int(self):
-        class User(Model):
-            is_active = BoolField()
+    def test_when_not_required_then_value_can_be_none(self):
+        field = fields.Field()
 
-        assert_that(User(is_active=1).is_active, is_(True))
-        assert_that(User(is_active=1).is_active, instance_of(bool))
+        field.validate(None)
+
+    def test_when_choices_then_value_should_be_in_choices(self):
+        field = fields.Field(choices=['foo', 'bar'])
+
+        with assert_raises_regexp(errors.ValidationError, ' in '):
+            field.validate('baz')
+
+    def test_when_not_choices_then_value_can_be_whatever_value(self):
+        field = fields.Field()
+
+        field.validate('foo')
