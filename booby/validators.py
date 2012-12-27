@@ -56,3 +56,18 @@ class Boolean(object):
     def validate(self, value):
         if value is not None and not isinstance(value, bool):
             raise errors.ValidationError('should be a boolean')
+
+
+class Embedded(object):
+    def __init__(self, model):
+        self.model = model
+
+    def validate(self, value):
+        if value is None:
+            return
+
+        if not isinstance(value, self.model):
+            raise errors.ValidationError(
+                "should be an instance of '{}'".format(self.model.__name__))
+
+        value.validate()
