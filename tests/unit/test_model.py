@@ -5,7 +5,7 @@ import json
 from hamcrest import *
 from nose.tools import assert_raises_regexp
 
-from booby import errors, Model, StringField
+from booby import errors, fields, Model
 
 
 class TestDefaultModelInit(object):
@@ -46,8 +46,8 @@ class TestInheritedModelDeclaration(object):
     # TODO: This test case should be the same tests for models but using an inherited model
     def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
         class UserWithPage(User):
-            name = StringField()
-            page = StringField()
+            name = fields.StringField()
+            page = fields.StringField()
 
         assert_that(UserWithPage.name, is_not(User.name))
 
@@ -56,8 +56,8 @@ class TestInheritedMixinDeclaration(object):
     # TODO: This test case should be the same tests for models but using an inherited mixin
     def test_when_override_superclass_field_then_superclass_and_subclass_does_not_share_the_same_field(self):
         class UserWithEmail(UserMixin, Model):
-            name = StringField()
-            email = StringField()
+            name = fields.StringField()
+            email = fields.StringField()
 
         assert_that(UserWithEmail.name, is_not(UserMixin.name))
 
@@ -110,31 +110,55 @@ class TestDictModel(object):
         with assert_raises_regexp(ValueError, "Invalid field 'invalid'"):
             self.user.update(invalid=u'foo')
 
-    def test_to_dict_returns_dict_with_field_values(self):
-        assert_that(self.user.to_dict(), has_entries(
-            name=u'foo',
-            email='roo@example.com'
-        ))
-
     def setup(self):
         self.user = User(name=u'foo', email='roo@example.com')
 
 
-class TestJSONModel(object):
-    def test_to_json_returns_a_json_string_with_field_values(self):
+class TestModelToDict(object):
+    def test_when_model_has_single_fields_then_returns_dict_with_fields_values(self):
+        user = User(name=u'foo', email='roo@example.com')
+
+        assert_that(user.to_dict(), has_entries(
+            name=u'foo',
+            email='roo@example.com'
+        ))
+
+    def test_when_model_has_embedded_model_field_then_returns_dict_with_inner_dict(self):
+        class Token(Model):
+            key = fields.StringField()
+            secret = fields.StringField()
+
+        class UserWithToken(User):
+            token = fields.Field()
+
+        token = Token(key=u'foo', secret=u'bar')
+        user = UserWithToken(name=u'foo', email=u'roo@example.com', token=token)
+
+        assert_that(user.to_dict(), has_entries(
+            name=u'foo',
+            email=u'roo@example.com',
+            token=has_entries(
+                key=u'foo',
+                secret=u'bar'
+            )
+        ))
+
+
+class TestModelToJSON(object):
+    def test_when_model_has_single_fields_then_returns_json_with_fields_values(self):
         user = User(name=u'Jack', email=u'jack@example.com')
 
-        assert_that(json.loads(user.to_json()), is_(user.to_dict()))
+        assert_that(user.to_json(), is_(json.dumps(user.to_dict())))
 
 
 class User(Model):
-    name = StringField()
-    email = StringField()
+    name = fields.StringField()
+    email = fields.StringField()
 
 
 class UserMixin(object):
-    name = StringField()
+    name = fields.StringField()
 
 
 class UserWithRequiredName(User):
-    name = StringField(required=True)
+    name = fields.StringField(required=True)
