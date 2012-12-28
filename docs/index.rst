@@ -47,6 +47,7 @@ Contents:
     models
     fields
     validators
+    errors
 
 
 Indices and tables
