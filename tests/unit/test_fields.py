@@ -23,8 +23,42 @@ class TestFieldDescriptor(object):
         assert_that(User.name, instance_of(fields.Field))
 
 
+class TestEmbeddedFieldDescriptor(object):
+    def test_when_set_field_value_with_dict_then_value_is_embedded_object_with_dict_values(self):
+        self.group.admin = {'name': u'foo', 'email': u'foo@example.com'}
+
+        assert_that(self.group.admin, instance_of(User))
+        assert_that(self.group.admin.name, is_(u'foo'))
+        assert_that(self.group.admin.email, is_(u'foo@example.com'))
+
+    def test_when_set_field_value_with_dict_with_invalid_field_then_raises_field_error(self):
+        with assert_raises_regexp(errors.FieldError, 'foo'):
+            self.group.admin = {'name': u'foo', 'foo': u'bar'}
+
+    def test_when_set_field_value_with_not_dict_object_then_value_is_given_object(self):
+        user = User(name=u'foo', email=u'foo@example.com')
+        self.group.admin = user
+
+        assert_that(self.group.admin, is_(user))
+
+    def test_when_set_field_with_not_model_instance_then_value_is_given_object(self):
+        user = object()
+        self.group.admin = user
+
+        assert_that(self.group.admin, is_(user))
+
+    def setup(self):
+        self.group = Group()
+
+
 class User(models.Model):
-    name = fields.Field(default='nobody')
+    name = fields.StringField(default='nobody')
+    email = fields.StringField()
+
+
+class Group(models.Model):
+    name = fields.StringField()
+    admin = fields.EmbeddedField(User)
 
 
 class TestValidateField(object):
@@ -86,3 +120,19 @@ class TestFieldBuiltinValidations(object):
         field = fields.Field()
 
         field.validate('foo')
+
+
+class TestEmbeddedFieldBuildtinValidators(object):
+    def test_when_value_is_not_instance_of_model_then_raises_validation_error(self):
+        with assert_raises_regexp(errors.ValidationError, 'instance of'):
+            self.field.validate(object())
+
+    def test_when_embedded_model_field_has_invalid_value_then_raises_validation_error(self):
+        with assert_raises_regexp(errors.ValidationError, 'string'):
+            self.field.validate(User(name=1))
+
+    def test_when_embedded_model_validates_then_does_not_raise(self):
+        self.field.validate(User())
+
+    def setup(self):
+        self.field = fields.EmbeddedField(User)

@@ -65,3 +65,17 @@ class FloatField(Field):
 class BooleanField(Field):
     def __init__(self, *args, **kwargs):
         super(BooleanField, self).__init__(builtin_validators.Boolean(), *args, **kwargs)
+
+
+class EmbeddedField(Field):
+    def __init__(self, model, *args, **kwargs):
+        super(EmbeddedField, self).__init__(builtin_validators.Embedded(model),
+            *args, **kwargs)
+
+        self.model = model
+
+    def __set__(self, instance, value):
+        if isinstance(value, dict):
+            value = self.model(**value)
+
+        super(EmbeddedField, self).__set__(instance, value)
