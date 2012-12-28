@@ -14,18 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Field validators"""
+"""The `validators` module contains a set of :mod:`fields` validators.
+
+A validator is any `object` with a :func:`validate` method which receives
+a `value` as the target for the validation. If the validation fails then
+the :func:`validate` method should raise an :class:`errors.ValidationError`
+exception with an error message.
+
+`Validators` are passed to :class:`fields.Field` and subclasses as possitional
+arguments.
+
+"""
 
 from booby import errors
 
 
 class Required(object):
+    """This validator forces fields to have a value other than `None`."""
+
     def validate(self, value):
         if value is None:
             raise errors.ValidationError('is required')
 
 
 class In(object):
+    """This validator forces fields to have their value in the given list.
+
+    :param choices: A `list` of possible values.
+
+    """
+
     def __init__(self, choices):
         self.choices = choices
 
@@ -35,30 +53,46 @@ class In(object):
 
 
 class String(object):
+    """This validator forces fields values to be an instance of `basestring`."""
+
     def validate(self, value):
         if value is not None and not isinstance(value, basestring):
             raise errors.ValidationError('should be a string')
 
 
 class Integer(object):
+    """This validator forces fields values to be an instance of `int`."""
+
     def validate(self, value):
         if value is not None and not isinstance(value, int):
             raise errors.ValidationError('should be an integer')
 
 
 class Float(object):
+    """This validator forces fields values to be an instance of `float`."""
+
     def validate(self, value):
         if value is not None and not isinstance(value, float):
             raise errors.ValidationError('should be a float')
 
 
 class Boolean(object):
+    """This validator forces fields values to be an instance of `bool`."""
+
     def validate(self, value):
         if value is not None and not isinstance(value, bool):
             raise errors.ValidationError('should be a boolean')
 
 
 class Embedded(object):
+    """This validator forces fields values to be an instance of the given
+    :class:`models.Model` subclass and also performs a validation in the
+    entire `model` object.
+
+    :param model: A subclass of :class:`models.Model`
+
+    """
+
     def __init__(self, model):
         self.model = model
 

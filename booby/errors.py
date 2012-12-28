@@ -14,14 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""The `errors` module contains all exceptions used by Booby."""
+
 
 class BoobyError(Exception):
+    """Base class for all Booby exceptions."""
+
     pass
 
 
 class FieldError(BoobyError):
+    """This exception is used as an equivalent to :class:`AttributeError`
+    for :mod:`fields`.
+
+    """
+
     pass
 
 
 class ValidationError(BoobyError):
+    """This exception should be raised when a `value` doesn't validate.
+    See :mod:`validators`.
+
+    """
+
     pass
