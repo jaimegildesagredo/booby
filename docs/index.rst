@@ -45,6 +45,7 @@ Contents:
     :maxdepth: 2
 
     fields
+    validators
 
 
 Indices and tables
