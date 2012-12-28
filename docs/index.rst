@@ -42,8 +42,9 @@ See the sample code below to get an idea of the main features::
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
+    fields
 
 
 Indices and tables
