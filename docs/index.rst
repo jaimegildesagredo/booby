@@ -1,12 +1,7 @@
-.. Booby documentation master file, created by
-   sphinx-quickstart on Fri Dec 28 14:02:27 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Booby: data modeling and validation library
+===========================================
 
-Welcome to Booby's documentation!
-=================================
-
-Booby is a standalone data modeling and validation Python library.
+Booby is a standalone data `modeling` and `validation` library written in Python. Booby is under active development and licensed under the `Apache2 license <http://www.apache.org/licenses/LICENSE-2.0.html>`_, so feel free to `contribute <https://github.com/jaimegildesagredo/booby/pulls>`_ and `report errors and suggestions <https://github.com/jaimegildesagredo/booby/issues>`_.
 
 See the sample code below to get an idea of the main features::
 
@@ -39,7 +34,8 @@ See the sample code below to get an idea of the main features::
     else:
         print jack.to_json()
 
-Contents:
+Contents
+--------
 
 .. toctree::
     :maxdepth: 2
