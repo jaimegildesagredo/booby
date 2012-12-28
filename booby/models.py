@@ -30,8 +30,8 @@ Something like this:
 >>> booby = Repo(
 ...     name=u'Booby',
 ...     owner={
-...         'login': 'jaimegildesagredo',
-...         'name': 'Jaime Gil de Sagredo'
+...         'login': u'jaimegildesagredo',
+...         'name': u'Jaime Gil de Sagredo'
 ...     })
 ...
 >>> print booby.to_json()
