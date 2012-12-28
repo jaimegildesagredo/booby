@@ -14,6 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""The `models` module contains the `booby` highest level abstraction:
+the `Model`.
+
+To define a model you should subclass the :class:`Model` class and
+add a list of :mod:`fields` as attributes. And then you could instantiate
+your `Model` and work with these objects.
+
+Something like this:
+
+>>> class Repo(Model):
+...     name = StringField()
+...     owner = EmbeddedField(User)
+...
+>>> booby = Repo(
+...     name=u'Booby',
+...     owner={
+...         'login': 'jaimegildesagredo',
+...         'name': 'Jaime Gil de Sagredo'
+...     })
+...
+>>> print booby.to_json()
+'{"owner": {"login": "jaimegildesagredo", "name": "Jaime Gil de Sagredo"}, "name": "Booby"}'
+
+"""
+
 import json
 
 from booby import fields, errors
@@ -36,6 +61,12 @@ class ModelMeta(type):
 
 
 class Model(object):
+    """The `Model` class. All Booby models should subclass this.
+
+    :param \*\*kwargs: Keyword arguments with the fields values to initialize the model.
+
+    """
+
     __metaclass__ = ModelMeta
 
     def __new__(cls, *args, **kwargs):
@@ -68,6 +99,14 @@ class Model(object):
         setattr(self, k, v)
 
     def update(self, dict_=None, **kwargs):
+        """This method updates the `model` fields values with the given dict.
+        The model can be updated passing a dict object or keyword arguments,
+        like the Python's builtin :func:`dict.update`.
+
+        :param dict_: A dict with the new field values.
+        :param \*\*kwargs: Keyword arguments with the new field values.
+        """
+
         if dict_ is not None:
             self._update(dict_)
         else:
@@ -78,10 +117,20 @@ class Model(object):
             self[k] = v
 
     def validate(self):
+        """This method validates the entire `model`. That is, validates
+        all the :mod:`fields` within this model.
+
+        If some `field` validation fails, then this method raises the same
+        exception that the :func:`field.validate` method had raised.
+
+        """
+
         for name, field in self._fields.iteritems():
             field.validate(getattr(self, name))
 
     def to_dict(self):
+        """This method returns the `model` as a `dict`."""
+
         result = {}
         for field in self._fields:
             value = getattr(self, field)
@@ -93,4 +142,11 @@ class Model(object):
         return result
 
     def to_json(self):
+        """This method returns the `model` as a `json string`.
+
+        To build a json-serializable object for this `model` this method
+        uses the :func:`Model.to_dict` mehtod.
+
+        """
+
         return json.dumps(self.to_dict())

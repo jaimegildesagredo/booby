@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The `fields` module contains a set of `Field` classes
+"""The `fields` module contains a list of `Field` classes
 for model's definition.
 
 The example below shows the most common fields and builtin validations:
@@ -38,7 +38,7 @@ from booby import validators as builtin_validators
 
 class Field(object):
     """This is the base class for all :mod:`booby.fields`. This class
-    can also be used as field in any model declaration.
+    can also be used as field in any :class:`models.Model` declaration.
 
     :param default: This field default value.
     :param required: If `True` this field value should not be `None`.
@@ -77,35 +77,38 @@ class Field(object):
 
 
 class StringField(Field):
-    """:class:`Field` subclass with builtin string validation."""
+    """:class:`Field` subclass with builtin `string` validation."""
 
     def __init__(self, *args, **kwargs):
         super(StringField, self).__init__(builtin_validators.String(), *args, **kwargs)
 
 
 class IntegerField(Field):
-    """:class:`Field` subclass with builtin integer validation."""
+    """:class:`Field` subclass with builtin `integer` validation."""
 
     def __init__(self, *args, **kwargs):
         super(IntegerField, self).__init__(builtin_validators.Integer(), *args, **kwargs)
 
 
 class FloatField(Field):
-    """:class:`Field` subclass with builtin float validation."""
+    """:class:`Field` subclass with builtin `float` validation."""
 
     def __init__(self, *args, **kwargs):
         super(FloatField, self).__init__(builtin_validators.Float(), *args, **kwargs)
 
 
 class BooleanField(Field):
-    """:class:`Field` subclass with builtin bool validation."""
+    """:class:`Field` subclass with builtin `bool` validation."""
 
     def __init__(self, *args, **kwargs):
         super(BooleanField, self).__init__(builtin_validators.Boolean(), *args, **kwargs)
 
 
 class EmbeddedField(Field):
-    """:class:`Field` subclass with builtin embedded model validation."""
+    """:class:`Field` subclass with builtin embedded :class:`models.Model`
+    validation.
+
+    """
 
     def __init__(self, model, *args, **kwargs):
         super(EmbeddedField, self).__init__(builtin_validators.Embedded(model),

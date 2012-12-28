@@ -86,9 +86,10 @@ class Boolean(object):
 
 class Embedded(object):
     """This validator forces fields values to be an instance of the given
-    `model` and also performs a validation in the entire model object.
+    :class:`models.Model` subclass and also performs a validation in the
+    entire `model` object.
 
-    :param model: An instance of :class:`models.Model`
+    :param model: A subclass of :class:`models.Model`
 
     """
 
