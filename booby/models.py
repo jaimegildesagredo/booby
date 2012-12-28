@@ -63,6 +63,11 @@ class ModelMeta(type):
 class Model(object):
     """The `Model` class. All Booby models should subclass this.
 
+    By default the `Model's` :func:`__init__` takes a list of keyword arguments
+    to initialize the `fields` values. If any of these keys is not a `field`
+    then raises :class:`errors.FieldError`. Of course you can overwrite the
+    `Model's` :func:`__init__` to get a custom behavior.
+
     :param \*\*kwargs: Keyword arguments with the fields values to initialize the model.
 
     """
