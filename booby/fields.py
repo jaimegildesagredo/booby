@@ -27,7 +27,7 @@ The example below shows the most common fields and builtin validations:
 ...     login = StringField(required=True)
 ...     name = StringField()
 ...     role = StringField(choices=['admin', 'moderator', 'user'])
-...     email = StringField(validators.Email(), required=True)
+...     email = EmailField(required=True)
 ...     token = EmbeddedField(Token, required=True)
 ...     is_active = BooleanField(default=False)
 
@@ -121,3 +121,10 @@ class EmbeddedField(Field):
             value = self.model(**value)
 
         super(EmbeddedField, self).__set__(instance, value)
+
+
+class EmailField(Field):
+    """:class:`Field` subclass with builtin `email` validation."""
+
+    def __init__(self, *args, **kwargs):
+        super(EmailField, self).__init__(builtin_validators.Email(), *args, **kwargs)

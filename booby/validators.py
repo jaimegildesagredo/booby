@@ -26,11 +26,41 @@ arguments.
 
 """
 
+import re
+import functools
+
 from booby import errors
 
 
+def nullable(method):
+    """This is a helper validation decorator for validators that allow
+    their `values` to be :keyword:`None`.
+
+    The :class:`String` validator is a good example::
+
+        class String(object):
+            def validate(self, value):
+                if value is not None:
+                    pass # Do the validation here ...
+
+    Now the same but using the `@nullable` decorator::
+
+        @nullable
+        def validate(self, value):
+            pass # Do the validation here ...
+
+    """
+
+    @functools.wraps(method)
+    def wrapper(self, value):
+        if value is not None:
+            method(self, value)
+
+    return wrapper
+
+
 class Required(object):
-    """This validator forces fields to have a value other than `None`."""
+    """This validator forces fields to have a value other than :keyword:`None`."""
 
     def validate(self, value):
         if value is None:
@@ -55,32 +85,36 @@ class In(object):
 class String(object):
     """This validator forces fields values to be an instance of `basestring`."""
 
+    @nullable
     def validate(self, value):
-        if value is not None and not isinstance(value, basestring):
+        if not isinstance(value, basestring):
             raise errors.ValidationError('should be a string')
 
 
 class Integer(object):
     """This validator forces fields values to be an instance of `int`."""
 
+    @nullable
     def validate(self, value):
-        if value is not None and not isinstance(value, int):
+        if not isinstance(value, int):
             raise errors.ValidationError('should be an integer')
 
 
 class Float(object):
     """This validator forces fields values to be an instance of `float`."""
 
+    @nullable
     def validate(self, value):
-        if value is not None and not isinstance(value, float):
+        if not isinstance(value, float):
             raise errors.ValidationError('should be a float')
 
 
 class Boolean(object):
     """This validator forces fields values to be an instance of `bool`."""
 
+    @nullable
     def validate(self, value):
-        if value is not None and not isinstance(value, bool):
+        if not isinstance(value, bool):
             raise errors.ValidationError('should be a boolean')
 
 
@@ -96,12 +130,25 @@ class Embedded(object):
     def __init__(self, model):
         self.model = model
 
+    @nullable
     def validate(self, value):
-        if value is None:
-            return
-
         if not isinstance(value, self.model):
             raise errors.ValidationError(
                 "should be an instance of '{}'".format(self.model.__name__))
 
         value.validate()
+
+
+class Email(String):
+    def __init__(self, *args, **kwargs):
+        super(Email, self).__init__(*args, **kwargs)
+
+        self.pattern = re.compile('^\w+\@\w+\.[a-z]{2,3}$')
+
+    @nullable
+    def validate(self, value):
+        super(Email, self).validate(value)
+
+        if value is not None:
+            if self.pattern.match(value) is None:
+                raise errors.ValidationError('should be a valid email')

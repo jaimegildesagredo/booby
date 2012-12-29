@@ -30,19 +30,21 @@ class TestIn(object):
         self.validator = validators.In(['foo', 'bar'])
 
 
-class TestString(object):
+class StringMixin(object):
     def test_when_value_is_not_string_then_raises_validation_error(self):
         with assert_raises_regexp(errors.ValidationError, 'should be a string'):
             self.validator.validate(1)
 
+    def test_when_value_is_none_then_does_not_raise(self):
+        self.validator.validate(None)
+
+
+class TestString(StringMixin):
     def test_when_value_is_a_string_then_does_not_raise(self):
         self.validator.validate('foo')
 
     def test_when_value_is_unicode_then_does_not_raise(self):
         self.validator.validate(u'foo')
-
-    def test_when_value_is_none_then_does_not_raise(self):
-        self.validator.validate(None)
 
     def setup(self):
         self.validator = validators.String()
@@ -113,6 +115,22 @@ class TestEmbedded(object):
 
     def setup(self):
         self.validator = validators.Embedded(User)
+
+
+class TestEmail(StringMixin):
+    def test_when_value_doesnt_match_email_pattern_then_raises_validation_error(self):
+        with assert_raises_regexp(errors.ValidationError, 'should be a valid email'):
+            self.validator.validate('foo@example')
+
+    def test_when_value_doesnt_have_at_sign_then_raises_validation_error(self):
+        with assert_raises_regexp(errors.ValidationError, 'should be a valid email'):
+            self.validator.validate('foo%example.com')
+
+    def test_when_value_is_a_valid_email_then_does_not_raise(self):
+        self.validator.validate('foo2bar@example.com')
+
+    def setup(self):
+        self.validator = validators.Email()
 
 
 class User(models.Model):
