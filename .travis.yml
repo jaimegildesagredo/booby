@@ -6,3 +6,4 @@ install:
 
 script:
  - nosetests tests/unit
+ - nosetests tests/integration
