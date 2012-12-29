@@ -1,7 +1,7 @@
 language: python
 
 install:
- - pip install -r requirements-devel.txt --use-mirrors
+ - pip install -r requirements-devel.txt --use-mirrors --upgrade
  - python setup.py develop
 
 script:
