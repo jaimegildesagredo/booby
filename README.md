@@ -14,7 +14,7 @@ class Token(Model):
 class User(Model):
     login = StringField(required=True)
     name = StringField()
-    email = StringField()
+    email = EmailField()
     token = EmbeddedField(Token, required=True)
 
 jack = User(

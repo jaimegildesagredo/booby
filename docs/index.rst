@@ -14,7 +14,7 @@ See the sample code below to get an idea of the main features::
     class User(Model):
         login = StringField(required=True)
         name = StringField()
-        email = StringField()
+        email = EmailField()
         token = EmbeddedField(Token, required=True)
 
     jack = User(
