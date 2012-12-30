@@ -1,8 +1,12 @@
 language: python
 
 install:
+ - python setup.py sdist
+ - mkdir tmp
+ - tar xvf dist/booby-*.tar.gz -C tmp
+ - python tmp/booby-*/setup.py install
+
  - pip install -r requirements-devel.txt --use-mirrors --upgrade
- - python setup.py develop
 
 script:
  - nosetests tests/unit
