@@ -41,12 +41,17 @@ You can install the last stable release of Booby from PyPI using pip or easy_ins
 
     $ pip install booby
 
+Also you can install the latest sources from Github:
+
+    $ pip install -e git+git://github.com/jaimegildesagredo/booby.git
+
 # Tests
 
 To run the Booby test suite you should install the development requirements and then run nosetests.
 
     $ pip install -r requirements-devel.txt
     $ nosetests tests/unit
+    $ nosetests tests/integration
 
 # Documentation
 
