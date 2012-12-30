@@ -67,6 +67,17 @@ class Model(object):
     then raises :class:`errors.FieldError`. Of course you can overwrite the
     `Model's` :func:`__init__` to get a custom behavior.
 
+    You can get or set Model `fields` values in two different ways: through
+    object attributes or dict-like items::
+
+        >>> booby.name is booby['name']
+        True
+        >>> booby['name'] = u'booby'
+        >>> booby['foo'] = u'bar'
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        errors.FieldError: foo
+
     :param \*\*kwargs: Keyword arguments with the fields values to initialize the model.
 
     """
