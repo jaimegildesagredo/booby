@@ -47,6 +47,8 @@ class Field(object):
     """
 
     def __init__(self, *validators, **kwargs):
+        self.options = kwargs
+
         self.default = kwargs.get('default')
 
         # Setup field validators

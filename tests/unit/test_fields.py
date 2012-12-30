@@ -7,6 +7,20 @@ from nose.tools import assert_raises, assert_raises_regexp
 from booby import fields, errors, models
 
 
+class TestFieldInit(object):
+    def test_when_kwargs_then_field_options_is_a_dict_with_these_args(self):
+        kwargs = dict(required=True, primary=True, foo=u'bar')
+
+        field = fields.Field(**kwargs)
+
+        assert_that(field.options, has_entries(kwargs))
+
+    def test_when_no_kwargs_then_field_options_is_an_empty_dict(self):
+        field = fields.Field()
+
+        assert_that(field.options, is_({}))
+
+
 class TestFieldDescriptor(object):
     def test_when_access_obj_field_and_value_is_not_assigned_yet_then_is_default(self):
         user = User()
