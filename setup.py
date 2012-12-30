@@ -9,6 +9,7 @@ setup(
     version='0.2',
     description='Standalone data modeling and validation Python library',
     long_description=long_description,
+    url='https://github.com/jaimegildesagredo/booby',
     author='Jaime Gil de Sagredo Luna',
     author_email='jaimegildesagredo@gmail.com',
     packages=find_packages(exclude=['tests', 'tests.*']),
