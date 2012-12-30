@@ -6,7 +6,9 @@ Booby: data modeling and validation library
 
 Booby is a standalone data `modeling` and `validation` library written in Python. Booby is under active development and licensed under the `Apache2 license <http://www.apache.org/licenses/LICENSE-2.0.html>`_, so feel free to `contribute <https://github.com/jaimegildesagredo/booby/pulls>`_ and `report errors and suggestions <https://github.com/jaimegildesagredo/booby/issues>`_.
 
-See the sample code below to get an idea of the main features::
+See the sample code below to get an idea of the main features.
+
+.. code-block:: python
 
     from booby import *
 
@@ -42,18 +44,24 @@ See the sample code below to get an idea of the main features::
 Installation
 ============
 
-You can install the last stable release of Booby from PyPI using pip or easy_install::
+You can install the last stable release of Booby from PyPI using pip or easy_install.
+
+.. code-block:: bash
 
     $ pip install booby
 
-Also you can install the latest sources from Github::
+Also you can install the latest sources from Github.
+
+.. code-block:: bash
 
     $ pip install -e git+git://github.com/jaimegildesagredo/booby.git
 
 Tests
 =====
 
-To run the Booby test suite you should install the development requirements and then run nosetests::
+To run the Booby test suite you should install the development requirements and then run nosetests.
+
+.. code-block:: bash
 
     $ pip install -r requirements-devel.txt
     $ nosetests tests/unit
