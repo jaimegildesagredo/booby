@@ -34,6 +34,8 @@ See the sample code below to get an idea of the main features::
     else:
         print jack.to_json()
 
+    '{"email": "jack@example.com", "login": "jacko", "token": {"secret": "ds5ds4...", "key": "vs7df..."}, "name": "Jack"}'
+
 Contents
 --------
 

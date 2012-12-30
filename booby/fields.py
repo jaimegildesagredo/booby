@@ -17,20 +17,19 @@
 """The `fields` module contains a list of `Field` classes
 for model's definition.
 
-The example below shows the most common fields and builtin validations:
+The example below shows the most common fields and builtin validations::
 
->>> class Token(Model):
-...     key = StringField()
-...     secret = StringField()
-...
->>> class User(Model):
-...     login = StringField(required=True)
-...     name = StringField()
-...     role = StringField(choices=['admin', 'moderator', 'user'])
-...     email = EmailField(required=True)
-...     token = EmbeddedField(Token, required=True)
-...     is_active = BooleanField(default=False)
+    class Token(Model):
+        key = StringField()
+        secret = StringField()
 
+    class User(Model):
+        login = StringField(required=True)
+        name = StringField()
+        role = StringField(choices=['admin', 'moderator', 'user'])
+        email = EmailField(required=True)
+        token = EmbeddedField(Token, required=True)
+        is_active = BooleanField(default=False)
 """
 
 from booby import validators as builtin_validators

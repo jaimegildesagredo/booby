@@ -21,22 +21,21 @@ To define a model you should subclass the :class:`Model` class and
 add a list of :mod:`fields` as attributes. And then you could instantiate
 your `Model` and work with these objects.
 
-Something like this:
+Something like this::
 
->>> class Repo(Model):
-...     name = StringField()
-...     owner = EmbeddedField(User)
-...
->>> booby = Repo(
-...     name=u'Booby',
-...     owner={
-...         'login': u'jaimegildesagredo',
-...         'name': u'Jaime Gil de Sagredo'
-...     })
-...
->>> print booby.to_json()
-'{"owner": {"login": "jaimegildesagredo", "name": "Jaime Gil de Sagredo"}, "name": "Booby"}'
+    class Repo(Model):
+         name = StringField()
+         owner = EmbeddedField(User)
 
+    booby = Repo(
+        name=u'Booby',
+        owner={
+            'login': u'jaimegildesagredo',
+            'name': u'Jaime Gil de Sagredo'
+        })
+
+    print booby.to_json()
+    '{"owner": {"login": "jaimegildesagredo", "name": "Jaime Gil de Sagredo"}, "name": "Booby"}'
 """
 
 import json
