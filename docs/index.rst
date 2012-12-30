@@ -42,6 +42,7 @@ Contents
 .. toctree::
     :maxdepth: 2
 
+    install
     models
     fields
     validators
