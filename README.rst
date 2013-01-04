@@ -54,7 +54,7 @@ Also you can install the latest sources from Github.
 
 .. code-block:: bash
 
-    $ pip install -e git+git://github.com/jaimegildesagredo/booby.git
+    $ pip install -e git+git://github.com/jaimegildesagredo/booby.git#egg=booby
 
 Tests
 =====
