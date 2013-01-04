@@ -160,7 +160,7 @@ class Model(object):
         """This method returns the `model` as a `json string`.
 
         To build a json-serializable object for this `model` this method
-        uses the :func:`Model.to_dict` mehtod.
+        uses the :func:`Model.to_dict` method.
 
         """
 
