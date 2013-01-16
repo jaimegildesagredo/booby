@@ -152,3 +152,11 @@ class Email(String):
         if value is not None:
             if self.pattern.match(value) is None:
                 raise errors.ValidationError('should be a valid email')
+
+
+class List(object):
+    """This validator forces fields values to be a :keyword:`list`."""
+
+    def validate(self, value):
+        if not isinstance(value, list):
+            raise errors.ValidationError('should be a list')

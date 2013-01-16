@@ -117,6 +117,22 @@ class TestEmbedded(object):
         self.validator = validators.Embedded(User)
 
 
+class TestList(object):
+    def test_when_value_is_not_a_list_then_raises_validation_error(self):
+        with assert_raises_regexp(errors.ValidationError, 'should be a list'):
+            self.validator.validate(object())
+
+    def test_when_value_is_none_then_raises_validation_error(self):
+        with assert_raises_regexp(errors.ValidationError, 'should be a list'):
+            self.validator.validate(None)
+
+    def test_when_value_is_a_list_then_does_not_raise(self):
+        self.validator.validate(['foo', 'bar'])
+
+    def setup(self):
+        self.validator = validators.List()
+
+
 class TestEmail(StringMixin):
     def test_when_value_doesnt_match_email_pattern_then_raises_validation_error(self):
         with assert_raises_regexp(errors.ValidationError, 'should be a valid email'):
