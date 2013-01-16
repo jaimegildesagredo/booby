@@ -118,7 +118,7 @@ class Boolean(object):
             raise errors.ValidationError('should be a boolean')
 
 
-class Embedded(object):
+class Model(object):
     """This validator forces fields values to be an instance of the given
     :class:`models.Model` subclass and also performs a validation in the
     entire `model` object.

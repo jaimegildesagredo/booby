@@ -95,7 +95,7 @@ class TestBoolean(object):
         self.validator = validators.Boolean()
 
 
-class TestEmbedded(object):
+class TestModel(object):
     def test_when_value_is_not_instance_of_model_then_raises_validation_error(self):
         with assert_raises_regexp(errors.ValidationError, "should be an instance of 'User'"):
             self.validator.validate(object())
@@ -114,7 +114,7 @@ class TestEmbedded(object):
         self.validator.validate(None)
 
     def setup(self):
-        self.validator = validators.Embedded(User)
+        self.validator = validators.Model(User)
 
 
 class TestList(object):

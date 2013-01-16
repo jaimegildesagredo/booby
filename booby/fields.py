@@ -112,7 +112,7 @@ class EmbeddedField(Field):
     """
 
     def __init__(self, model, *args, **kwargs):
-        super(EmbeddedField, self).__init__(builtin_validators.Embedded(model),
+        super(EmbeddedField, self).__init__(builtin_validators.Model(model),
             *args, **kwargs)
 
         self.model = model
