@@ -140,6 +140,11 @@ class Embedded(object):
 
 
 class Email(String):
+    """This validator forces fields values to be strings and match a
+    valid email address.
+
+    """
+
     def __init__(self, *args, **kwargs):
         super(Email, self).__init__(*args, **kwargs)
 
@@ -149,9 +154,8 @@ class Email(String):
     def validate(self, value):
         super(Email, self).validate(value)
 
-        if value is not None:
-            if self.pattern.match(value) is None:
-                raise errors.ValidationError('should be a valid email')
+        if self.pattern.match(value) is None:
+            raise errors.ValidationError('should be a valid email')
 
 
 class List(object):
