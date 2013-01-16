@@ -159,8 +159,24 @@ class Email(String):
 
 
 class List(object):
-    """This validator forces fields values to be a :keyword:`list`."""
+    """This validator forces field values to be a :keyword:`list`.
+    Also a list of inner :mod:`validators` could be specified to validate
+    each list element. For example, to validate a list of
+    :class:`models.Model` you could do::
+
+        books = fields.Field(validators.List(validators.Model(YourBookModel)))
+
+    :param \*validators: A list of inner validators as possitional arguments.
+
+    """
+
+    def __init__(self, *validators):
+        self.validators = validators
 
     def validate(self, value):
         if not isinstance(value, list):
             raise errors.ValidationError('should be a list')
+
+        for i in value:
+            for validator in self.validators:
+                validator.validate(i)

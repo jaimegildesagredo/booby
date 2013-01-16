@@ -129,6 +129,15 @@ class TestList(object):
     def test_when_value_is_a_list_then_does_not_raise(self):
         self.validator.validate(['foo', 'bar'])
 
+    def test_when_inner_validator_raises_validation_error_then_raises_validation_error(self):
+        with Stub() as inner:
+            inner.validate('bar').raises(errors.ValidationError('invalid'))
+
+        self.validator = validators.List(Stub(), inner)
+
+        with assert_raises_regexp(errors.ValidationError, 'invalid'):
+            self.validator.validate(['foo', 'bar'])
+
     def setup(self):
         self.validator = validators.List()
 
