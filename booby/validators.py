@@ -145,8 +145,8 @@ class Email(String):
 
     """
 
-    def __init__(self, *args, **kwargs):
-        super(Email, self).__init__(*args, **kwargs)
+    def __init__(self):
+        super(Email, self).__init__()
 
         self.pattern = re.compile('^\w+\@\w+\.[a-z]{2,3}$')
 
