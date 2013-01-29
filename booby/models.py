@@ -28,10 +28,10 @@ Something like this::
          owner = EmbeddedField(User)
 
     booby = Repo(
-        name=u'Booby',
+        name='Booby',
         owner={
-            'login': u'jaimegildesagredo',
-            'name': u'Jaime Gil de Sagredo'
+            'login': 'jaimegildesagredo',
+            'name': 'Jaime Gil de Sagredo'
         })
 
     print booby.to_json()
@@ -72,8 +72,8 @@ class Model(object):
 
         >>> booby.name is booby['name']
         True
-        >>> booby['name'] = u'booby'
-        >>> booby['foo'] = u'bar'
+        >>> booby['name'] = 'booby'
+        >>> booby['foo'] = 'bar'
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
         errors.FieldError: foo
