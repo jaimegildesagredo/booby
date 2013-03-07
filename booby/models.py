@@ -48,11 +48,11 @@ class ModelMeta(type):
         attrs['_fields'] = {}
 
         for base in bases:
-            for k, v in base.__dict__.iteritems():
+            for k, v in base.__dict__.items():
                 if isinstance(v, fields.Field):
                     attrs['_fields'][k] = v
 
-        for k, v in attrs.iteritems():
+        for k, v in attrs.items():
             if isinstance(v, fields.Field):
                 attrs['_fields'][k] = v
 
@@ -91,7 +91,7 @@ class Model(object):
         return model
 
     def __init__(self, **kwargs):
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             if k not in self._fields:
                 self.__raise_field_error(k)
 
@@ -128,7 +128,7 @@ class Model(object):
             self._update(kwargs)
 
     def _update(self, values):
-        for k, v in values.iteritems():
+        for k, v in values.items():
             self[k] = v
 
     def validate(self):
@@ -140,7 +140,7 @@ class Model(object):
 
         """
 
-        for name, field in self._fields.iteritems():
+        for name, field in self._fields.items():
             field.validate(getattr(self, name))
 
     def to_dict(self):
