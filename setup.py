@@ -13,6 +13,7 @@ setup(
     author='Jaime Gil de Sagredo Luna',
     author_email='jaimegildesagredo@gmail.com',
     packages=find_packages(exclude=['tests', 'tests.*']),
+    use_2to3=True,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
