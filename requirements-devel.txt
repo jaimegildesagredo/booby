@@ -2,3 +2,4 @@ nose
 pyhamcrest
 doublex
 sphinx
+coverage==3.6
