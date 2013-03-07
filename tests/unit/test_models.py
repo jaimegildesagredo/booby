@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import json
 
 from hamcrest import *
@@ -10,10 +11,10 @@ from booby import errors, fields, models
 
 class TestDefaultModelInit(object):
     def test_when_pass_kwargs_then_set_fields_values(self):
-        user = User(name=u'foo', email=u'foo@example.com')
+        user = User(name='foo', email='foo@example.com')
 
-        assert_that(user.name, is_(u'foo'))
-        assert_that(user.email, is_(u'foo@example.com'))
+        assert_that(user.name, is_('foo'))
+        assert_that(user.email, is_('foo@example.com'))
 
     def test_when_pass_kwargs_without_required_field_then_required_field_is_none(self):
         user = UserWithRequiredName(email='foo@example.com')
@@ -22,7 +23,7 @@ class TestDefaultModelInit(object):
 
     def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
         with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
-            User(foo=u'bar')
+            User(foo='bar')
 
 
 class TestOverridenModelInit(object):
@@ -32,16 +33,16 @@ class TestOverridenModelInit(object):
                 self.name = name
                 self.email = email
 
-        user = UserWithOverridenInit(u'foo', u'foo@example.com')
+        user = UserWithOverridenInit('foo', 'foo@example.com')
 
-        assert_that(user.name, is_(u'foo'))
-        assert_that(user.email, is_(u'foo@example.com'))
+        assert_that(user.name, is_('foo'))
+        assert_that(user.email, is_('foo@example.com'))
 
 
 class TestModelData(object):
     def test_when_set_field_value_then_another_model_shouldnt_have_the_same_value(self):
-        user = User(name=u'foo')
-        another = User(name=u'bar')
+        user = User(name='foo')
+        another = User(name='bar')
 
         assert_that(user.name, is_not(another.name))
 
@@ -55,15 +56,15 @@ class TestModelData(object):
 
 class TestInheritedModel(object):
     def test_when_pass_kwargs_then_set_fields_values(self):
-        user = UserWithPage(name=u'foo', email=u'foo@example.com', page=u'example.com')
+        user = UserWithPage(name='foo', email='foo@example.com', page='example.com')
 
-        assert_that(user.name, is_(u'foo'))
-        assert_that(user.email, is_(u'foo@example.com'))
-        assert_that(user.page, is_(u'example.com'))
+        assert_that(user.name, is_('foo'))
+        assert_that(user.email, is_('foo@example.com'))
+        assert_that(user.page, is_('example.com'))
 
     def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
         with assert_raises_regexp(errors.FieldError, "'UserWithPage' model has no field 'foo'"):
-            UserWithPage(foo=u'bar')
+            UserWithPage(foo='bar')
 
     def test_when_override_superclass_field_then_validates_subclass_field(self):
         class UserWithoutRequiredName(UserWithRequiredName):
@@ -75,14 +76,14 @@ class TestInheritedModel(object):
 
 class TestInheritedMixin(object):
     def test_when_pass_kwargs_then_set_fields_values(self):
-        user = UserWithEmail(name=u'foo', email=u'foo@example.com')
+        user = UserWithEmail(name='foo', email='foo@example.com')
 
-        assert_that(user.name, is_(u'foo'))
-        assert_that(user.email, is_(u'foo@example.com'))
+        assert_that(user.name, is_('foo'))
+        assert_that(user.email, is_('foo@example.com'))
 
     def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
         with assert_raises_regexp(errors.FieldError, "'UserWithEmail' model has no field 'foo'"):
-            UserWithEmail(foo=u'bar')
+            UserWithEmail(foo='bar')
 
     def test_when_override_mixin_field_then_validates_subclass_field(self):
         class User(UserMixin, models.Model):
@@ -96,47 +97,47 @@ class TestInheritedMixin(object):
 
 class TestDictModel(object):
     def test_when_get_field_then_returns_value(self):
-        assert_that(self.user['name'], is_(u'foo'))
+        assert_that(self.user['name'], is_('foo'))
 
     def test_when_get_invalid_field_then_raises_field_error(self):
         with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
             self.user['foo']
 
     def test_when_set_field_then_update_field_value(self):
-        self.user['name'] = u'bar'
+        self.user['name'] = 'bar'
 
-        assert_that(self.user.name, is_(u'bar'))
+        assert_that(self.user.name, is_('bar'))
 
     def test_when_set_invalid_field_then_raises_field_error(self):
         with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
-            self.user['foo'] = u'bar'
+            self.user['foo'] = 'bar'
 
     def test_when_update_with_dict_then_update_fields_values(self):
-        self.user.update({'name': u'foobar', 'email': u'foo@bar.com'})
+        self.user.update({'name': 'foobar', 'email': 'foo@bar.com'})
 
-        assert_that(self.user.name, is_(u'foobar'))
-        assert_that(self.user.email, is_(u'foo@bar.com'))
+        assert_that(self.user.name, is_('foobar'))
+        assert_that(self.user.email, is_('foo@bar.com'))
 
     def test_when_update_kw_arguments_then_update_fields_values(self):
-        self.user.update(name=u'foobar', email=u'foo@bar.com')
+        self.user.update(name='foobar', email='foo@bar.com')
 
-        assert_that(self.user.name, is_(u'foobar'))
-        assert_that(self.user.email, is_(u'foo@bar.com'))
+        assert_that(self.user.name, is_('foobar'))
+        assert_that(self.user.email, is_('foo@bar.com'))
 
     def test_when_update_invalid_field_then_raises_field_error(self):
         with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
-            self.user.update(foo=u'bar')
+            self.user.update(foo='bar')
 
     def setup(self):
-        self.user = User(name=u'foo', email='roo@example.com')
+        self.user = User(name='foo', email='roo@example.com')
 
 
 class TestModelToDict(object):
     def test_when_model_has_single_fields_then_returns_dict_with_fields_values(self):
-        user = User(name=u'foo', email='roo@example.com')
+        user = User(name='foo', email='roo@example.com')
 
         assert_that(user.to_dict(), has_entries(
-            name=u'foo',
+            name='foo',
             email='roo@example.com'
         ))
 
@@ -148,22 +149,22 @@ class TestModelToDict(object):
         class UserWithToken(User):
             token = fields.Field()
 
-        token = Token(key=u'foo', secret=u'bar')
-        user = UserWithToken(name=u'foo', email=u'roo@example.com', token=token)
+        token = Token(key='foo', secret='bar')
+        user = UserWithToken(name='foo', email='roo@example.com', token=token)
 
         assert_that(user.to_dict(), has_entries(
-            name=u'foo',
-            email=u'roo@example.com',
+            name='foo',
+            email='roo@example.com',
             token=has_entries(
-                key=u'foo',
-                secret=u'bar'
+                key='foo',
+                secret='bar'
             )
         ))
 
 
 class TestModelToJSON(object):
     def test_when_model_has_single_fields_then_returns_json_with_fields_values(self):
-        user = User(name=u'Jack', email=u'jack@example.com')
+        user = User(name='Jack', email='jack@example.com')
 
         assert_that(user.to_json(), is_(json.dumps(user.to_dict())))
 

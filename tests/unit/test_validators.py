@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from doublex import Mimic, Stub
 from nose.tools import assert_raises, assert_raises_regexp
 
@@ -20,7 +22,7 @@ class TestRequired(object):
 
 class TestIn(object):
     def test_when_value_is_not_in_choices_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, "should be in \['foo', 'bar'\]"):
+        with assert_raises_regexp(errors.ValidationError, "should be in \[u?'foo', u?'bar'\]"):
             self.validator.validate('baz')
 
     def test_when_value_is_in_choices_then_does_not_raise(self):
@@ -44,7 +46,7 @@ class TestString(StringMixin):
         self.validator.validate('foo')
 
     def test_when_value_is_unicode_then_does_not_raise(self):
-        self.validator.validate(u'foo')
+        self.validator.validate('foo')
 
     def setup(self):
         self.validator = validators.String()

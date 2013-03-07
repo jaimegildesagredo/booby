@@ -28,10 +28,10 @@ Something like this::
          owner = EmbeddedField(User)
 
     booby = Repo(
-        name=u'Booby',
+        name='Booby',
         owner={
-            'login': u'jaimegildesagredo',
-            'name': u'Jaime Gil de Sagredo'
+            'login': 'jaimegildesagredo',
+            'name': 'Jaime Gil de Sagredo'
         })
 
     print booby.to_json()
@@ -48,11 +48,11 @@ class ModelMeta(type):
         attrs['_fields'] = {}
 
         for base in bases:
-            for k, v in base.__dict__.iteritems():
+            for k, v in base.__dict__.items():
                 if isinstance(v, fields.Field):
                     attrs['_fields'][k] = v
 
-        for k, v in attrs.iteritems():
+        for k, v in attrs.items():
             if isinstance(v, fields.Field):
                 attrs['_fields'][k] = v
 
@@ -72,8 +72,8 @@ class Model(object):
 
         >>> booby.name is booby['name']
         True
-        >>> booby['name'] = u'booby'
-        >>> booby['foo'] = u'bar'
+        >>> booby['name'] = 'booby'
+        >>> booby['foo'] = 'bar'
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
         errors.FieldError: foo
@@ -91,7 +91,7 @@ class Model(object):
         return model
 
     def __init__(self, **kwargs):
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             if k not in self._fields:
                 self.__raise_field_error(k)
 
@@ -128,7 +128,7 @@ class Model(object):
             self._update(kwargs)
 
     def _update(self, values):
-        for k, v in values.iteritems():
+        for k, v in values.items():
             self[k] = v
 
     def validate(self):
@@ -140,7 +140,7 @@ class Model(object):
 
         """
 
-        for name, field in self._fields.iteritems():
+        for name, field in self._fields.items():
             field.validate(getattr(self, name))
 
     def to_dict(self):

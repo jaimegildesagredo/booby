@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from hamcrest import *
 from doublex import Stub
 from nose.tools import assert_raises, assert_raises_regexp
@@ -9,7 +11,7 @@ from booby import fields, errors, models
 
 class TestFieldInit(object):
     def test_when_kwargs_then_field_options_is_a_dict_with_these_args(self):
-        kwargs = dict(required=True, primary=True, foo=u'bar')
+        kwargs = dict(required=True, primary=True, foo='bar')
 
         field = fields.Field(**kwargs)
 
@@ -39,18 +41,18 @@ class TestFieldDescriptor(object):
 
 class TestEmbeddedFieldDescriptor(object):
     def test_when_set_field_value_with_dict_then_value_is_embedded_object_with_dict_values(self):
-        self.group.admin = {'name': u'foo', 'email': u'foo@example.com'}
+        self.group.admin = {'name': 'foo', 'email': 'foo@example.com'}
 
         assert_that(self.group.admin, instance_of(User))
-        assert_that(self.group.admin.name, is_(u'foo'))
-        assert_that(self.group.admin.email, is_(u'foo@example.com'))
+        assert_that(self.group.admin.name, is_('foo'))
+        assert_that(self.group.admin.email, is_('foo@example.com'))
 
     def test_when_set_field_value_with_dict_with_invalid_field_then_raises_field_error(self):
         with assert_raises_regexp(errors.FieldError, 'foo'):
-            self.group.admin = {'name': u'foo', 'foo': u'bar'}
+            self.group.admin = {'name': 'foo', 'foo': 'bar'}
 
     def test_when_set_field_value_with_not_dict_object_then_value_is_given_object(self):
-        user = User(name=u'foo', email=u'foo@example.com')
+        user = User(name='foo', email='foo@example.com')
         self.group.admin = user
 
         assert_that(self.group.admin, is_(user))
