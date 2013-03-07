@@ -13,5 +13,5 @@ install:
  - pip install -r requirements-devel.txt --use-mirrors
 
 script:
- - nosetests tests/unit
- - nosetests tests/integration
+ - nosetests -P tests/unit
+ - nosetests -P tests/integration
