@@ -42,7 +42,7 @@ See the sample code below to get an idea of the main features.
     '{"email": "jack@example.com", "login": "jacko", "token": {"secret": "ds5ds4...", "key": "vs7df..."}, "name": "Jack"}'
 
 Installation
-============
+------------
 
 You can install the last stable release of Booby from PyPI using pip or easy_install.
 
@@ -57,7 +57,7 @@ Also you can install the latest sources from Github.
     $ pip install -e git+git://github.com/jaimegildesagredo/booby.git#egg=booby
 
 Tests
-=====
+-----
 
 To run the Booby test suite you should install the development requirements and then run nosetests.
 
@@ -68,6 +68,6 @@ To run the Booby test suite you should install the development requirements and 
     $ nosetests tests/integration
 
 Documentation
-=============
+-------------
 
 Booby docs are hosted on `Read The Docs <https://booby.readthedocs.org>`_.
