@@ -152,8 +152,21 @@ class Model(object):
 
             if isinstance(value, Model):
                 result[field] = value.to_dict()
+            elif isinstance(value, list):
+                result[field] = self._encode_list(value)
             else:
                 result[field] = value
+        return result
+
+    def _encode_list(self, iterable):
+        result = []
+
+        for value in iterable:
+            if isinstance(value, Model):
+                value = value.to_dict()
+
+            result.append(value)
+
         return result
 
     def to_json(self):
