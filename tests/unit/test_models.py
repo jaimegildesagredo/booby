@@ -171,9 +171,17 @@ class TestModelToDict(object):
 
 class TestModelToJSON(object):
     def test_when_model_has_single_fields_then_returns_json_with_fields_values(self):
-        user = User(name='Jack', email='jack@example.com')
+        result = self.user.to_json()
 
-        assert_that(user.to_json(), is_(json.dumps(user.to_dict())))
+        assert_that(result, is_(json.dumps(self.user.to_dict())))
+
+    def test_when_pass_extra_arguments_then_call_json_dump_function_with_these_args(self):
+        result = self.user.to_json(indent=2)
+
+        assert_that(result, is_(json.dumps(self.user.to_dict(), indent=2)))
+
+    def setup(self):
+        self.user = User(name='Jack', email='jack@example.com')
 
 
 class User(models.Model):

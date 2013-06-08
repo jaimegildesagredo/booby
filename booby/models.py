@@ -169,12 +169,13 @@ class Model(object):
 
         return result
 
-    def to_json(self):
-        """This method returns the `model` as a `json string`.
+    def to_json(self, *args, **kwargs):
+        """This method returns the `model` as a `json string`. It receives
+        the same arguments as the builtin :py:func:`json.dump` function.
 
         To build a json-serializable object for this `model` this method
         uses the :func:`Model.to_dict` method.
 
         """
 
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict(), *args, **kwargs)
