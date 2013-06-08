@@ -16,14 +16,12 @@ See the sample code below to get an idea of the main features.
         key = StringField()
         secret = StringField()
 
-
     class Address(Model):
         line_1 = StringField(required=True)
         line_2 = StringField()
         city = StringField(choices=[ ... ])
         state = StringField(choices=[ ... ])
         zip_code = StringField()
-
 
     class User(Model):
         login = StringField(required=True)
