@@ -16,11 +16,21 @@ See the sample code below to get an idea of the main features.
         key = StringField()
         secret = StringField()
 
+
+    class Address(Model):
+        line_1 = StringField(required=True)
+        line_2 = StringField()
+        city = StringField(choices=[ ... ])
+        state = StringField(choices=[ ... ])
+        zip_code = StringField()
+
+
     class User(Model):
         login = StringField(required=True)
         name = StringField()
         email = EmailField()
         token = EmbeddedField(Token, required=True)
+        addresses = Field(validators.List(validators.Model(Address)), default=[])
 
     jack = User(
         login=u'jacko',
@@ -39,7 +49,7 @@ See the sample code below to get an idea of the main features.
     else:
         print jack.to_json()
 
-    '{"email": "jack@example.com", "login": "jacko", "token": {"secret": "ds5ds4...", "key": "vs7df..."}, "name": "Jack"}'
+    '{"email": "jack@example.com", "login": "jacko", "token": {"secret": "ds5ds4...", "key": "vs7df..."}, "name": "Jack", "addresses": []}'
 
 Installation
 ------------
