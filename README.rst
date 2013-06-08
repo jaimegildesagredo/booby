@@ -31,23 +31,45 @@ See the sample code below to get an idea of the main features.
         addresses = Field(validators.List(validators.Model(Address)), default=[])
 
     jack = User(
-        login=u'jacko',
+        login=u'jack',
         name=u'Jack',
         email=u'jack@example.com',
         token={
             'key': u'vs7df...',
             'secret': u'ds5ds4...'
-        }
+        },
+        addresses=[
+            Address(line_1='foo', ...),
+            Address(line_1='bar', ...)
+        ]
     )
 
     try:
         jack.validate()
-    except ValidationError:
-        pass
+    except ValidationError as error:
+        print error
     else:
-        print jack.to_json()
+        print jack.to_json(indent=2)
 
-    '{"email": "jack@example.com", "login": "jacko", "token": {"secret": "ds5ds4...", "key": "vs7df..."}, "name": "Jack", "addresses": []}'
+    {
+      "email": "jack@example.com",
+      "login": "jack",
+      "token": {
+        "secret": "ds5ds4...",
+        "key": "vs7df..."
+      },
+      "name": "Jack",
+      "addresses": [
+        {
+          "line_1": "foo",
+          "line_2": "..."
+        },
+        {
+          "line_1": "bar",
+          "line_2": "..."
+        }
+      ]
+    }
 
 Installation
 ------------
