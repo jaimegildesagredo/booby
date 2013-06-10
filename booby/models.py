@@ -92,10 +92,7 @@ class Model(object):
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
-            if k not in self._fields:
-                self.__raise_field_error(k)
-
-            setattr(self, k, v)
+            self[k] = v
 
     def __raise_field_error(self, name):
         raise errors.FieldError("'{}' model has no field '{}'".format(
