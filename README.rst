@@ -28,7 +28,7 @@ See the sample code below to get an idea of the main features.
         name = StringField()
         email = EmailField()
         token = EmbeddedField(Token, required=True)
-        addresses = Field(validators.List(validators.Model(Address)), default=[])
+        addresses = Field(validators.List(validators.Model(Address)), default=list)
 
     jack = User(
         login=u'jack',
