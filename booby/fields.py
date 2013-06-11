@@ -66,11 +66,25 @@ class Field(object):
 
     def __get__(self, instance, owner):
         if instance is not None:
-            return instance._data.get(self, self.default)
+            try:
+                return instance._data[self]
+            except KeyError:
+                return instance._data.setdefault(self, self.default)
+
         return self
 
     def __set__(self, instance, value):
         instance._data[self] = value
+
+    @property
+    def default(self):
+        if callable(self._default):
+            return self._default()
+        return self._default
+
+    @default.setter
+    def default(self, value):
+        self._default = value
 
     def validate(self, value):
         for validator in self.validators:

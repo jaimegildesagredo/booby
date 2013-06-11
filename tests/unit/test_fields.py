@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from hamcrest import *
-from doublex import Stub
+from doublex import Stub, Spy, called
 from nose.tools import assert_raises, assert_raises_regexp
 
 from booby import fields, errors, models
@@ -28,6 +28,33 @@ class TestFieldDescriptor(object):
         user = User()
 
         assert_that(user.name, is_('nobody'))
+
+    def test_when_default_is_callable_then_use_its_returned_value_as_field_default(self):
+        default = 'anonymous'
+        User.name.default = lambda: default
+
+        user = User()
+
+        assert_that(user.name, is_(default))
+
+    def test_when_default_is_callable_then_should_be_called_once_per_onwer_instance(self):
+        spy = Spy().spy
+        User.name.default = spy
+
+        user = User()
+        user.name
+        user.name
+
+        assert_that(spy, called().times(1))
+
+    def test_when_default_is_callable_then_should_be_called_on_each_owner_instance(self):
+        spy = Spy().spy
+        User.name.default = spy
+
+        User().name
+        User().name
+
+        assert_that(spy, called().times(2))
 
     def test_when_access_obj_field_and_value_is_already_assigned_then_is_value(self):
         user = User()
