@@ -46,8 +46,8 @@ See the sample code below to get an idea of the main features.
 
     try:
         jack.validate()
-    except ValidationError as error:
-        print error
+    except ValidationError:
+        print jack.validation_errors()
     else:
         print jack.to_json(indent=2)
 

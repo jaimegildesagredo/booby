@@ -141,6 +141,12 @@ class Model(object):
             field.validate(getattr(self, name))
 
     def validation_errors(self):
+        """This method returns a `dict` of field name and validation error
+        pairs if any `model` field is invalid. If there are no errors
+        then returns `None`.
+
+        """
+
         result = {}
 
         for name, field in self._fields.items():
