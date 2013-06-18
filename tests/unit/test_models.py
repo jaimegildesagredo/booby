@@ -46,12 +46,35 @@ class TestModelData(object):
 
         assert_that(user.name, is_not(another.name))
 
-    # TODO: Is this an itegration test?
-    def test_when_validate_without_required_fields_then_raises_validation_error(self):
+
+class TestValidateModel(object):
+    def test_when_validate_and_validation_errors_then_raises_first_validation_error(self):
         user = UserWithRequiredName(email='foo@example.com')
 
         with assert_raises_regexp(errors.ValidationError, 'required'):
             user.validate()
+
+    def test_when_validate_without_errors_then_does_not_raise(self):
+        user = UserWithRequiredName(name='Jack')
+
+        user.validate()
+
+    def test_when_validation_errors_and_errors_then_returns_dict_of_name_and_errors(self):
+        user = UserWithRequiredFields(id=1, role='root')
+
+        errors = user.validation_errors()
+
+        assert_that(errors, has_entries(
+            id=matches_regexp('be a string'),
+            role=matches_regexp('be in'),
+            name=matches_regexp('required')))
+
+    def test_when_validation_errors_and_no_errors_then_returns_none(self):
+        user = UserWithRequiredName(name='jack')
+
+        errors = user.validation_errors()
+
+        assert_that(errors, is_(None))
 
 
 class TestInheritedModel(object):
@@ -191,6 +214,11 @@ class User(models.Model):
 
 class UserWithRequiredName(User):
     name = fields.StringField(required=True)
+
+
+class UserWithRequiredFields(UserWithRequiredName):
+    id = fields.StringField()
+    role = fields.StringField(choices=['admin', 'user'])
 
 
 class UserWithPage(User):

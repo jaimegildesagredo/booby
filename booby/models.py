@@ -140,6 +140,18 @@ class Model(object):
         for name, field in self._fields.items():
             field.validate(getattr(self, name))
 
+    def validation_errors(self):
+        result = {}
+
+        for name, field in self._fields.items():
+            try:
+                field.validate(getattr(self, name))
+            except errors.ValidationError as err:
+                result[name] = str(err)
+
+        if result:
+            return result
+
     def to_dict(self):
         """This method returns the `model` as a `dict`."""
 
