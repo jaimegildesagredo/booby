@@ -91,8 +91,7 @@ class Model(object):
         return model
 
     def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            self[k] = v
+        self._update(kwargs)
 
     def __raise_field_error(self, name):
         raise errors.FieldError("'{}' model has no field '{}'".format(
@@ -110,7 +109,7 @@ class Model(object):
 
         setattr(self, k, v)
 
-    def update(self, dict_=None, **kwargs):
+    def update(self, *args, **kwargs):
         """This method updates the `model` fields values with the given dict.
         The model can be updated passing a dict object or keyword arguments,
         like the Python's builtin :func:`dict.update`.
@@ -119,10 +118,7 @@ class Model(object):
         :param \*\*kwargs: Keyword arguments with the new field values.
         """
 
-        if dict_ is not None:
-            self._update(dict_)
-        else:
-            self._update(kwargs)
+        self._update(dict(*args, **kwargs))
 
     def _update(self, values):
         for k, v in values.items():
