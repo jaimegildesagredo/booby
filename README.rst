@@ -49,6 +49,8 @@ See the sample code below to get an idea of the main features.
     else:
         print jack.to_json(indent=2)
 
+.. code-block:: json
+
     {
       "email": "jack@example.com",
       "login": "jack",
