@@ -1,0 +1,12 @@
+0.3.0
+=====
+
+Jun 20, 2013
+------------
+
+Highlights
+^^^^^^^^^^
+
+* When passed a `callable` object as a field `default` then the default value for this field in a model instance will be the return value of the given callable.
+
+* Added the :func:`models.Model.validation_errors` method to get a dict of field name and error message pairs for all invalid model fields.
