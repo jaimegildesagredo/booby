@@ -16,38 +16,36 @@ See the sample code below to get an idea of the main features.
         key = StringField()
         secret = StringField()
 
-    class Address(Model):
-        line_1 = StringField(required=True)
-        line_2 = StringField()
-        city = StringField(choices=[ ... ])
-        state = StringField(choices=[ ... ])
-        zip_code = StringField()
-
     class User(Model):
         login = StringField(required=True)
         name = StringField()
         email = EmailField()
         token = EmbeddedField(Token, required=True)
-        addresses = Field(validators.List(validators.Model(Address)), default=list)
+        addresses = Field(default=list)
+
+    class Address(Model):
+        line_1 = StringField(required=True)
+        line_2 = StringField()
 
     jack = User(
         login=u'jack',
         name=u'Jack',
         email=u'jack@example.com',
         token={
-            'key': u'vs7df...',
-            'secret': u'ds5ds4...'
+            'key': u'vs7dfxxx',
+            'secret': u'ds5ds4xxx'
         },
         addresses=[
-            Address(line_1='foo', ...),
-            Address(line_1='bar', ...)
+            Address(line_1='Main Street'),
+            Address(line_1='Main St')
         ]
     )
 
     try:
         jack.validate()
     except ValidationError:
-        print jack.validation_errors()
+        for field, error in jack.validation_errors().items():
+            print field, error
     else:
         print jack.to_json(indent=2)
 
@@ -55,18 +53,18 @@ See the sample code below to get an idea of the main features.
       "email": "jack@example.com",
       "login": "jack",
       "token": {
-        "secret": "ds5ds4...",
-        "key": "vs7df..."
+        "secret": "ds5ds4xxx",
+        "key": "vs7dfxxx"
       },
       "name": "Jack",
       "addresses": [
         {
-          "line_1": "foo",
-          "line_2": "..."
+          "line_1": "Main St",
+          "line_2": null
         },
         {
-          "line_1": "bar",
-          "line_2": "..."
+          "line_1": "Main Street",
+          "line_2": null
         }
       ]
     }
