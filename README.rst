@@ -1,5 +1,5 @@
-Booby: data modeling and validation library
-===========================================
+Booby: data modeling and validation
+===================================
 
 .. image:: https://secure.travis-ci.org/jaimegildesagredo/booby.png?branch=master
     :target: http://travis-ci.org/jaimegildesagredo/booby
