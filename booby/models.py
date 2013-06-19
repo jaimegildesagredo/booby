@@ -110,12 +110,10 @@ class Model(object):
         setattr(self, k, v)
 
     def update(self, *args, **kwargs):
-        """This method updates the `model` fields values with the given dict.
+        """This method updates the `model` fields values with the given `dict`.
         The model can be updated passing a dict object or keyword arguments,
-        like the Python's builtin :func:`dict.update`.
+        like the Python's builtin :py:func:`dict.update`.
 
-        :param dict_: A dict with the new field values.
-        :param \*\*kwargs: Keyword arguments with the new field values.
         """
 
         self._update(dict(*args, **kwargs))
