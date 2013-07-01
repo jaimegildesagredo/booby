@@ -93,9 +93,27 @@ class Model(object):
     def __init__(self, **kwargs):
         self._update(kwargs)
 
-    def __raise_field_error(self, name):
-        raise errors.FieldError("'{}' model has no field '{}'".format(
-            type(self).__name__, name))
+    def __iter__(self):
+        for name in self._fields:
+            value = getattr(self, name)
+
+            if isinstance(value, Model):
+                value = dict(value)
+            elif isinstance(value, list):
+                value = self._encode_list(value)
+
+            yield name, value
+
+    def _encode_list(self, iterable):
+        result = []
+
+        for value in iterable:
+            if isinstance(value, Model):
+                value = dict(value)
+
+            result.append(value)
+
+        return result
 
     def __getitem__(self, k):
         if k not in self._fields:
@@ -108,6 +126,10 @@ class Model(object):
             self.__raise_field_error(k)
 
         setattr(self, k, v)
+
+    def __raise_field_error(self, name):
+        raise errors.FieldError("'{}' model has no field '{}'".format(
+            type(self).__name__, name))
 
     def update(self, *args, **kwargs):
         """This method updates the `model` fields values with the given `dict`.
@@ -152,39 +174,13 @@ class Model(object):
         if result:
             return result
 
-    def to_dict(self):
-        """This method returns the `model` as a `dict`."""
-
-        result = {}
-        for field in self._fields:
-            value = getattr(self, field)
-
-            if isinstance(value, Model):
-                result[field] = value.to_dict()
-            elif isinstance(value, list):
-                result[field] = self._encode_list(value)
-            else:
-                result[field] = value
-        return result
-
-    def _encode_list(self, iterable):
-        result = []
-
-        for value in iterable:
-            if isinstance(value, Model):
-                value = value.to_dict()
-
-            result.append(value)
-
-        return result
-
     def to_json(self, *args, **kwargs):
         """This method returns the `model` as a `json string`. It receives
         the same arguments as the builtin :py:func:`json.dump` function.
 
-        To build a json-serializable object for this `model` this method
-        uses the :func:`Model.to_dict` method.
+        To build a json representation of this `model` this method iterates
+        over the object to build a `dict` and then serializes it as json.
 
         """
 
-        return json.dumps(self.to_dict(), *args, **kwargs)
+        return json.dumps(dict(self), *args, **kwargs)

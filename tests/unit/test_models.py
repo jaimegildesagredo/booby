@@ -157,35 +157,34 @@ class TestDictModel(object):
 
 class TestModelToDict(object):
     def test_when_model_has_single_fields_then_returns_dict_with_fields_values(self):
-        user = User(name='foo', email='roo@example.com')
+        user = dict(User(name='foo', email='roo@example.com'))
 
-        assert_that(user.to_dict(), has_entries(
+        assert_that(user, has_entries(
             name='foo',
-            email='roo@example.com'
-        ))
+            email='roo@example.com'))
 
     def test_when_model_has_embedded_model_field_then_returns_dict_with_inner_dict(self):
         class UserWithToken(User):
             token = fields.Field()
 
-        user = UserWithToken(name='foo', email='roo@example.com', token=self.token1)
+        user = dict(UserWithToken(name='foo', email='roo@example.com', token=self.token1))
 
-        assert_that(user.to_dict(), has_entries(
+        assert_that(user, has_entries(
             name='foo',
             email='roo@example.com',
-            token=has_entries(self.token1.to_dict())))
+            token=has_entries(dict(self.token1))))
 
     def test_when_model_has_list_of_models_then_returns_list_of_dicts(self):
-        user = UserWithList(tokens=[self.token1, self.token2])
+        user = dict(UserWithList(tokens=[self.token1, self.token2]))
 
-        assert_that(user.to_dict(), has_entry('tokens', [
-            self.token1.to_dict(), self.token2.to_dict()]))
+        assert_that(user, has_entry('tokens', [
+            dict(self.token1), dict(self.token2)]))
 
     def test_when_model_has_list_of_models_and_values_then_returns_list_of_dicts_and_values(self):
         user = UserWithList(tokens=[self.token1, 'foo', self.token2])
 
-        assert_that(user.to_dict(), has_entry('tokens', [
-            self.token1.to_dict(), 'foo', self.token2.to_dict()]))
+        assert_that(dict(user), has_entry('tokens', [
+            dict(self.token1), 'foo', dict(self.token2)]))
 
     def setup(self):
         self.token1 = Token(key='foo', secret='bar')
@@ -196,12 +195,12 @@ class TestModelToJSON(object):
     def test_when_model_has_single_fields_then_returns_json_with_fields_values(self):
         result = self.user.to_json()
 
-        assert_that(result, is_(json.dumps(self.user.to_dict())))
+        assert_that(result, is_(json.dumps(dict(self.user))))
 
     def test_when_pass_extra_arguments_then_call_json_dump_function_with_these_args(self):
         result = self.user.to_json(indent=2)
 
-        assert_that(result, is_(json.dumps(self.user.to_dict(), indent=2)))
+        assert_that(result, is_(json.dumps(dict(self.user), indent=2)))
 
     def setup(self):
         self.user = User(name='Jack', email='jack@example.com')
