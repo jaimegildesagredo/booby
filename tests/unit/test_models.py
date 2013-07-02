@@ -59,10 +59,10 @@ class TestValidateModel(object):
 
         user.validate()
 
-    def test_when_validation_errors_and_errors_then_returns_dict_of_name_and_errors(self):
+    def test_when_validation_errors_and_errors_then_has_pairs_of_name_and_errors(self):
         user = UserWithRequiredFields(id=1, role='root')
 
-        errors = user.validation_errors()
+        errors = dict(user.validation_errors)
 
         assert_that(errors, has_entries(
             id=matches_regexp('be a string'),
@@ -72,9 +72,9 @@ class TestValidateModel(object):
     def test_when_validation_errors_and_no_errors_then_returns_none(self):
         user = UserWithRequiredName(name='jack')
 
-        errors = user.validation_errors()
+        errors = dict(user.validation_errors)
 
-        assert_that(errors, is_(None))
+        assert_that(errors, has_length(0))
 
 
 class TestInheritedModel(object):

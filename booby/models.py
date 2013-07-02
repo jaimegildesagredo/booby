@@ -156,23 +156,18 @@ class Model(object):
         for name, field in self._fields.items():
             field.validate(getattr(self, name))
 
+    @property
     def validation_errors(self):
-        """This method returns a `dict` of field name and validation error
-        pairs if any `model` field is invalid. If there are no errors
-        then returns `None`.
+        """Generator of field name and validation error string pairs
+        for each validation error on this `model` fields.
 
         """
-
-        result = {}
 
         for name, field in self._fields.items():
             try:
                 field.validate(getattr(self, name))
             except errors.ValidationError as err:
-                result[name] = str(err)
-
-        if result:
-            return result
+                yield name, str(err)
 
     def to_json(self, *args, **kwargs):
         """This method returns the `model` as a `json string`. It receives
