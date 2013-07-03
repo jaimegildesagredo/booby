@@ -10,22 +10,22 @@ See the sample code below to get an idea of the main features.
 
 .. code-block:: python
 
-    from booby import *
+    from booby import Model, fields
 
     class Token(Model):
-        key = StringField()
-        secret = StringField()
+        key = fields.String()
+        secret = fields.String()
 
     class User(Model):
-        login = StringField(required=True)
-        name = StringField()
-        email = EmailField()
-        token = EmbeddedField(Token, required=True)
-        addresses = Field(default=list)
+        login = fields.String(required=True)
+        name = fields.String()
+        email = fields.Email()
+        token = fields.Embedded(Token, required=True)
+        addresses = fields.Field(default=list)
 
     class Address(Model):
-        line_1 = StringField(required=True)
-        line_2 = StringField()
+        line_1 = fields.String(required=True)
+        line_2 = fields.String()
 
     jack = User(
         login=u'jack',

@@ -20,16 +20,16 @@ for model's definition.
 The example below shows the most common fields and builtin validations::
 
     class Token(Model):
-        key = StringField()
-        secret = StringField()
+        key = String()
+        secret = String()
 
     class User(Model):
-        login = StringField(required=True)
-        name = StringField()
-        role = StringField(choices=['admin', 'moderator', 'user'])
-        email = EmailField(required=True)
-        token = EmbeddedField(Token, required=True)
-        is_active = BooleanField(default=False)
+        login = String(required=True)
+        name = String()
+        role = String(choices=['admin', 'moderator', 'user'])
+        email = Email(required=True)
+        token = Embedded(Token, required=True)
+        is_active = Boolean(default=False)
 """
 
 from booby import validators as builtin_validators
@@ -94,43 +94,42 @@ class Field(object):
             validator.validate(value)
 
 
-class StringField(Field):
+class String(Field):
     """:class:`Field` subclass with builtin `string` validation."""
 
     def __init__(self, *args, **kwargs):
-        super(StringField, self).__init__(builtin_validators.String(), *args, **kwargs)
+        super(String, self).__init__(builtin_validators.String(), *args, **kwargs)
 
 
-class IntegerField(Field):
+class Integer(Field):
     """:class:`Field` subclass with builtin `integer` validation."""
 
     def __init__(self, *args, **kwargs):
-        super(IntegerField, self).__init__(builtin_validators.Integer(), *args, **kwargs)
+        super(Integer, self).__init__(builtin_validators.Integer(), *args, **kwargs)
 
 
-class FloatField(Field):
+class Float(Field):
     """:class:`Field` subclass with builtin `float` validation."""
 
     def __init__(self, *args, **kwargs):
-        super(FloatField, self).__init__(builtin_validators.Float(), *args, **kwargs)
+        super(Float, self).__init__(builtin_validators.Float(), *args, **kwargs)
 
 
-class BooleanField(Field):
+class Boolean(Field):
     """:class:`Field` subclass with builtin `bool` validation."""
 
     def __init__(self, *args, **kwargs):
-        super(BooleanField, self).__init__(builtin_validators.Boolean(), *args, **kwargs)
+        super(Boolean, self).__init__(builtin_validators.Boolean(), *args, **kwargs)
 
 
-class EmbeddedField(Field):
+class Embedded(Field):
     """:class:`Field` subclass with builtin embedded :class:`models.Model`
     validation.
 
     """
 
     def __init__(self, model, *args, **kwargs):
-        super(EmbeddedField, self).__init__(builtin_validators.Model(model),
-            *args, **kwargs)
+        super(Embedded, self).__init__(builtin_validators.Model(model), *args, **kwargs)
 
         self.model = model
 
@@ -138,11 +137,11 @@ class EmbeddedField(Field):
         if isinstance(value, dict):
             value = self.model(**value)
 
-        super(EmbeddedField, self).__set__(instance, value)
+        super(Embedded, self).__set__(instance, value)
 
 
-class EmailField(Field):
+class Email(Field):
     """:class:`Field` subclass with builtin `email` validation."""
 
     def __init__(self, *args, **kwargs):
-        super(EmailField, self).__init__(builtin_validators.Email(), *args, **kwargs)
+        super(Email, self).__init__(builtin_validators.Email(), *args, **kwargs)

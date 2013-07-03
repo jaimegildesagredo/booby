@@ -91,7 +91,7 @@ class TestInheritedModel(object):
 
     def test_when_override_superclass_field_then_validates_subclass_field(self):
         class UserWithoutRequiredName(UserWithRequiredName):
-            name = fields.StringField()
+            name = fields.String()
 
         user = UserWithoutRequiredName()
         user.validate()
@@ -110,7 +110,7 @@ class TestInheritedMixin(object):
 
     def test_when_override_mixin_field_then_validates_subclass_field(self):
         class User(UserMixin, models.Model):
-            name = fields.StringField(required=True)
+            name = fields.String(required=True)
 
         user = User()
 
@@ -207,29 +207,29 @@ class TestModelToJSON(object):
 
 
 class User(models.Model):
-    name = fields.StringField()
-    email = fields.StringField()
+    name = fields.String()
+    email = fields.String()
 
 
 class UserWithRequiredName(User):
-    name = fields.StringField(required=True)
+    name = fields.String(required=True)
 
 
 class UserWithRequiredFields(UserWithRequiredName):
-    id = fields.StringField()
-    role = fields.StringField(choices=['admin', 'user'])
+    id = fields.String()
+    role = fields.String(choices=['admin', 'user'])
 
 
 class UserWithPage(User):
-    page = fields.StringField()
+    page = fields.String()
 
 
 class UserMixin(object):
-    name = fields.StringField()
+    name = fields.String()
 
 
 class UserWithEmail(UserMixin, models.Model):
-    email = fields.StringField()
+    email = fields.String()
 
 
 class UserWithList(User):
@@ -237,5 +237,5 @@ class UserWithList(User):
 
 
 class Token(models.Model):
-    key = fields.StringField()
-    secret = fields.StringField()
+    key = fields.String()
+    secret = fields.String()

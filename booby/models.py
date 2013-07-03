@@ -24,8 +24,8 @@ your `Model` and work with these objects.
 Something like this::
 
     class Repo(Model):
-         name = StringField()
-         owner = EmbeddedField(User)
+         name = fields.String()
+         owner = fields.Embedded(User)
 
     booby = Repo(
         name='Booby',

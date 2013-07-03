@@ -161,4 +161,4 @@ class TestEmail(StringMixin):
 
 
 class User(models.Model):
-    name = fields.StringField()
+    name = fields.String()

@@ -95,13 +95,13 @@ class TestEmbeddedFieldDescriptor(object):
 
 
 class User(models.Model):
-    name = fields.StringField(default='nobody')
-    email = fields.StringField()
+    name = fields.String(default='nobody')
+    email = fields.String()
 
 
 class Group(models.Model):
-    name = fields.StringField()
-    admin = fields.EmbeddedField(User)
+    name = fields.String()
+    admin = fields.Embedded(User)
 
 
 class TestValidateField(object):
@@ -178,4 +178,4 @@ class TestEmbeddedFieldBuildtinValidators(object):
         self.field.validate(User())
 
     def setup(self):
-        self.field = fields.EmbeddedField(User)
+        self.field = fields.Embedded(User)

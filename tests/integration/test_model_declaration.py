@@ -4,9 +4,7 @@ from __future__ import unicode_literals
 
 from nose.tools import assert_raises_regexp
 
-from booby import errors
-from booby.models import Model
-from booby.fields import StringField, IntegerField, EmbeddedField, EmailField
+from booby import Model, fields, errors
 
 
 class TestModelValidation(object):
@@ -36,13 +34,13 @@ class TestModelValidation(object):
 
 
 class Token(Model):
-    key = StringField()
-    secret = StringField()
+    key = fields.String()
+    secret = fields.String()
 
 
 class User(Model):
-    login = StringField(required=True)
-    email = EmailField()
-    name = StringField()
-    karma = IntegerField()
-    token = EmbeddedField(Token)
+    login = fields.String(required=True)
+    email = fields.Email()
+    name = fields.String()
+    karma = fields.Integer()
+    token = fields.Embedded(Token)
