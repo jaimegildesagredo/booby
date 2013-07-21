@@ -28,12 +28,12 @@ See the sample code below to get an idea of the main features.
         line_2 = fields.String()
 
     jack = User(
-        login=u'jack',
-        name=u'Jack',
-        email=u'jack@example.com',
+        login='jack',
+        name='Jack',
+        email='jack@example.com',
         token={
-            'key': u'vs7dfxxx',
-            'secret': u'ds5ds4xxx'
+            'key': 'vs7dfxxx',
+            'secret': 'ds5ds4xxx'
         },
         addresses=[
             Address(line_1='Main Street'),
