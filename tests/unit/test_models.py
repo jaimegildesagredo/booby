@@ -59,6 +59,16 @@ class TestValidateModel(object):
 
         user.validate()
 
+    def test_when_is_valid_and_validation_errors_then_is_false(self):
+        user = UserWithRequiredName(email='foo@example.com')
+
+        assert_that(not user.is_valid)
+
+    def test_when_is_valid_and_not_validation_errors_then_is_true(self):
+        user = UserWithRequiredName(name='Jack')
+
+        assert_that(user.is_valid)
+
     def test_when_validation_errors_and_errors_then_has_pairs_of_name_and_errors(self):
         user = UserWithRequiredFields(id=1, role='root')
 

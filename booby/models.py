@@ -144,6 +144,24 @@ class Model(object):
         for k, v in values.items():
             self[k] = v
 
+    @property
+    def is_valid(self):
+        """This property will be `True` if there are not validation
+        errors in this `model` fields. If there are any error then
+        will be `False`.
+
+        This property wraps the :func:`Model.validate` method to be
+        used in a boolean context.
+
+        """
+
+        try:
+            self.validate()
+        except errors.ValidationError:
+            return False
+        else:
+            return True
+
     def validate(self):
         """This method validates the entire `model`. That is, validates
         all the :mod:`fields` within this model.
