@@ -2,7 +2,8 @@
 
 from setuptools import setup, find_packages
 
-long_description = open('README.rst').read()
+long_description = (open('README.rst').read() + '\n\n'
+                    + open('CHANGES.rst').read())
 
 setup(
     name='booby',

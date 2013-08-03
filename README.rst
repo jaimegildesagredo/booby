@@ -94,6 +94,11 @@ To run the Booby test suite you should install the development requirements and 
     $ nosetests tests/unit
     $ nosetests tests/integration
 
+Changes
+-------
+
+See `Changes.rst <changes.rst>`_.
+
 Documentation
 -------------
 

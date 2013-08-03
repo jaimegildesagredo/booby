@@ -12,7 +12,7 @@ Contents
     fields
     validators
     errors
-    releases
+    changes
 
 
 Indices and tables
