@@ -97,7 +97,7 @@ To run the Booby test suite you should install the development requirements and 
 Changes
 -------
 
-See `Changes <CHANGES.rst>`_.
+See `Changes <https://booby.readthedocs.org/en/latest/changes.html>`_.
 
 Documentation
 -------------
