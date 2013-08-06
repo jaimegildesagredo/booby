@@ -24,7 +24,7 @@ See the sample code below to get an idea of the main features.
         addresses = fields.Field(default=list)
 
     class Address(Model):
-        line_1 = fields.String(required=True)
+        line_1 = fields.String()
         line_2 = fields.String()
 
     jack = User(
