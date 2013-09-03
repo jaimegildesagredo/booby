@@ -117,19 +117,15 @@ class Model(object):
 
     def __getitem__(self, k):
         if k not in self._fields:
-            self.__raise_field_error(k)
+            raise errors.FieldError(k)
 
         return getattr(self, k)
 
     def __setitem__(self, k, v):
         if k not in self._fields:
-            self.__raise_field_error(k)
+            raise errors.FieldError(k)
 
         setattr(self, k, v)
-
-    def __raise_field_error(self, name):
-        raise errors.FieldError("'{}' model has no field '{}'".format(
-            type(self).__name__, name))
 
     def update(self, *args, **kwargs):
         """This method updates the `model` fields values with the given `dict`.

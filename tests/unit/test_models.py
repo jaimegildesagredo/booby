@@ -22,7 +22,7 @@ class TestDefaultModelInit(object):
         assert_that(user.name, is_(None))
 
     def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
-        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
+        with assert_raises_regexp(errors.FieldError, 'foo'):
             User(foo='bar')
 
 
@@ -96,7 +96,7 @@ class TestInheritedModel(object):
         assert_that(user.page, is_('example.com'))
 
     def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
-        with assert_raises_regexp(errors.FieldError, "'UserWithPage' model has no field 'foo'"):
+        with assert_raises_regexp(errors.FieldError, 'foo'):
             UserWithPage(foo='bar')
 
     def test_when_override_superclass_field_then_validates_subclass_field(self):
@@ -115,7 +115,7 @@ class TestInheritedMixin(object):
         assert_that(user.email, is_('foo@example.com'))
 
     def test_when_pass_invalid_field_in_kwargs_then_raises_field_error(self):
-        with assert_raises_regexp(errors.FieldError, "'UserWithEmail' model has no field 'foo'"):
+        with assert_raises_regexp(errors.FieldError, 'foo'):
             UserWithEmail(foo='bar')
 
     def test_when_override_mixin_field_then_validates_subclass_field(self):
@@ -133,7 +133,7 @@ class TestDictModel(object):
         assert_that(self.user['name'], is_('foo'))
 
     def test_when_get_invalid_field_then_raises_field_error(self):
-        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
+        with assert_raises_regexp(errors.FieldError, 'foo'):
             self.user['foo']
 
     def test_when_set_field_then_update_field_value(self):
@@ -142,7 +142,7 @@ class TestDictModel(object):
         assert_that(self.user.name, is_('bar'))
 
     def test_when_set_invalid_field_then_raises_field_error(self):
-        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
+        with assert_raises_regexp(errors.FieldError, 'foo'):
             self.user['foo'] = 'bar'
 
     def test_when_update_with_dict_then_update_fields_values(self):
@@ -158,7 +158,7 @@ class TestDictModel(object):
         assert_that(self.user.email, is_('foo@bar.com'))
 
     def test_when_update_invalid_field_then_raises_field_error(self):
-        with assert_raises_regexp(errors.FieldError, "'User' model has no field 'foo'"):
+        with assert_raises_regexp(errors.FieldError, 'foo'):
             self.user.update(foo='bar')
 
     def setup(self):
