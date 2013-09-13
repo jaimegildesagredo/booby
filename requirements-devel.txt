@@ -3,3 +3,4 @@ nose
 doublex
 sphinx
 coverage==3.6
+-e git+git://github.com/jaimegildesagredo/expects.git#egg=expects
