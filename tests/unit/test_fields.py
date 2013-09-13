@@ -23,7 +23,7 @@ class TestFieldInit(object):
         assert_that(field.options, is_({}))
 
 
-class TestFieldDescriptor(object):
+class TestFieldDefault(object):
     def test_when_access_obj_field_and_value_is_not_assigned_yet_then_is_default(self):
         user = User()
 
@@ -36,6 +36,22 @@ class TestFieldDescriptor(object):
         user = User()
 
         assert_that(user.name, is_(default))
+
+    def test_when_callable_receives_argument_then_pass_owner_instance(self):
+        User.name.default = lambda model: model
+
+        user = User()
+
+        assert_that(user.name, is_(user))
+
+    def test_when_callable_raises_type_error_then_should_not_be_catched(self):
+        def callback():
+            raise TypeError('foo')
+
+        User.name.default = callback
+
+        with assert_raises_regexp(TypeError, 'foo'):
+            User().name
 
     def test_when_default_is_callable_then_should_be_called_once_per_onwer_instance(self):
         spy = Spy().spy
@@ -56,6 +72,8 @@ class TestFieldDescriptor(object):
 
         assert_that(spy, called().times(2))
 
+
+class TestFieldValues(object):
     def test_when_access_obj_field_and_value_is_already_assigned_then_is_value(self):
         user = User()
         user.name = 'Jack'

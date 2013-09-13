@@ -72,22 +72,27 @@ class Field(object):
             try:
                 return instance._data[self]
             except KeyError:
-                return instance._data.setdefault(self, self.default)
+                return instance._data.setdefault(self, self._default(instance))
 
         return self
 
     def __set__(self, instance, value):
         instance._data[self] = value
 
-    @property
-    def default(self):
-        if callable(self._default):
-            return self._default()
-        return self._default
+    def _default(self, model):
+        if callable(self.default):
+            return self.__call_default(model)
 
-    @default.setter
-    def default(self, value):
-        self._default = value
+        return self.default
+
+    def __call_default(self, *args):
+        try:
+            return self.default()
+        except TypeError as error:
+            try:
+                return self.default(*args)
+            except TypeError:
+                raise error
 
     def validate(self, value):
         for validator in self.validators:

@@ -1,6 +1,14 @@
 Changes
 =======
 
+Upcoming
+--------
+
+Highlights
+^^^^^^^^^^
+
+* Fields `default` callables can now optionally receive the model as argument
+
 0.4.0 (Ago 4, 2013)
 -------------------
 
