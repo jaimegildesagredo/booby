@@ -96,7 +96,7 @@ class Field(object):
 
     def validate(self, value):
         for validator in self.validators:
-            validator.validate(value)
+            validator(value)
 
 
 class String(Field):

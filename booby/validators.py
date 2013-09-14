@@ -59,7 +59,15 @@ def nullable(method):
     return wrapper
 
 
-class Required(object):
+class Validator(object):
+    def __call__(self, value):
+        self.validate(value)
+
+    def validate(self, value):
+        raise NotImplementedError()
+
+
+class Required(Validator):
     """This validator forces fields to have a value other than :keyword:`None`."""
 
     def validate(self, value):
@@ -67,7 +75,7 @@ class Required(object):
             raise errors.ValidationError('is required')
 
 
-class In(object):
+class In(Validator):
     """This validator forces fields to have their value in the given list.
 
     :param choices: A `list` of possible values.
@@ -82,7 +90,7 @@ class In(object):
             raise errors.ValidationError('should be in {}'.format(self.choices))
 
 
-class String(object):
+class String(Validator):
     """This validator forces fields values to be an instance of `basestring`."""
 
     @nullable
@@ -91,7 +99,7 @@ class String(object):
             raise errors.ValidationError('should be a string')
 
 
-class Integer(object):
+class Integer(Validator):
     """This validator forces fields values to be an instance of `int`."""
 
     @nullable
@@ -100,7 +108,7 @@ class Integer(object):
             raise errors.ValidationError('should be an integer')
 
 
-class Float(object):
+class Float(Validator):
     """This validator forces fields values to be an instance of `float`."""
 
     @nullable
@@ -109,7 +117,7 @@ class Float(object):
             raise errors.ValidationError('should be a float')
 
 
-class Boolean(object):
+class Boolean(Validator):
     """This validator forces fields values to be an instance of `bool`."""
 
     @nullable
@@ -118,7 +126,7 @@ class Boolean(object):
             raise errors.ValidationError('should be a boolean')
 
 
-class Model(object):
+class Model(Validator):
     """This validator forces fields values to be an instance of the given
     :class:`models.Model` subclass and also performs a validation in the
     entire `model` object.
@@ -158,7 +166,7 @@ class Email(String):
             raise errors.ValidationError('should be a valid email')
 
 
-class List(object):
+class List(Validator):
     """This validator forces field values to be a :keyword:`list`.
     Also a list of inner :mod:`validators` could be specified to validate
     each list element. For example, to validate a list of
@@ -179,4 +187,4 @@ class List(object):
 
         for i in value:
             for validator in self.validators:
-                validator.validate(i)
+                validator(i)

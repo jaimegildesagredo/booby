@@ -3,8 +3,7 @@
 from __future__ import unicode_literals
 
 from expects import expect
-from hamcrest import *
-from doublex import Stub, Spy, called
+from ._helpers import Spy, stub_validator
 
 from booby import fields, errors, models
 
@@ -53,23 +52,24 @@ class TestFieldDefault(object):
         expect(lambda: User().name).to.raise_error(TypeError, 'foo')
 
     def test_when_default_is_callable_then_should_be_called_once_per_onwer_instance(self):
-        spy = Spy().spy
-        User.name.default = spy
+        default_callable = Spy()
+
+        User.name.default = default_callable
 
         user = User()
         user.name
         user.name
 
-        assert_that(spy, called().times(1))
+        expect(default_callable.times_called).to.equal(1)
 
     def test_when_default_is_callable_then_should_be_called_on_each_owner_instance(self):
-        spy = Spy().spy
-        User.name.default = spy
+        default_callable = Spy()
+        User.name.default = default_callable
 
         User().name
         User().name
 
-        assert_that(spy, called().times(2))
+        expect(default_callable.times_called).to.equal(2)
 
 
 class TestFieldValues(object):
@@ -125,31 +125,26 @@ class Group(models.Model):
 
 class TestValidateField(object):
     def test_when_validate_without_validation_errors_then_does_not_raise(self):
-        validator1 = Stub()
-        validator2 = Stub()
-
-        field = fields.Field(validator1, validator2)
+        field = fields.Field(stub_validator, stub_validator)
 
         field.validate('foo')
 
     def test_when_first_validator_raises_validation_error_then_raises_exception(self):
-        with Stub() as validator1:
-            validator1.validate('foo').raises(errors.ValidationError)
+        def validator1(value):
+            if value == 'foo':
+                raise errors.ValidationError()
 
-        validator2 = Stub()
-
-        field = fields.Field(validator1, validator2)
+        field = fields.Field(validator1, stub_validator)
 
         expect(lambda: field.validate('foo')).to.raise_error(
             errors.ValidationError)
 
     def test_when_second_validator_raises_validation_error_then_raises_exception(self):
-        validator1 = Stub()
+        def validator2(value):
+            if value == 'foo':
+                raise errors.ValidationError()
 
-        with Stub() as validator2:
-            validator2.validate('foo').raises(errors.ValidationError)
-
-        field = fields.Field(validator1, validator2)
+        field = fields.Field(stub_validator, validator2)
 
         expect(lambda: field.validate('foo')).to.raise_error(
             errors.ValidationError)

@@ -1,6 +1,4 @@
 nose
--e git+git://github.com/hamcrest/PyHamcrest@4202bf32a37405057d74db21de5aa7380202263d#egg=PyHamcrest
-doublex
 sphinx
 coverage==3.6
 -e git+git://github.com/jaimegildesagredo/expects.git#egg=expects

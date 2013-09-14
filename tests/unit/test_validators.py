@@ -2,19 +2,20 @@
 
 from __future__ import unicode_literals
 
-from doublex import Mimic, Stub
-from nose.tools import assert_raises, assert_raises_regexp
+from expects import expect
 
 from booby import validators, fields, models, errors
+
+from ._helpers import stub_validator
 
 
 class TestRequired(object):
     def test_when_value_is_none_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'is required'):
-            self.validator.validate(None)
+        expect(lambda: self.validator(None)).to.raise_error(
+            errors.ValidationError, 'is required')
 
     def test_when_value_is_not_none_then_does_not_raise(self):
-        self.validator.validate('foo')
+        self.validator('foo')
 
     def setup(self):
         self.validator = validators.Required()
@@ -22,11 +23,11 @@ class TestRequired(object):
 
 class TestIn(object):
     def test_when_value_is_not_in_choices_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, "should be in \[u?'foo', u?'bar'\]"):
-            self.validator.validate('baz')
+        expect(lambda: self.validator('baz')).to.raise_error(
+            errors.ValidationError, "should be in \[u?'foo', u?'bar'\]")
 
     def test_when_value_is_in_choices_then_does_not_raise(self):
-        self.validator.validate('bar')
+        self.validator('bar')
 
     def setup(self):
         self.validator = validators.In(['foo', 'bar'])
@@ -34,19 +35,19 @@ class TestIn(object):
 
 class StringMixin(object):
     def test_when_value_is_not_string_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be a string'):
-            self.validator.validate(1)
+        expect(lambda: self.validator(1)).to.raise_error(
+            errors.ValidationError, 'should be a string')
 
     def test_when_value_is_none_then_does_not_raise(self):
-        self.validator.validate(None)
+        self.validator(None)
 
 
 class TestString(StringMixin):
     def test_when_value_is_a_string_then_does_not_raise(self):
-        self.validator.validate('foo')
+        self.validator('foo')
 
     def test_when_value_is_unicode_then_does_not_raise(self):
-        self.validator.validate('foo')
+        self.validator('foo')
 
     def setup(self):
         self.validator = validators.String()
@@ -54,14 +55,14 @@ class TestString(StringMixin):
 
 class TestInteger(object):
     def test_when_value_is_not_an_integer_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be an integer'):
-            self.validator.validate('foo')
+        expect(lambda: self.validator('foo')).to.raise_error(
+            errors.ValidationError, 'should be an integer')
 
     def test_when_value_is_an_integer_then_does_not_raise(self):
-        self.validator.validate(1)
+        self.validator(1)
 
     def test_when_value_is_none_then_does_not_raise(self):
-        self.validator.validate(None)
+        self.validator(None)
 
     def setup(self):
         self.validator = validators.Integer()
@@ -69,14 +70,14 @@ class TestInteger(object):
 
 class TestFloat(object):
     def test_when_value_is_not_a_float_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be a float'):
-            self.validator.validate('foo')
+        expect(lambda: self.validator('foo')).to.raise_error(
+            errors.ValidationError, 'should be a float')
 
     def test_when_value_is_a_float_then_does_not_raise(self):
-        self.validator.validate(1.0)
+        self.validator(1.0)
 
     def test_when_value_is_none_then_does_not_raise(self):
-        self.validator.validate(None)
+        self.validator(None)
 
     def setup(self):
         self.validator = validators.Float()
@@ -84,14 +85,14 @@ class TestFloat(object):
 
 class TestBoolean(object):
     def test_when_value_is_not_a_boolean_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be a boolean'):
-            self.validator.validate('foo')
+        expect(lambda: self.validator('foo')).to.raise_error(
+            errors.ValidationError, 'should be a boolean')
 
     def test_when_value_is_a_boolean_then_does_not_raises(self):
-        self.validator.validate(False)
+        self.validator(False)
 
     def test_when_value_is_none_then_does_not_raise(self):
-        self.validator.validate(None)
+        self.validator(None)
 
     def setup(self):
         self.validator = validators.Boolean()
@@ -99,21 +100,22 @@ class TestBoolean(object):
 
 class TestModel(object):
     def test_when_value_is_not_instance_of_model_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, "should be an instance of 'User'"):
-            self.validator.validate(object())
+        expect(lambda: self.validator(object())).to.raise_error(
+            errors.ValidationError, "should be an instance of 'User'")
 
     def test_when_model_validate_raises_validation_error_then_raises_validation_error(self):
-        with Mimic(Stub, User()) as user:
-            user.validate().raises(errors.ValidationError())
+        class InvalidUser(User):
+            def validate(self):
+                raise errors.ValidationError()
 
-        with assert_raises(errors.ValidationError):
-            self.validator.validate(user)
+        expect(lambda: self.validator(InvalidUser())).to.raise_error(
+            errors.ValidationError)
 
     def test_when_model_validate_does_not_raise_then_does_not_raise(self):
-        self.validator.validate(User())
+        self.validator(User())
 
     def test_when_value_is_none_then_does_not_raise(self):
-        self.validator.validate(None)
+        self.validator(None)
 
     def setup(self):
         self.validator = validators.Model(User)
@@ -121,24 +123,25 @@ class TestModel(object):
 
 class TestList(object):
     def test_when_value_is_not_a_list_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be a list'):
-            self.validator.validate(object())
+        expect(lambda: self.validator(object())).to.raise_error(
+            errors.ValidationError, 'should be a list')
 
     def test_when_value_is_none_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be a list'):
-            self.validator.validate(None)
+        expect(lambda: self.validator(None)).to.raise_error(
+            errors.ValidationError, 'should be a list')
 
     def test_when_value_is_a_list_then_does_not_raise(self):
-        self.validator.validate(['foo', 'bar'])
+        self.validator(['foo', 'bar'])
 
     def test_when_inner_validator_raises_validation_error_then_raises_validation_error(self):
-        with Stub() as inner:
-            inner.validate('bar').raises(errors.ValidationError('invalid'))
+        def inner_validator(value):
+            if value == 'bar':
+                raise errors.ValidationError('invalid')
 
-        self.validator = validators.List(Stub(), inner)
+        self.validator = validators.List(stub_validator, inner_validator)
 
-        with assert_raises_regexp(errors.ValidationError, 'invalid'):
-            self.validator.validate(['foo', 'bar'])
+        expect(lambda: self.validator(['foo', 'bar'])).to.raise_error(
+            errors.ValidationError, 'invalid')
 
     def setup(self):
         self.validator = validators.List()
@@ -146,15 +149,15 @@ class TestList(object):
 
 class TestEmail(StringMixin):
     def test_when_value_doesnt_match_email_pattern_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be a valid email'):
-            self.validator.validate('foo@example')
+        expect(lambda: self.validator('foo@example')).to.raise_error(
+            errors.ValidationError, 'should be a valid email')
 
     def test_when_value_doesnt_have_at_sign_then_raises_validation_error(self):
-        with assert_raises_regexp(errors.ValidationError, 'should be a valid email'):
-            self.validator.validate('foo%example.com')
+        expect(lambda: self.validator('foo%example.com')).to.raise_error(
+            errors.ValidationError, 'should be a valid email')
 
     def test_when_value_is_a_valid_email_then_does_not_raise(self):
-        self.validator.validate('foo2bar@example.com')
+        self.validator('foo2bar@example.com')
 
     def setup(self):
         self.validator = validators.Email()
