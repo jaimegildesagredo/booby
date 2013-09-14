@@ -4,6 +4,11 @@ Changes
 Upcoming
 --------
 
+Backwards-incompatible
+^^^^^^^^^^^^^^^^^^^^^^
+
+* Now field `validators` must be callable objects. Before that validators had a `validate` method that is not longer used to perform a validation.
+
 Highlights
 ^^^^^^^^^^
 
