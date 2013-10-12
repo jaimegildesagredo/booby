@@ -39,9 +39,14 @@ class Field(object):
     """This is the base class for all :mod:`booby.fields`. This class
     can also be used as field in any :class:`models.Model` declaration.
 
-    :param default: This field default value. If passed a callable object then
-        uses its return value as the field's default. This is particularly
-        useful using `mutable objects <http://effbot.org/zone/default-values.htm>`_.
+    :param default: This field `default`'s value.
+
+        If passed a callable object then uses its return value as the
+        field's default. This is particularly useful when working with 
+        `mutable objects <http://effbot.org/zone/default-values.htm>`_.
+
+        If `default` is a callable it can optionaly receive the owner
+        `model` instance as its first positional argument.
 
     :param required: If `True` this field value should not be `None`.
     :param choices: A `list` of values where this field value should be in.
