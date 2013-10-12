@@ -16,10 +16,9 @@
 
 """The `validators` module contains a set of :mod:`fields` validators.
 
-A validator is any `object` with a :func:`validate` method which receives
-a `value` as the target for the validation. If the validation fails then
-the :func:`validate` method should raise an :class:`errors.ValidationError`
-exception with an error message.
+A validator is any callable `object` which receives a `value` as the
+target for the validation. If the validation fails then should raise an
+:class:`errors.ValidationError` exception with an error message.
 
 `Validators` are passed to :class:`fields.Field` and subclasses as possitional
 arguments.
