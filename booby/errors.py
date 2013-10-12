@@ -39,3 +39,13 @@ class ValidationError(BoobyError):
     """
 
     pass
+
+
+class InspectError(BoobyError):
+    """Exception raised when failed to `inspect` an object.
+
+    See :mod:`inspection`
+
+    """
+
+    pass

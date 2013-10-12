@@ -11,6 +11,7 @@ Contents
     models
     fields
     validators
+    inspection
     errors
     changes
 

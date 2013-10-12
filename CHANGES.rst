@@ -13,6 +13,7 @@ Highlights
 ^^^^^^^^^^
 
 * Fields `default` callables can now optionally receive the model as argument
+* Added the `inspection` module which provides the `inspect` function that can be used to access the public api of `models.Model` instances and classes.
 
 0.4.0 (Ago 4, 2013)
 -------------------
