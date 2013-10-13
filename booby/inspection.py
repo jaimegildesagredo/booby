@@ -27,7 +27,7 @@ def inspect(model):
     """Returns a :class:`ModelInspector` object for the given
     `model` :class:`models.Model` instance or subclass.
 
-    If given the `model` is not a :class:`models.Model` instance nor
+    If the given `model` is not a :class:`models.Model` instance nor
     subclass then raises :class:`errors.InspectError`.
 
     """
