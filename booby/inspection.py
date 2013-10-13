@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The :mod:`inspection` module provides users and 3rd-party libraries
+"""The :mod:`inspection` module provides users and 3rd-party library
 developers a public api to access :class:`models.Model` objects and
-subclasses info, such the `model` defined fields.
+subclasses protected attributes, such defined fields.
 
 """
 
@@ -27,8 +27,8 @@ def inspect(model):
     """Returns a :class:`ModelInspector` object for the given
     `model` :class:`models.Model` instance or subclass.
 
-    If given `model` is not a :class:`models.Model` instance nor subclass
-    then raises :class:`errors.InspectError`.
+    If given the `model` is not a :class:`models.Model` instance nor
+    subclass then raises :class:`errors.InspectError`.
 
     """
 
@@ -41,7 +41,7 @@ def inspect(model):
 
 class ModelInspector(object):
     """The :class:`ModelInspector` class is used to access a
-    :class:`models.Model` object info.
+    :class:`models.Model` object protected attributes.
 
     This class shouldn't be instantiated directly, instead the
     :func:`inspect` function should be used.
@@ -53,9 +53,9 @@ class ModelInspector(object):
 
     @property
     def fields(self):
-        """This property contains a dict mapping field names and field
-        objects.
+        """This property contains a dict mapping the model fields names
+        and objects.
 
         """
 
-        return self._model._fields
+        return dict(self._model._fields)
