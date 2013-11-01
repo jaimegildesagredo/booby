@@ -44,8 +44,24 @@ from booby import fields, errors
 
 
 class ModelMeta(type):
+
     def __new__(cls, name, bases, attrs):
+        DEFAULT_METADATA = {'export_model_name': False}
+
         attrs['_fields'] = {}
+
+        meta = DEFAULT_METADATA.copy()
+
+        for base in bases[::-1]:
+            if hasattr(base, 'meta'):
+                meta.update(base.meta)
+            elif hasattr(base, '_meta'):
+                meta.update(base._meta)
+
+        if 'meta' in attrs:
+            meta.update(attrs.pop('meta'))
+
+        attrs['_meta'] = meta
 
         for base in bases:
             for k, v in base.__dict__.items():
@@ -183,6 +199,14 @@ class Model(object):
             except errors.ValidationError as err:
                 yield name, str(err)
 
+    def to_dict(self):
+        if self._meta['export_model_name']:
+            cls = self.__class__
+            return {'model': cls.__module__ + "." + cls.__name__,
+                    'obj': dict(self)}
+        else:
+            return dict(self)
+
     def to_json(self, *args, **kwargs):
         """This method returns the `model` as a `json string`. It receives
         the same arguments as the builtin :py:func:`json.dump` function.
@@ -191,5 +215,4 @@ class Model(object):
         over the object to build a `dict` and then serializes it as json.
 
         """
-
-        return json.dumps(dict(self), *args, **kwargs)
+        return json.dumps(self.to_dict(), *args, **kwargs)
