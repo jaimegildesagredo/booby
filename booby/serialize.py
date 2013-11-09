@@ -1,4 +1,4 @@
-"""The `json` module contains the `booby` functions to serialize, deserialize
+"""The `serialize` module contains the `booby` functions to serialize, deserialize
 collection of `Model` objects
 
 Something like this::
@@ -14,15 +14,15 @@ Something like this::
                        'name': 'Jaime Gil de Sagredo'
                    }),
                Repo(
-                   name='Booby',
+                   name='Booby2',
                    owner={
-                       'login': 'jaimegildesagredo',
-                       'name': 'Jaime Gil de Sagredo'
+                       'login': 'what ever',
+                       'name': 'who cares'
                    })
                ]
-    TODO:
-    print booby.to_json()
-    '{"owner": {"login": "jaimegildesagredo", "name": "Jaime Gil de Sagredo"}, "name": "Booby"}'
+
+    serialize(objects, out_file=my_open_file)
+    deserialize(my_json_file)
 """
 import json
 from booby.errors import SerializationError, DeSerializationError
