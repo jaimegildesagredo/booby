@@ -46,7 +46,7 @@ from booby import fields, errors
 class ModelMeta(type):
 
     def __new__(cls, name, bases, attrs):
-        DEFAULT_METADATA = {'export_model_name': False}
+        DEFAULT_METADATA = {'allow_serialize': False}
 
         attrs['_fields'] = {}
 
@@ -200,7 +200,7 @@ class Model(object):
                 yield name, str(err)
 
     def to_dict(self):
-        if self._meta['export_model_name']:
+        if self._meta['allow_serialize']:
             cls = self.__class__
             return {'model': cls.__module__ + "." + cls.__name__,
                     'obj': dict(self)}

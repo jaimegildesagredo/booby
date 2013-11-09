@@ -205,7 +205,7 @@ class TestModelToJSON(object):
 
         expect(result).to.equal(json.dumps(dict(self.user), indent=2))
 
-    def test_when_model_has_meta_option_export_model_name_True(self):
+    def test_when_model_has_meta_option_allow_serialize_True(self):
         result = self.user_meta.to_json()
         expected = '{"model": "tests.unit.test_models.UserWithMeta", \
 "obj": {"email": "jack@example.com", "name": "Jack"}}'
@@ -222,7 +222,7 @@ class User(models.Model):
 
 
 class UserWithMeta(User):
-    meta = {'export_model_name': True}
+    meta = {'allow_serialize': True}
 
 
 class UserWithRequiredName(User):
