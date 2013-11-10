@@ -205,13 +205,24 @@ class TestModelToJSON(object):
 
         expect(result).to.equal(json.dumps(dict(self.user), indent=2))
 
+    def test_when_model_has_meta_option_allow_serialize_True(self):
+        result = self.user_meta.to_json()
+        expected = '{"model": "tests.unit.test_models.UserWithMeta", \
+"obj": {"email": "jack@example.com", "name": "Jack"}}'
+        expect(result).to.equal(expected)
+
     def setup(self):
         self.user = User(name='Jack', email='jack@example.com')
+        self.user_meta = UserWithMeta(name='Jack', email='jack@example.com')
 
 
 class User(models.Model):
     name = fields.String()
     email = fields.String()
+
+
+class UserWithMeta(User):
+    meta = {'allow_serialize': True}
 
 
 class UserWithRequiredName(User):

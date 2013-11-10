@@ -49,3 +49,10 @@ class InspectError(BoobyError):
     """
 
     pass
+
+
+class SerializationError(BoobyError):
+    pass
+
+class DeSerializationError(BoobyError):
+    pass
