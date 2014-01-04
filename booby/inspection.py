@@ -15,47 +15,43 @@
 # limitations under the License.
 
 """The :mod:`inspection` module provides users and 3rd-party library
-developers a public api to access :class:`models.Model` objects and
-subclasses protected attributes, such defined fields.
+developers a public api to access :mod:`booby` objects and classes internal
+data, such as defined fields, and some low-level type validations.
+
+This module is based on the Python :py:mod:`inspect` module.
 
 """
 
-from booby import models, errors
+from booby import models
 
 
-def inspect(model):
-    """Returns a :class:`ModelInspector` object for the given
-    `model` :class:`models.Model` instance or subclass.
+def get_fields(model):
+    """Returns a `dict` mapping the given `model` field names to their
+    `fields.Field` objects.
 
-    If the given `model` is not a :class:`models.Model` instance nor
-    subclass then raises :class:`errors.InspectError`.
+    :param model: The `models.Model` subclass or instance you want to
+                  get their fields.
 
-    """
-
-    if isinstance(model, models.Model) or issubclass(model, models.Model):
-        return ModelInspector(model)
-
-    raise errors.InspectError(
-        'Expected a {} instance or subclass'.format(models.Model))
-
-
-class ModelInspector(object):
-    """The :class:`ModelInspector` class is used to access a
-    :class:`models.Model` object protected attributes.
-
-    This class shouldn't be instantiated directly, instead the
-    :func:`inspect` function should be used.
+    :raises: :py:exc:`TypeError` if the given `model` is not a model.
 
     """
 
-    def __init__(self, model):
-        self._model = model
+    if not is_model(model):
+        raise TypeError(
+            '{} is not a {} subclass or instance'.format(model, models.Model))
 
-    @property
-    def fields(self):
-        """This property contains a dict mapping the model fields names
-        and objects.
+    return dict(model._fields)
 
-        """
 
-        return dict(self._model._fields)
+def is_model(obj):
+    """Returns `True` if the given object is a `models.Model` instance
+    or subclass. If not then returns `False`.
+
+    """
+
+    try:
+        return (isinstance(obj, models.Model) or
+                issubclass(obj, models.Model))
+
+    except TypeError:
+        return False

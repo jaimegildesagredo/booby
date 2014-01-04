@@ -2,28 +2,42 @@
 
 from expects import expect
 
-from booby import models, fields, errors
-from booby.inspection import inspect
+from booby import models, fields
+from booby.inspection import get_fields, is_model
 
 
-class TestInspect(object):
-    def test_instance_should_have_fields_attr_with_the_dict_of_fields(self):
-        model = inspect(User())
+class TestGetFields(object):
+    def test_should_return_model_instance_fields_dict(self):
+        result = get_fields(User())
 
-        expect(model.fields).to.have.keys(name=User.name, email=User.email)
+        expect(result).to.have.keys(name=User.name, email=User.email)
 
-    def test_class_should_have_fields_attr_with_the_dict_of_fields(self):
-        model = inspect(User)
+    def test_should_return_model_class_fields_dict(self):
+        result = get_fields(User)
 
-        expect(model.fields).to.have.keys(name=User.name, email=User.email)
+        expect(result).to.have.keys(name=User.name, email=User.email)
 
-    def test_fields_attribute_dict_should_not_be_the_internal_model_dict(self):
-        model = inspect(User)
+    def test_should_return_a_copy_of_internal_fields_dict(self):
+        result = get_fields(User)
 
-        expect(model.fields).not_to.be(User._fields)
+        expect(result).not_to.be(get_fields(User))
 
-    def test_non_model_object_should_raise_inspect_error(self):
-        expect(lambda: inspect(object)).to.raise_error(errors.InspectError)
+    def test_non_model_object_should_raise_type_error(self):
+        expect(lambda: get_fields(object)).to.raise_error(TypeError)
+
+
+class TestIsModel(object):
+    def test_should_return_true_if_object_is_a_model_instance(self):
+        expect(is_model(User())).to.be.true
+
+    def test_should_return_true_if_object_is_a_model_subclass(self):
+        expect(is_model(User)).to.be.true
+
+    def test_should_return_false_if_object_isnt_a_model_subclass(self):
+        expect(is_model(object)).to.be.false
+
+    def test_should_return_false_if_object_isnt_a_model_instance(self):
+        expect(is_model(object())).to.be.false
 
 
 class User(models.Model):
