@@ -1,8 +1,8 @@
 Changes
 =======
 
-Upcoming
---------
+0.5.0 (not released yet)
+------------------------
 
 Backwards-incompatible
 ^^^^^^^^^^^^^^^^^^^^^^
