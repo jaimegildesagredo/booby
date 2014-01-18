@@ -95,7 +95,8 @@ class Model(object):
         return { name: field.source or name for name, field in self._fields.iteritems() }
 
     def __init__(self, **kwargs):
-        mapped_kwargs = { self._source_keys.get(k, k): v for k, v in kwargs.iteritems() }
+        inv_source_keys = { v: k for k, v in self._source_keys.iteritems() }
+        mapped_kwargs = { inv_source_keys.get(k, k): v for k, v in kwargs.iteritems() }
         self._update(mapped_kwargs)
 
     def __iter__(self):

@@ -209,6 +209,19 @@ class TestModelToJSON(object):
         self.user = User(name='Jack', email='jack@example.com')
 
 
+class TestSource(object):
+    def test_when_pass_mapped_kwargs_then_set_fields_values(self):
+        user = UserWithSource(name='foo', emailAddress='foo@example.com')
+
+        expect(user.name).to.equal('foo')
+        expect(user.email).to.equal('foo@example.com')
+
+    def test_when_model_has_source_then_returns_dict_with_mapped_field_name(self):
+        user = dict(UserWithSource(name='Jack', emailAddress='jack@example.com'))
+
+        expect(user).to.have.keys(name='Jack', emailAddress='jack@example.com')
+
+
 class User(models.Model):
     name = fields.String()
     email = fields.String()
@@ -221,6 +234,11 @@ class UserWithRequiredName(User):
 class UserWithRequiredFields(UserWithRequiredName):
     id = fields.String()
     role = fields.String(choices=['admin', 'user'])
+
+
+class UserWithSource(models.Model):
+    name = fields.String()
+    email = fields.String(source='emailAddress')
 
 
 class UserWithPage(User):
