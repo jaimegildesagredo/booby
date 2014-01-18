@@ -90,19 +90,24 @@ class Model(object):
 
         return model
 
+    @property
+    def _source_keys(self):
+        return { name: field.source or name for name, field in self._fields.iteritems() }
+
     def __init__(self, **kwargs):
-        self._update(kwargs)
+        mapped_kwargs = { self._source_keys.get(k, k): v for k, v in kwargs.iteritems() }
+        self._update(mapped_kwargs)
 
     def __iter__(self):
-        for name in self._fields:
-            value = getattr(self, name)
+        for src, dst in self._source_keys.iteritems():
+            value = getattr(self, src)
 
             if isinstance(value, Model):
                 value = dict(value)
             elif isinstance(value, list):
                 value = self._encode_list(value)
 
-            yield name, value
+            yield dst, value
 
     def _encode_list(self, iterable):
         result = []
