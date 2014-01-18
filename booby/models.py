@@ -93,16 +93,36 @@ class Model(object):
     def __init__(self, **kwargs):
         self._update(kwargs)
 
+    @classmethod
+    def _source_keys(cls):
+        return { name: field.source or name for name, field in cls._fields.iteritems() }
+
+    @classmethod
+    def from_dict(cls, attrs, strict=False):
+        """This method deserializes a model with the given `dict`. If fields have
+        source keys specified, the method maps them.
+
+        :param \*\*attrs: A dictionary of attributes values.
+        :param \*\*strict: Strict mode.
+
+            When True, raises FieldError when attrs contains keys which do not
+            correspond to fields. When False, ignores extra attrs.
+
+        """
+        obj = cls()
+        obj.deserialize(attrs, strict)
+        return obj
+
     def __iter__(self):
-        for name in self._fields:
-            value = getattr(self, name)
+        for src, dst in self._source_keys().iteritems():
+            value = getattr(self, src)
 
             if isinstance(value, Model):
                 value = dict(value)
             elif isinstance(value, list):
                 value = self._encode_list(value)
 
-            yield name, value
+            yield dst, value
 
     def _encode_list(self, iterable):
         result = []
@@ -139,6 +159,25 @@ class Model(object):
     def _update(self, values):
         for k, v in values.items():
             self[k] = v
+
+    def deserialize(self, attrs, strict=False):
+        """This method updates the model with attributes from the given
+        serialized `dict`. If fields have source keys specified, the method
+        maps them.
+
+        :param \*\*attrs: A dictionary of attributes values.
+        :param \*\*strict: Strict mode.
+
+            When True, raises FieldError when attrs contains keys which do not
+            correspond to fields. When False, ignores extra attrs.
+
+        """
+        inv_source_keys = { v: k for k, v in self._source_keys().iteritems() }
+        if strict:
+            mapped_attrs = { inv_source_keys.get(k, k): v for k, v in attrs.iteritems() }
+        else:
+            mapped_attrs = { inv_source_keys[k]: v for k, v in attrs.iteritems() if k in inv_source_keys }
+        self.update(**mapped_attrs)
 
     @property
     def is_valid(self):

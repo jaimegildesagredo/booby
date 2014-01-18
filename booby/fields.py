@@ -51,6 +51,9 @@ class Field(object):
     :param required: If `True` this field value should not be `None`.
     :param choices: A `list` of values where this field value should be in.
     :param \*validators: A list of field :mod:`validators` as positional arguments.
+    :param source: An optional key name for serialization and deserialization.
+
+        The default is to use the attribute name of the field.
 
     """
 
@@ -71,6 +74,8 @@ class Field(object):
             self.validators.append(builtin_validators.In(choices))
 
         self.validators.extend(validators)
+
+        self.source = kwargs.get('source')
 
     def __get__(self, instance, owner):
         if instance is not None:
