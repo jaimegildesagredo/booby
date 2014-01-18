@@ -109,12 +109,9 @@ class Model(object):
             correspond to fields. When False, ignores extra attrs.
 
         """
-        inv_source_keys = { v: k for k, v in cls._source_keys().iteritems() }
-        if strict:
-            mapped_attrs = { inv_source_keys.get(k, k): v for k, v in attrs.iteritems() }
-        else:
-            mapped_attrs = { inv_source_keys[k]: v for k, v in attrs.iteritems() if k in inv_source_keys }
-        return cls(**mapped_attrs)
+        obj = cls()
+        obj.deserialize(attrs, strict)
+        return obj
 
     def __iter__(self):
         for src, dst in self._source_keys().iteritems():
@@ -162,6 +159,25 @@ class Model(object):
     def _update(self, values):
         for k, v in values.items():
             self[k] = v
+
+    def deserialize(self, attrs, strict=False):
+        """This method updates the model with attributes from the given
+        serialized `dict`. If fields have source keys specified, the method
+        maps them.
+
+        :param \*\*attrs: A dictionary of attributes values.
+        :param \*\*strict: Strict mode.
+
+            When True, raises FieldError when attrs contains keys which do not
+            correspond to fields. When False, ignores extra attrs.
+
+        """
+        inv_source_keys = { v: k for k, v in self._source_keys().iteritems() }
+        if strict:
+            mapped_attrs = { inv_source_keys.get(k, k): v for k, v in attrs.iteritems() }
+        else:
+            mapped_attrs = { inv_source_keys[k]: v for k, v in attrs.iteritems() if k in inv_source_keys }
+        self.update(**mapped_attrs)
 
     @property
     def is_valid(self):
