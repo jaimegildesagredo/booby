@@ -210,16 +210,41 @@ class TestModelToJSON(object):
 
 
 class TestSource(object):
-    def test_when_pass_mapped_kwargs_then_set_fields_values(self):
-        user = UserWithSource(name='foo', emailAddress='foo@example.com')
+    def test_when_init_with_original_args_then_succeeds(self):
+        user = UserWithSource(name='foo', email='foo@example.com')
 
         expect(user.name).to.equal('foo')
         expect(user.email).to.equal('foo@example.com')
 
-    def test_when_model_has_source_then_returns_dict_with_mapped_field_name(self):
-        user = dict(UserWithSource(name='Jack', emailAddress='jack@example.com'))
+    def test_when_init_with_mapped_args_then_raises_field_error(self):
+        expect(lambda: UserWithSource(name='foo', emailAddress='foo@example.com')).to.raise_error(
+            errors.FieldError, 'emailAddress')
 
-        expect(user).to.have.keys(name='Jack', emailAddress='jack@example.com')
+    def test_when_passed_model_has_source_then_returns_dict_with_mapped_field_name(self):
+        user = dict(UserWithSource(name='foo', email='foo@example.com'))
+
+        expect(user).to.have.keys(name='foo', emailAddress='foo@example.com')
+
+
+class TestFromDict(object):
+    def test_when_passed_dict_then_set_fields_values(self):
+        user = User.from_dict({'name': 'foo', 'email': 'foo@example.com'})
+
+        expect(user.name).to.equal('foo')
+        expect(user.email).to.equal('foo@example.com')
+
+    def test_when_mapped_args_then_set_fields_values(self):
+        user = UserWithSource.from_dict({'name': 'foo', 'emailAddress': 'foo@example.com'})
+
+        expect(user.name).to.equal('foo')
+        expect(user.email).to.equal('foo@example.com')
+
+    def test_when_not_strict_then_extra_key_ignored(self):
+        user = UserWithSource.from_dict({'foo': 'foo@example.com'}, strict=False)
+
+    def test_when_strict_then_extra_key_raises_field_error(self):
+        expect(lambda: UserWithSource.from_dict({'foo': 'foo@example.com'}, strict=True)).to.raise_error(
+            errors.FieldError, 'foo')
 
 
 class User(models.Model):

@@ -90,17 +90,34 @@ class Model(object):
 
         return model
 
-    @property
-    def _source_keys(self):
-        return { name: field.source or name for name, field in self._fields.iteritems() }
-
     def __init__(self, **kwargs):
-        inv_source_keys = { v: k for k, v in self._source_keys.iteritems() }
-        mapped_kwargs = { inv_source_keys.get(k, k): v for k, v in kwargs.iteritems() }
-        self._update(mapped_kwargs)
+        self._update(kwargs)
+
+    @classmethod
+    def _source_keys(cls):
+        return { name: field.source or name for name, field in cls._fields.iteritems() }
+
+    @classmethod
+    def from_dict(cls, attrs, strict=False):
+        """This method deserializes a model with the given `dict`. If fields have
+        source keys specified, the method maps them.
+
+        :param \*\*attrs: A dictionary of attributes values.
+        :param \*\*strict: Strict mode.
+
+            When True, raises FieldError when attrs contains keys which do not
+            correspond to fields. When False, ignores extra attrs.
+
+        """
+        inv_source_keys = { v: k for k, v in cls._source_keys().iteritems() }
+        if strict:
+            mapped_attrs = { inv_source_keys.get(k, k): v for k, v in attrs.iteritems() }
+        else:
+            mapped_attrs = { inv_source_keys[k]: v for k, v in attrs.iteritems() if k in inv_source_keys }
+        return cls(**mapped_attrs)
 
     def __iter__(self):
-        for src, dst in self._source_keys.iteritems():
+        for src, dst in self._source_keys().iteritems():
             value = getattr(self, src)
 
             if isinstance(value, Model):
