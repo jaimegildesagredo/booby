@@ -193,3 +193,46 @@ class Model(object):
         """
 
         return json.dumps(dict(self), *args, **kwargs)
+
+    @classmethod
+    def deserialize(self, raw):
+        result = {}
+
+        for name, field in self._fields.items():
+            raw_name = field.options.get('name')
+
+            if raw_name is not None:
+                value = raw[raw_name]
+            else:
+                value = raw[name]
+
+            if (isinstance(value, dict) and
+                isinstance(field, fields.Embedded)):
+
+                value = field.model.deserialize(value)
+
+            result[name] = value
+
+        return result
+
+    def serialize(self):
+        result = {}
+
+        for name, field in self._fields.items():
+            raw_name = field.options.get('name')
+
+            value = getattr(self, name)
+
+            if isinstance(value, Model):
+                value = value.serialize()
+            elif isinstance(value, list):
+                for i, item in enumerate(value):
+                    if isinstance(item, Model):
+                        value[i] = item.serialize()
+
+            if raw_name is not None:
+                result[raw_name] = value
+            else:
+                result[name] = value
+
+        return result
