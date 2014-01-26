@@ -199,12 +199,7 @@ class Model(object):
         result = {}
 
         for name, field in self._fields.items():
-            raw_name = field.options.get('name')
-
-            if raw_name is not None:
-                value = raw[raw_name]
-            else:
-                value = raw[name]
+            value = raw[field.options.get('name', name)]
 
             if (isinstance(value, dict) and
                 isinstance(field, fields.Embedded)):
@@ -219,8 +214,6 @@ class Model(object):
         result = {}
 
         for name, field in self._fields.items():
-            raw_name = field.options.get('name')
-
             value = getattr(self, name)
 
             if isinstance(value, Model):
@@ -230,9 +223,6 @@ class Model(object):
                     if isinstance(item, Model):
                         value[i] = item.serialize()
 
-            if raw_name is not None:
-                result[raw_name] = value
-            else:
-                result[name] = value
+            result[field.options.get('name', name)] = value
 
         return result
