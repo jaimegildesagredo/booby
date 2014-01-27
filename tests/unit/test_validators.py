@@ -126,9 +126,8 @@ class TestList(object):
         expect(lambda: self.validator(object())).to.raise_error(
             errors.ValidationError, 'should be a list')
 
-    def test_when_value_is_none_then_raises_validation_error(self):
-        expect(lambda: self.validator(None)).to.raise_error(
-            errors.ValidationError, 'should be a list')
+    def test_when_value_is_none_then_does_not_raise(self):
+        self.validator(None)
 
     def test_when_value_is_a_list_then_does_not_raise(self):
         self.validator(['foo', 'bar'])

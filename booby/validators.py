@@ -180,6 +180,7 @@ class List(Validator):
     def __init__(self, *validators):
         self.validators = validators
 
+    @nullable
     def validate(self, value):
         if not isinstance(value, list):
             raise errors.ValidationError('should be a list')
