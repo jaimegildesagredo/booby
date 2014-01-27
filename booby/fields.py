@@ -155,3 +155,17 @@ class Email(Field):
 
     def __init__(self, *args, **kwargs):
         super(Email, self).__init__(builtin_validators.Email(), *args, **kwargs)
+
+
+class List(Field):
+    """:class:`Field` subclass with builtin `list` validation
+    and default value.
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('default', list)
+
+        super(List, self).__init__(
+            builtin_validators.List(*kwargs.get('inner_validators', [])),
+            *args, **kwargs)

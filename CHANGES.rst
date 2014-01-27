@@ -1,6 +1,20 @@
 Changes
 =======
 
+0.6.0 (Not released yet)
+------------------------
+
+Backwards-incompatible
+^^^^^^^^^^^^^^^^^^^^^^
+
+* The `List` validator now accepts `None` as a valid value allowing not required list fields. Before this a field with a `List` validator couldn't be `None`.
+
+Highlights
+^^^^^^^^^^
+
+* The `Model` class now defines a `deserialize` and `serialize` methods with basic serialization support.
+* Added a `List` field that can be used to create fields containing lists of objects (even models).
+
 0.5.0 (Jan 4, 2014)
 -------------------
 
