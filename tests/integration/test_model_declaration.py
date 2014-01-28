@@ -27,7 +27,7 @@ class TestModelValidation(object):
             user.validate()
 
     def test_when_email_is_an_invalid_email_then_raises_validation_error(self):
-        user = User(login='root', email='root@localhost')
+        user = User(login='root', email='@localhost')
 
         with assert_raises_regexp(errors.ValidationError, 'should be a valid email'):
             user.validate()
