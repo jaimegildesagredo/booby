@@ -3,10 +3,10 @@
 from __future__ import unicode_literals
 
 from expects import expect
+from . import mixins
+from .._helpers import stub_validator
 
 from booby import validators, fields, models, errors
-
-from ._helpers import stub_validator
 
 
 class TestRequired(object):
@@ -33,16 +33,7 @@ class TestIn(object):
         self.validator = validators.In(['foo', 'bar'])
 
 
-class StringMixin(object):
-    def test_when_value_is_not_string_then_raises_validation_error(self):
-        expect(lambda: self.validator(1)).to.raise_error(
-            errors.ValidationError, 'should be a string')
-
-    def test_when_value_is_none_then_does_not_raise(self):
-        self.validator(None)
-
-
-class TestString(StringMixin):
+class TestString(mixins.String):
     def test_when_value_is_a_string_then_does_not_raise(self):
         self.validator('foo')
 
@@ -144,22 +135,6 @@ class TestList(object):
 
     def setup(self):
         self.validator = validators.List()
-
-
-class TestEmail(StringMixin):
-    def test_when_value_doesnt_match_email_pattern_then_raises_validation_error(self):
-        expect(lambda: self.validator('foo@example')).to.raise_error(
-            errors.ValidationError, 'should be a valid email')
-
-    def test_when_value_doesnt_have_at_sign_then_raises_validation_error(self):
-        expect(lambda: self.validator('foo%example.com')).to.raise_error(
-            errors.ValidationError, 'should be a valid email')
-
-    def test_when_value_is_a_valid_email_then_does_not_raise(self):
-        self.validator('foo2bar@example.com')
-
-    def setup(self):
-        self.validator = validators.Email()
 
 
 class User(models.Model):

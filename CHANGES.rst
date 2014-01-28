@@ -15,6 +15,12 @@ Highlights
 * The `Model` class now defines a `deserialize` and `serialize` methods with basic serialization support.
 * Added a `List` field that can be used to create fields containing lists of objects (even models).
 
+=======
+0.5.1 (Not released yet)
+------------------------
+
+* The `Email` validator now only performs a basic sanity check instead of the more restrictive previous check. See `issue 17<https://github.com/jaimegildesagredo/booby/issues/17>`_.
+
 0.5.0 (Jan 4, 2014)
 -------------------
 
