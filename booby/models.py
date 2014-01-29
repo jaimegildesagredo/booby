@@ -202,7 +202,7 @@ class Model(object):
         for name, field in self._fields.items():
             value = raw[field.options.get('name', name)]
 
-            if (isinstance(value, dict) and
+            if (isinstance(value, collections.MutableMapping) and
                 isinstance(field, fields.Embedded)):
 
                 value = field.model.deserialize(value)
@@ -219,10 +219,17 @@ class Model(object):
 
             if isinstance(value, Model):
                 value = value.serialize()
-            elif isinstance(value, list):
-                for i, item in enumerate(value):
+            elif isinstance(value, collections.MutableSequence):
+                new_value = []
+
+                for item in value:
                     if isinstance(item, Model):
-                        value[i] = item.serialize()
+                        new_value.append(item.serialize())
+                    else:
+                        new_value.append(item)
+
+                value = new_value
+                del new_value
 
             result[field.options.get('name', name)] = value
 

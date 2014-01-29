@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import json
 
 from expects import expect
-from ._helpers import MyList
+from ._helpers import MyList, MyDict
 
 from booby import errors, fields, models
 
@@ -228,12 +228,22 @@ class TestDeserializeModel(object):
 
         expect(result).to.have.keys(name='Jack', email='jack@example.com')
 
-    def test_should_deserialize_embedded_model_if_field_is_embedded_field(self):
+    def test_should_deserialize_embedded_dict_if_field_is_embedded_field(self):
         result = UserWithTokenAndMappedFields.deserialize({
             'name': 'Jack', 'email': 'jack@example.com',
             'token': {
                 'accessToken':'foo', 'secretToken': 'bar'
             }
+        })
+
+        expect(result['token']).to.have.keys(key='foo', secret='bar')
+
+    def test_should_deserialize_embedded_mutable_mapping_if_field_is_embedded_field(self):
+        result = UserWithTokenAndMappedFields.deserialize({
+            'name': 'Jack', 'email': 'jack@example.com',
+            'token': MyDict(
+                accessToken='foo', secretToken='bar'
+            )
         })
 
         expect(result['token']).to.have.keys(key='foo', secret='bar')
@@ -283,6 +293,16 @@ class TestSerializeModel(object):
         result = user.serialize()
 
         expect(result['tokens']).to.equal([self.token1.serialize(), 'foo',
+                                           self.token2.serialize()])
+
+    def test_should_serialize_mutable_sequence_of_models(self):
+        user = UserWithList(
+            name='Jack', email='jack@example.com',
+            tokens=MyList(self.token1, self.token2))
+
+        result = user.serialize()
+
+        expect(result['tokens']).to.equal([self.token1.serialize(),
                                            self.token2.serialize()])
 
     def setup(self):

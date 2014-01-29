@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import collections
 
 from expects import expect
+from .._helpers import MyDict
 
 from booby import fields, errors, models
 
@@ -69,23 +69,3 @@ class User(models.Model):
 class Group(models.Model):
     name = fields.String()
     admin = fields.Embedded(User)
-
-
-class MyDict(collections.MutableMapping):
-    def __init__(self, **kwargs):
-        self._store = kwargs
-
-    def __getitem__(self, key):
-        return self._store[key]
-
-    def __setitem__(self, key, value):
-        pass
-
-    def __delitem__(self, key):
-        pass
-
-    def __len__(self):
-        pass
-
-    def __iter__(self):
-        return iter(self._store)
