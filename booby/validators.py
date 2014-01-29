@@ -27,6 +27,7 @@ arguments.
 
 import re
 import functools
+import collections
 
 from booby import errors
 
@@ -181,7 +182,7 @@ class List(Validator):
         self.validators = validators
 
     def validate(self, value):
-        if not isinstance(value, list):
+        if not isinstance(value, collections.MutableSequence):
             raise errors.ValidationError('should be a list')
 
         for i in value:
