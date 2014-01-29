@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import collections
 
 from expects import expect
 from ._helpers import Spy, stub_validator
@@ -96,6 +97,13 @@ class TestEmbeddedFieldDescriptor(object):
             self.group.admin = {'name': 'foo', 'foo': 'bar'}
 
         expect(callback).to.raise_error(errors.FieldError, 'foo')
+
+    def test_when_set_field_value_with_mutable_mapping_then_value_is_model_instance_with_dict_values(self):
+        self.group.admin = MyDict(name='foo', email='foo@example.com')
+
+        expect(self.group.admin).to.be.an(User)
+        expect(self.group.admin).to.have.properties(
+            name='foo', email='foo@example.com')
 
     def test_when_set_field_value_with_not_dict_object_then_value_is_given_object(self):
         user = User(name='foo', email='foo@example.com')
@@ -193,3 +201,23 @@ class TestEmbeddedFieldBuildtinValidators(object):
 
     def setup(self):
         self.field = fields.Embedded(User)
+
+
+class MyDict(collections.MutableMapping):
+    def __init__(self, **kwargs):
+        self._store = kwargs
+
+    def __getitem__(self, key):
+        return self._store[key]
+
+    def __setitem__(self, key, value):
+        pass
+
+    def __delitem__(self, key):
+        pass
+
+    def __len__(self):
+        pass
+
+    def __iter__(self):
+        return iter(self._store)
