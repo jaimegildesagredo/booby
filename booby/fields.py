@@ -32,6 +32,8 @@ The example below shows the most common fields and builtin validations::
         is_active = Boolean(default=False)
 """
 
+import collections
+
 from booby import validators as builtin_validators
 
 
@@ -144,7 +146,7 @@ class Embedded(Field):
         self.model = model
 
     def __set__(self, instance, value):
-        if isinstance(value, dict):
+        if isinstance(value, collections.MutableMapping):
             value = self.model(**value)
 
         super(Embedded, self).__set__(instance, value)

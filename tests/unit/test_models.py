@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import json
 
 from expects import expect
+from ._helpers import MyList
 
 from booby import errors, fields, models
 
@@ -188,6 +189,11 @@ class TestModelToDict(object):
 
         expect(user['tokens']).to.have(dict(self.token1), 'foo',
                                        dict(self.token2))
+
+    def test_when_model_has_mutable_sequence_of_models_then_returns_list_of_dicts(self):
+        user = dict(UserWithList(tokens=MyList(self.token1, self.token2)))
+
+        expect(user['tokens']).to.have(dict(self.token1), dict(self.token2))
 
     def setup(self):
         self.token1 = Token(key='foo', secret='bar')
