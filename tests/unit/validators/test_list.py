@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import collections
 
 from expects import expect
-from .._helpers import stub_validator
+from .._helpers import MyList, stub_validator
 
 from booby import validators, errors
 
@@ -36,23 +35,3 @@ class TestList(object):
 
     def setup(self):
         self.validator = validators.List()
-
-
-class MyList(collections.MutableSequence):
-    def __init__(self, *args):
-        self._store = list(args)
-
-    def __getitem__(self, index):
-        return self._store[index]
-
-    def __setitem__(self, index, value):
-        pass
-
-    def __delitem__(self, index):
-        pass
-
-    def __len__(self):
-        pass
-
-    def insert(self, index, value):
-        pass

@@ -39,6 +39,7 @@ Something like this::
 """
 
 import json
+import collections
 
 from booby import fields, errors
 
@@ -99,15 +100,15 @@ class Model(object):
 
             if isinstance(value, Model):
                 value = dict(value)
-            elif isinstance(value, list):
-                value = self._encode_list(value)
+            elif isinstance(value, collections.MutableSequence):
+                value = self._encode_sequence(value)
 
             yield name, value
 
-    def _encode_list(self, iterable):
+    def _encode_sequence(self, sequence):
         result = []
 
-        for value in iterable:
+        for value in sequence:
             if isinstance(value, Model):
                 value = dict(value)
 
