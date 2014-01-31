@@ -15,7 +15,6 @@ Highlights
 * The `Model` class now defines a `deserialize` and `serialize` methods with basic serialization support.
 * Added a `List` field that can be used to create fields containing lists of objects (even models).
 
-=======
 0.5.1 (Not released yet)
 ------------------------
 
