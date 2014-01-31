@@ -18,7 +18,13 @@ Highlights
 0.5.1 (Not released yet)
 ------------------------
 
-* The `Email` validator now only performs a basic sanity check instead of the more restrictive previous check. See `issue 17<https://github.com/jaimegildesagredo/booby/issues/17>`_.
+Highlights
+^^^^^^^^^^
+
+* The `Email` validator now only performs a basic sanity check instead of the more restrictive previous check. See `issue 17 <https://github.com/jaimegildesagredo/booby/issues/17>`_.
+* The `List` validator now accepts any object that implements the `list` interface (collections.MutableSequence). See `issue 18 <https://github.com/jaimegildesagredo/booby/issues/18>`_.
+* Any object implementing the `dict` interface (collections.MutableMapping) can be used as a value for an `Embedded` field. See `issue 18 <https://github.com/jaimegildesagredo/booby/issues/18>`_.
+* When iterating a `Model` object all objects implementing the `list` interface are treated as lists. See `issue 18 <https://github.com/jaimegildesagredo/booby/issues/18>`_.
 
 0.5.0 (Jan 4, 2014)
 -------------------
