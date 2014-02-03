@@ -6,7 +6,7 @@ long_description = open('README.rst').read()
 
 setup(
     name='booby',
-    version='0.5.0',
+    version='0.5.1',
     description='Data modeling and validation Python library',
     long_description=long_description,
     url='https://github.com/jaimegildesagredo/booby',
