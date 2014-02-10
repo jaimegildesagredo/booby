@@ -228,6 +228,11 @@ class TestDeserializeModel(object):
 
         expect(result).to.have.keys(name='Jack', email='jack@example.com')
 
+    def test_should_return_dict_with_model_fields_when_fields_are_missing(self):
+        result = User.deserialize({'name': 'Jack'})
+
+        expect(result).to.have.keys(name='Jack')
+
     def test_should_deserialize_embedded_dict_if_field_is_embedded_field(self):
         result = UserWithTokenAndMappedFields.deserialize({
             'name': 'Jack', 'email': 'jack@example.com',

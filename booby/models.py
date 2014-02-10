@@ -200,7 +200,10 @@ class Model(object):
         result = {}
 
         for name, field in self._fields.items():
-            value = raw[field.options.get('name', name)]
+            try:
+                value = raw[field.options.get('name', name)]
+            except KeyError:
+                continue
 
             if (isinstance(value, collections.MutableMapping) and
                 isinstance(field, fields.Embedded)):
