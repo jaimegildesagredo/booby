@@ -34,7 +34,11 @@ The example below shows the most common fields and builtin validations::
 
 import collections
 
-from booby import validators as builtin_validators
+from booby import (
+    validators as builtin_validators,
+    encoders as builtin_encoders,
+    decoders as builtin_decoders
+)
 
 
 class Field(object):
@@ -105,6 +109,18 @@ class Field(object):
         for validator in self.validators:
             validator(value)
 
+    def decode(self, value):
+        for decoder in self.options.get('decoders', []):
+            value = decoder(value)
+
+        return value
+
+    def encode(self, value):
+        for encoder in self.options.get('encoders', []):
+            value = encoder(value)
+
+        return value
+
 
 class String(Field):
     """:class:`Field` subclass with builtin `string` validation."""
@@ -141,6 +157,9 @@ class Embedded(Field):
     """
 
     def __init__(self, model, *args, **kwargs):
+        kwargs.setdefault('encoders', []).append(builtin_encoders.Model())
+        kwargs.setdefault('decoders', []).append(builtin_decoders.Model(model))
+
         super(Embedded, self).__init__(builtin_validators.Model(model), *args, **kwargs)
 
         self.model = model
@@ -167,6 +186,7 @@ class List(Field):
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('default', list)
+        kwargs.setdefault('encoders', []).append(builtin_encoders.List())
 
         super(List, self).__init__(
             builtin_validators.List(*kwargs.get('inner_validators', [])),

@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import json
 
 from expects import expect
-from ._helpers import MyList, MyDict
+from .._helpers import MyList, MyDict
 
 from booby import errors, fields, models
 
@@ -215,107 +215,6 @@ class TestModelToJSON(object):
         self.user = User(name='Jack', email='jack@example.com')
 
 
-class TestDeserializeModel(object):
-    def test_should_return_dict_with_model_fields(self):
-        result = User.deserialize({
-            'name': 'Jack', 'email': 'jack@example.com'})
-
-        expect(result).to.have.keys(name='Jack', email='jack@example.com')
-
-    def test_should_return_dict_with_model_mapped_fields(self):
-        result = UserWithMappedFields.deserialize({
-            'username': 'Jack', 'emailAddress': 'jack@example.com'})
-
-        expect(result).to.have.keys(name='Jack', email='jack@example.com')
-
-    def test_should_return_dict_with_model_fields_when_fields_are_missing(self):
-        result = User.deserialize({'name': 'Jack'})
-
-        expect(result).to.have.keys(name='Jack')
-
-    def test_should_deserialize_embedded_dict_if_field_is_embedded_field(self):
-        result = UserWithTokenAndMappedFields.deserialize({
-            'name': 'Jack', 'email': 'jack@example.com',
-            'token': {
-                'accessToken':'foo', 'secretToken': 'bar'
-            }
-        })
-
-        expect(result['token']).to.have.keys(key='foo', secret='bar')
-
-    def test_should_deserialize_embedded_mutable_mapping_if_field_is_embedded_field(self):
-        result = UserWithTokenAndMappedFields.deserialize({
-            'name': 'Jack', 'email': 'jack@example.com',
-            'token': MyDict(
-                accessToken='foo', secretToken='bar'
-            )
-        })
-
-        expect(result['token']).to.have.keys(key='foo', secret='bar')
-
-
-class TestSerializeModel(object):
-    def test_should_return_dict_with_model_fields(self):
-        user = User(name='Jack', email='jack@example.com')
-
-        result = user.serialize()
-
-        expect(result).to.have.keys(name='Jack', email='jack@example.com')
-
-    def test_should_return_dict_with_model_mapped_fields(self):
-        user = UserWithMappedFields(name='Jack', email='jack@example.com')
-
-        result = user.serialize()
-
-        expect(result).to.have.keys(username='Jack',
-                                    emailAddress='jack@example.com')
-
-    def test_should_serialize_embedded_model(self):
-        user = UserWithTokenAndMappedFields(
-            name='Jack', email='jack@example.com',
-            token={'key':'foo', 'secret': 'bar'})
-
-        result = user.serialize()
-
-        expect(result['token']).to.have.keys(accessToken='foo',
-                                             secretToken='bar')
-
-    def test_should_serialize_list_of_models(self):
-        user = UserWithList(
-            name='Jack', email='jack@example.com',
-            tokens=[self.token1, self.token2])
-
-        result = user.serialize()
-
-        expect(result['tokens']).to.equal([self.token1.serialize(),
-                                           self.token2.serialize()])
-
-    def test_should_serialize_list_of_models_and_values(self):
-        user = UserWithList(
-            name='Jack', email='jack@example.com',
-            tokens=[self.token1, 'foo', self.token2])
-
-        result = user.serialize()
-
-        expect(result['tokens']).to.equal([self.token1.serialize(), 'foo',
-                                           self.token2.serialize()])
-
-    def test_should_serialize_mutable_sequence_of_models(self):
-        user = UserWithList(
-            name='Jack', email='jack@example.com',
-            tokens=MyList(self.token1, self.token2))
-
-        result = user.serialize()
-
-        expect(result['tokens']).to.equal([self.token1.serialize(),
-                                           self.token2.serialize()])
-
-    def setup(self):
-        self.token1 = TokenWithMappedFields(key='foo', secret='bar')
-        self.token2 = TokenWithMappedFields(key='fuu', secret='baz')
-
-
-
 class User(models.Model):
     name = fields.String()
     email = fields.String()
@@ -343,23 +242,9 @@ class UserWithEmail(UserMixin, models.Model):
 
 
 class UserWithList(User):
-    tokens = fields.Field()
+    tokens = fields.List()
 
 
 class Token(models.Model):
     key = fields.String()
     secret = fields.String()
-
-
-class UserWithMappedFields(models.Model):
-    name = fields.String(name='username')
-    email = fields.String(name='emailAddress')
-
-
-class TokenWithMappedFields(models.Model):
-    key = fields.String(name='accessToken')
-    secret = fields.String(name='secretToken')
-
-
-class UserWithTokenAndMappedFields(User):
-    token = fields.Embedded(TokenWithMappedFields)

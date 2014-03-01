@@ -7,16 +7,19 @@ from .._helpers import Spy, stub_validator
 
 from booby import fields, errors, models
 
+IRRELEVANT_VALUE = 'irrelevant value'
+NUMERIC_STRING_VALUE = '137'
 
-class TestFieldInit(object):
-    def test_when_kwargs_then_field_options_is_a_dict_with_these_args(self):
+
+class TestOptions(object):
+    def test_should_be_passed_kwargs_dict(self):
         kwargs = dict(required=True, primary=True, foo='bar')
 
         field = fields.Field(**kwargs)
 
         expect(field.options).to.equal(kwargs)
 
-    def test_when_no_kwargs_then_field_options_is_an_empty_dict(self):
+    def test_should_be_empty_dict_if_no_kwargs_passed(self):
         field = fields.Field()
 
         expect(field.options).to.equal({})
@@ -137,6 +140,58 @@ class TestFieldBuiltinValidations(object):
         field = fields.Field()
 
         field.validate('foo')
+
+
+class TestEncode(object):
+    def test_should_return_value_if_there_are_not_encoders(self):
+        field = fields.Field()
+
+        expect(field.encode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE)
+
+    def test_should_return_value_returned_by_encoder(self):
+        def encoder(value):
+            return value.swapcase()
+
+        field = fields.Field(encoders=[encoder])
+
+        expect(field.encode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE.swapcase())
+
+    def test_should_return_value_returned_by_encoders_in_order(self):
+        def encoder1(value):
+            return int(value)
+
+        def encoder2(value):
+            return str(value)
+
+        field = fields.Field(encoders=[encoder1, encoder2])
+
+        expect(field.encode(NUMERIC_STRING_VALUE)).to.equal(NUMERIC_STRING_VALUE)
+
+
+class TestDecode(object):
+    def test_should_return_value_if_there_are_not_decoders(self):
+        field = fields.Field()
+
+        expect(field.decode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE)
+
+    def test_should_return_value_returned_by_decoder(self):
+        def decoder(value):
+            return value.swapcase()
+
+        field = fields.Field(decoders=[decoder])
+
+        expect(field.decode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE.swapcase())
+
+    def test_should_return_value_returned_by_decoders_in_order(self):
+        def decoder1(value):
+            return int(value)
+
+        def decoder2(value):
+            return str(value)
+
+        field = fields.Field(decoders=[decoder1, decoder2])
+
+        expect(field.decode(NUMERIC_STRING_VALUE)).to.equal(NUMERIC_STRING_VALUE)
 
 
 class User(models.Model):

@@ -41,7 +41,7 @@ Something like this::
 import json
 import collections
 
-from booby import fields, errors
+from booby import mixins, fields, errors
 
 
 class ModelMeta(type):
@@ -60,7 +60,7 @@ class ModelMeta(type):
         return super(ModelMeta, cls).__new__(cls, name, bases, attrs)
 
 
-class Model(object):
+class Model(mixins.Encoder):
     """The `Model` class. All Booby models should subclass this.
 
     By default the `Model's` :func:`__init__` takes a list of keyword arguments
@@ -196,7 +196,7 @@ class Model(object):
         return json.dumps(dict(self), *args, **kwargs)
 
     @classmethod
-    def deserialize(self, raw):
+    def decode(self, raw):
         result = {}
 
         for name, field in self._fields.items():
@@ -204,36 +204,9 @@ class Model(object):
                 value = raw[field.options.get('name', name)]
             except KeyError:
                 continue
-
-            if (isinstance(value, collections.MutableMapping) and
-                isinstance(field, fields.Embedded)):
-
-                value = field.model.deserialize(value)
+            else:
+                value = field.decode(value)
 
             result[name] = value
-
-        return result
-
-    def serialize(self):
-        result = {}
-
-        for name, field in self._fields.items():
-            value = getattr(self, name)
-
-            if isinstance(value, Model):
-                value = value.serialize()
-            elif isinstance(value, collections.MutableSequence):
-                new_value = []
-
-                for item in value:
-                    if isinstance(item, Model):
-                        new_value.append(item.serialize())
-                    else:
-                        new_value.append(item)
-
-                value = new_value
-                del new_value
-
-            result[field.options.get('name', name)] = value
 
         return result

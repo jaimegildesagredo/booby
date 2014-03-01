@@ -14,32 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The `errors` module contains all exceptions used by Booby."""
+import collections
+
+from booby import mixins, errors
 
 
-class BoobyError(Exception):
-    """Base class for all Booby exceptions."""
+class Model(object):
+    def __call__(self, value):
+        if value is None:
+            return
 
-    pass
-
-
-class FieldError(BoobyError):
-    """This exception is used as an equivalent to :class:`AttributeError`
-    for :mod:`fields`.
-
-    """
-
-    pass
+        return value.encode()
 
 
-class ValidationError(BoobyError):
-    """This exception should be raised when a `value` doesn't validate.
-    See :mod:`validators`.
+class List(object):
+    def __call__(self, value):
+        if value is None:
+            return
 
-    """
+        if not isinstance(value, collections.MutableSequence):
+            raise errors.EncodeError()
 
-    pass
-
-
-class EncodeError(BoobyError):
-    pass
+        return [item.encode() if isinstance(item, mixins.Encoder) else item
+                for item in value]

@@ -1,5 +1,5 @@
 nose
 sphinx
 coverage==3.6
--e git+git://github.com/jaimegildesagredo/expects.git@a2e370#egg=expects
+expects>=0.2,<0.3
 flake8
