@@ -18,16 +18,15 @@ import re
 import datetime
 
 from . import errors
+from .helpers import nullable
 
 
 class Model(object):
     def __init__(self, model):
         self.model = model
 
+    @nullable
     def __call__(self, value):
-        if value is None:
-            return
-
         return self.model.decode(value)
 
 
@@ -35,10 +34,8 @@ class DateTime(object):
     def __init__(self, format=None):
         self._format = format
 
+    @nullable
     def __call__(self, value):
-        if value is None:
-            return
-
         format = self._format_for(value)
 
         try:

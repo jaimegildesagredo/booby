@@ -16,22 +16,19 @@
 
 import collections
 
-from booby import mixins, errors
+from . import mixins, errors
+from .helpers import nullable
 
 
 class Model(object):
+    @nullable
     def __call__(self, value):
-        if value is None:
-            return
-
         return value.encode()
 
 
 class List(object):
+    @nullable
     def __call__(self, value):
-        if value is None:
-            return
-
         if not isinstance(value, collections.MutableSequence):
             raise errors.EncodeError()
 
@@ -43,10 +40,8 @@ class DateTime(object):
     def __init__(self, format=None):
         self._format = format
 
+    @nullable
     def __call__(self, value):
-        if value is None:
-            return
-
         if self._format is None:
             return value.isoformat()
 

@@ -26,38 +26,11 @@ arguments.
 """
 
 import re
-import functools
 import collections
 import datetime
 
 from booby import errors
-
-
-def nullable(method):
-    """This is a helper validation decorator for validators that allow
-    their `values` to be :keyword:`None`.
-
-    The :class:`String` validator is a good example::
-
-        class String(object):
-            def validate(self, value):
-                if value is not None:
-                    pass # Do the validation here ...
-
-    Now the same but using the `@nullable` decorator::
-
-        @nullable
-        def validate(self, value):
-            pass # Do the validation here ...
-
-    """
-
-    @functools.wraps(method)
-    def wrapper(self, value):
-        if value is not None:
-            method(self, value)
-
-    return wrapper
+from booby.helpers import nullable
 
 
 class Validator(object):
