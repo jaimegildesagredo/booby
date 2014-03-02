@@ -28,6 +28,7 @@ arguments.
 import re
 import functools
 import collections
+import datetime
 
 from booby import errors
 
@@ -189,3 +190,10 @@ class List(Validator):
         for i in value:
             for validator in self.validators:
                 validator(i)
+
+
+class DateTime(Validator):
+    @nullable
+    def validate(self, value):
+        if not isinstance(value, datetime.datetime):
+            raise errors.ValidationError('should be a datetime')
