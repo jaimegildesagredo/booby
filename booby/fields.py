@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The `fields` module contains a list of `Field` classes
+"""The :mod:`fields` module contains a list of `Field` classes
 for model's definition.
 
 The example below shows the most common fields and builtin validations::
