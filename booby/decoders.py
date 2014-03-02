@@ -14,6 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
+import datetime
+
+from . import errors
+
 
 class Model(object):
     def __init__(self, model):
@@ -24,3 +29,33 @@ class Model(object):
             return
 
         return self.model.decode(value)
+
+
+class DateTime(object):
+    def __init__(self, format=None):
+        self._format = format
+
+    def __call__(self, value):
+        if value is None:
+            return
+
+        format = self._format_for(value)
+
+        try:
+            return datetime.datetime.strptime(value, format)
+        except ValueError:
+            raise errors.DecodeError()
+
+    def _format_for(self, value):
+        if self._format is not None:
+            return self._format
+
+        format = '%Y-%m-%dT%H:%M:%S'
+
+        if self._has_microseconds(value):
+            format += '.%f'
+
+        return format
+
+    def _has_microseconds(self, value):
+        return re.match('^.*\.[0-9]+$', value) is not None

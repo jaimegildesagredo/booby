@@ -43,3 +43,7 @@ class ValidationError(BoobyError):
 
 class EncodeError(BoobyError):
     pass
+
+
+class DecodeError(BoobyError):
+    pass
