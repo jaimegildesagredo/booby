@@ -31,9 +31,7 @@ class TestDecode(object):
         expect(result).to.equal(DATETIME_WITH_MICROSECOND)
 
     def test_should_return_none_if_value_is_none(self):
-        result = self.decoder(None)
-
-        expect(result).to.be.none
+        expect(self.decoder(None)).to.be.none
 
     def test_should_raise_decode_error_if_value_does_not_match_iso_format(self):
         def callback():

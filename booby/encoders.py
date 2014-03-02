@@ -37,3 +37,17 @@ class List(object):
 
         return [item.encode() if isinstance(item, mixins.Encoder) else item
                 for item in value]
+
+
+class DateTime(object):
+    def __init__(self, format=None):
+        self._format = format
+
+    def __call__(self, value):
+        if value is None:
+            return
+
+        if self._format is None:
+            return value.isoformat()
+
+        return value.strftime(self._format)
