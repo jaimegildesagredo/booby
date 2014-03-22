@@ -38,11 +38,11 @@ class TestFieldDefault(object):
         expect(user.name).to.be(default)
 
     def test_when_callable_receives_argument_then_pass_owner_instance(self):
-        User.name.default = lambda model: model
+        User.name.default = lambda model: model == user
 
         user = User()
 
-        expect(user.name).to.be(user)
+        expect(user.name).to.be.true
 
     def test_when_callable_raises_type_error_then_should_not_be_catched(self):
         def callback():
