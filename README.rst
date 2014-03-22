@@ -90,7 +90,7 @@ To run the Booby test suite you should install the development requirements and 
 
 .. code-block:: bash
 
-    $ pip install -r requirements-devel.txt
+    $ pip install -r test-requirements.txt
     $ nosetests tests/unit
     $ nosetests tests/integration
 

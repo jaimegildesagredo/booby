@@ -11,7 +11,7 @@ install:
  - tar xvf dist/booby-*.tar.gz -C tmp
  - python tmp/booby-*/setup.py install
 
- - pip install -r requirements-devel.txt
+ - pip install -r test-requirements.txt
 
 script:
  - nosetests -P tests/unit
