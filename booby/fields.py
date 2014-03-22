@@ -37,7 +37,8 @@ import collections
 from booby import (
     validators as builtin_validators,
     encoders as builtin_encoders,
-    decoders as builtin_decoders
+    decoders as builtin_decoders,
+    _utils
 )
 
 
@@ -48,7 +49,7 @@ class Field(object):
     :param default: This field `default`'s value.
 
         If passed a callable object then uses its return value as the
-        field's default. This is particularly useful when working with 
+        field's default. This is particularly useful when working with
         `mutable objects <http://effbot.org/zone/default-values.htm>`_.
 
         If `default` is a callable it can optionaly receive the owner
@@ -77,6 +78,15 @@ class Field(object):
             self.validators.append(builtin_validators.In(choices))
 
         self.validators.extend(validators)
+
+    def __repr__(self):
+        options = dict(self.options)
+        options['validators'] = self.validators
+
+        cls = type(self)
+
+        return '<{}.{}({})>'.format(cls.__module__, cls.__name__,
+                                    _utils.repr_options(options))
 
     def __get__(self, instance, owner):
         if instance is not None:

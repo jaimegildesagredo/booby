@@ -1,5 +1,4 @@
 nose
-sphinx
 coverage==3.6
 expects>=0.2,<0.3
 flake8

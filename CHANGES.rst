@@ -16,6 +16,15 @@ Highlights
 * A `Field` now can receive lists of callable objects, `encoders` and `decoders`, to perform serialization/deserialization.
 * Added a `List` field that can be used to create fields containing lists of objects (even models).
 
+0.5.2 (Mar 22, 2014)
+--------------------
+
+Highlights
+^^^^^^^^^^
+
+* Added readable `Field` instances repr. See `issue 20 <https://github.com/jaimegildesagredo/booby/issues/20>`_.
+* Added readable `Model` classes and instances repr.
+
 0.5.1 (Jan 31, 2014)
 --------------------
 
