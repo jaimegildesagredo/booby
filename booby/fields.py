@@ -34,7 +34,7 @@ The example below shows the most common fields and builtin validations::
 
 import collections
 
-from booby import validators as builtin_validators
+from booby import validators as builtin_validators, _utils
 
 
 class Field(object):
@@ -81,10 +81,7 @@ class Field(object):
         cls = type(self)
 
         return '<{}.{}({})>'.format(cls.__module__, cls.__name__,
-                                    self.__repr_options(options))
-
-    def __repr_options(self, options):
-        return ', '.join('{}={}'.format(k, v) for k, v in options.items())
+                                    _utils.repr_options(options))
 
     def __get__(self, instance, owner):
         if instance is not None:
