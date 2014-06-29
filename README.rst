@@ -6,6 +6,9 @@ Booby: data modeling and validation
 
 Booby is a standalone data `modeling` and `validation` library written in Python. Booby is under active development (visit `this blog post <http://jaimegildesagredo.github.io/2014/01/04/booby-05-introducing-inspection-api.html>`_ for more info and the roadmap) and licensed under the `Apache2 license <http://www.apache.org/licenses/LICENSE-2.0.html>`_, so feel free to `contribute <https://github.com/jaimegildesagredo/booby/pulls>`_ and `report errors and suggestions <https://github.com/jaimegildesagredo/booby/issues>`_.
 
+Usage
+-----
+
 See the sample code below to get an idea of the main features.
 
 .. code-block:: python
