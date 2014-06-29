@@ -1,8 +1,17 @@
 Booby: data modeling and validation
 ===================================
 
-.. image:: https://secure.travis-ci.org/jaimegildesagredo/booby.png?branch=master
-    :target: http://travis-ci.org/jaimegildesagredo/booby
+.. image:: http://img.shields.io/pypi/v/booby.svg
+    :target: https://pypi.python.org/pypi/booby
+    :alt: Latest version
+
+.. image:: http://img.shields.io/pypi/dm/booby.svg
+    :target: https://pypi.python.org/pypi/booby
+    :alt: Number of PyPI downloads
+
+.. image:: https://secure.travis-ci.org/jaimegildesagredo/booby.svg?branch=master
+t    :target: http://travis-ci.org/jaimegildesagredo/booby
+    :alt: Build status
 
 Booby is a standalone data `modeling` and `validation` library written in Python. Booby is under active development (visit `this blog post <http://jaimegildesagredo.github.io/2014/01/04/booby-05-introducing-inspection-api.html>`_ for more info and the roadmap) and licensed under the `Apache2 license <http://www.apache.org/licenses/LICENSE-2.0.html>`_, so feel free to `contribute <https://github.com/jaimegildesagredo/booby/pulls>`_ and `report errors and suggestions <https://github.com/jaimegildesagredo/booby/issues>`_.
 
