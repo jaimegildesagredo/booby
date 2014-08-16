@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from expects import expect
+from expects import *
 from . import mixins
 from .._helpers import stub_validator
 
@@ -11,8 +11,8 @@ from booby import validators, fields, models, errors
 
 class TestRequired(object):
     def test_when_value_is_none_then_raises_validation_error(self):
-        expect(lambda: self.validator(None)).to.raise_error(
-            errors.ValidationError, 'is required')
+        expect(lambda: self.validator(None)).to(raise_error(
+            errors.ValidationError, 'is required'))
 
     def test_when_value_is_not_none_then_does_not_raise(self):
         self.validator('foo')
@@ -23,8 +23,8 @@ class TestRequired(object):
 
 class TestIn(object):
     def test_when_value_is_not_in_choices_then_raises_validation_error(self):
-        expect(lambda: self.validator('baz')).to.raise_error(
-            errors.ValidationError, "should be in \[u?'foo', u?'bar'\]")
+        expect(lambda: self.validator('baz')).to(raise_error(
+            errors.ValidationError, match("should be in \[u?'foo', u?'bar'\]")))
 
     def test_when_value_is_in_choices_then_does_not_raise(self):
         self.validator('bar')
@@ -46,8 +46,8 @@ class TestString(mixins.String):
 
 class TestInteger(object):
     def test_when_value_is_not_an_integer_then_raises_validation_error(self):
-        expect(lambda: self.validator('foo')).to.raise_error(
-            errors.ValidationError, 'should be an integer')
+        expect(lambda: self.validator('foo')).to(raise_error(
+            errors.ValidationError, 'should be an integer'))
 
     def test_when_value_is_an_integer_then_does_not_raise(self):
         self.validator(1)
@@ -61,8 +61,8 @@ class TestInteger(object):
 
 class TestFloat(object):
     def test_when_value_is_not_a_float_then_raises_validation_error(self):
-        expect(lambda: self.validator('foo')).to.raise_error(
-            errors.ValidationError, 'should be a float')
+        expect(lambda: self.validator('foo')).to(raise_error(
+            errors.ValidationError, 'should be a float'))
 
     def test_when_value_is_a_float_then_does_not_raise(self):
         self.validator(1.0)
@@ -76,8 +76,8 @@ class TestFloat(object):
 
 class TestBoolean(object):
     def test_when_value_is_not_a_boolean_then_raises_validation_error(self):
-        expect(lambda: self.validator('foo')).to.raise_error(
-            errors.ValidationError, 'should be a boolean')
+        expect(lambda: self.validator('foo')).to(raise_error(
+            errors.ValidationError, 'should be a boolean'))
 
     def test_when_value_is_a_boolean_then_does_not_raises(self):
         self.validator(False)
@@ -91,16 +91,16 @@ class TestBoolean(object):
 
 class TestModel(object):
     def test_when_value_is_not_instance_of_model_then_raises_validation_error(self):
-        expect(lambda: self.validator(object())).to.raise_error(
-            errors.ValidationError, "should be an instance of 'User'")
+        expect(lambda: self.validator(object())).to(raise_error(
+            errors.ValidationError, "should be an instance of 'User'"))
 
     def test_when_model_validate_raises_validation_error_then_raises_validation_error(self):
         class InvalidUser(User):
             def validate(self):
                 raise errors.ValidationError()
 
-        expect(lambda: self.validator(InvalidUser())).to.raise_error(
-            errors.ValidationError)
+        expect(lambda: self.validator(InvalidUser())).to(raise_error(
+            errors.ValidationError))
 
     def test_when_model_validate_does_not_raise_then_does_not_raise(self):
         self.validator(User())

@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from expects import expect
+from expects import *
 
 from booby import models, fields, errors
 
@@ -17,31 +17,32 @@ class TestValidation(object):
         def callback():
             User().validate()
 
-        expect(callback).to.raise_error(errors.ValidationError, 'required')
+        expect(callback).to(raise_error(
+            errors.ValidationError, end_with('required')))
 
     def test_should_fail_validation_if_karma_is_not_an_integer(self):
         def callback():
             user = User(login='root', karma='max')
             user.validate()
 
-        expect(callback).to.raise_error(errors.ValidationError,
-                                        'should be an integer')
+        expect(callback).to(raise_error(errors.ValidationError,
+                                        'should be an integer'))
 
     def test_should_fail_validation_if_token_key_is_not_a_string(self):
         def callback():
             user = User(login='root', token=Token(key=1))
             user.validate()
 
-        expect(callback).to.raise_error(errors.ValidationError,
-                                        'should be a string')
+        expect(callback).to(raise_error(errors.ValidationError,
+                                        'should be a string'))
 
     def test_should_fail_validation_if_invalid_email(self):
         def callback():
             user = User(login='root', email='@localhost')
             user.validate()
 
-        expect(callback).to.raise_error(errors.ValidationError,
-                                        'should be a valid email')
+        expect(callback).to(raise_error(errors.ValidationError,
+                                        'should be a valid email'))
 
 
 class TestEncode(object):
@@ -50,7 +51,7 @@ class TestEncode(object):
 
         result = user.encode()
 
-        expect(result['token']).to.have.keys(IRRELEVANT_TOKEN)
+        expect(result['token']).to(have_keys(IRRELEVANT_TOKEN))
 
     def test_should_return_dict_with_encoded_friends(self):
         friend1, friend2 = User(), User()
@@ -58,7 +59,8 @@ class TestEncode(object):
 
         result = user.encode()
 
-        expect(result['friends']).to.equal([friend1.encode(), friend2.encode()])
+        expect(result['friends']).to(equal(
+            [friend1.encode(), friend2.encode()]))
 
 
 class Token(models.Model):

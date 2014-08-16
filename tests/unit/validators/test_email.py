@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from expects import expect
+from expects import *
 from . import mixins
 
 from booby import validators, errors
@@ -22,16 +22,16 @@ class TestEmail(mixins.String):
         self.validator('foo@example')
 
     def test_should_fail_if_nothing_before_at_sign(self):
-        expect(lambda: self.validator('@example')).to.raise_error(
-            errors.ValidationError, 'should be a valid email')
+        expect(lambda: self.validator('@example')).to(raise_error(
+            errors.ValidationError, 'should be a valid email'))
 
     def test_should_fail_if_value_doesnt_have_at_sign(self):
-        expect(lambda: self.validator('foo%example.com')).to.raise_error(
-            errors.ValidationError, 'should be a valid email')
+        expect(lambda: self.validator('foo%example.com')).to(raise_error(
+            errors.ValidationError, 'should be a valid email'))
 
     def test_should_fail_if_empty_string(self):
-        expect(lambda: self.validator('')).to.raise_error(
-            errors.ValidationError, 'should be a valid email')
+        expect(lambda: self.validator('')).to(raise_error(
+            errors.ValidationError, 'should be a valid email'))
 
     def setup(self):
         self.validator = validators.Email()

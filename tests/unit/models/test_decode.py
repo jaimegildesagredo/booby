@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from expects import expect
+from expects import *
 
 from booby import fields, models
 
@@ -22,8 +22,8 @@ class TestDecodeModel(object):
             'email': IRRELEVANT_EMAIL
         })
 
-        expect(result).to.have.keys(name=DECODED_IRRELEVANT_NAME,
-                                    email=DECODED_IRRELEVANT_EMAIL)
+        expect(result).to(have_keys(name=DECODED_IRRELEVANT_NAME,
+                                    email=DECODED_IRRELEVANT_EMAIL))
 
     def test_should_return_dict_with_model_mapped_fields(self):
         class User(models.Model):
@@ -35,8 +35,8 @@ class TestDecodeModel(object):
             'emailAddress': IRRELEVANT_EMAIL
         })
 
-        expect(result).to.have.keys(name=IRRELEVANT_NAME,
-                                    email=IRRELEVANT_EMAIL)
+        expect(result).to(have_keys(name=IRRELEVANT_NAME,
+                                    email=IRRELEVANT_EMAIL))
 
     def test_should_return_dict_with_model_fields_if_field_is_missing(self):
         class User(models.Model):
@@ -45,7 +45,7 @@ class TestDecodeModel(object):
 
         result = User.decode({'name': IRRELEVANT_NAME})
 
-        expect(result).to.have.keys(name=IRRELEVANT_NAME)
+        expect(result).to(have_keys(name=IRRELEVANT_NAME))
 
 
 class StubField(fields.Field):

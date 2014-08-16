@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from expects import expect
+from expects import *
 
 from booby import models, fields, encoders
 
@@ -18,12 +18,12 @@ class TestEncode(object):
 
         result = self.encoder(user)
 
-        expect(result).to.equal(user.encode())
+        expect(result).to(equal(user.encode()))
 
     def test_should_return_none_if_value_is_none(self):
         result = self.encoder(None)
 
-        expect(result).to.be.none
+        expect(result).to(be_none)
 
     def setup(self):
         self.encoder = encoders.Model()

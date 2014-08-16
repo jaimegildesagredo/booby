@@ -2,7 +2,7 @@
 
 import datetime
 
-from expects import expect
+from expects import *
 
 from booby import validators, errors
 
@@ -21,12 +21,12 @@ class TestDateTime(object):
     def test_should_fail_if_value_is_a_string(self):
         callback = lambda: self.validator(IRRELEVANT_STRING)
 
-        expect(callback).to.raise_error(errors.ValidationError)
+        expect(callback).to(raise_error(errors.ValidationError))
 
     def test_should_fail_if_value_is_a_date(self):
         callback = lambda: self.validator(IRRELEVANT_DATE)
 
-        expect(callback).to.raise_error(errors.ValidationError)
+        expect(callback).to(raise_error(errors.ValidationError))
 
     def setup(self):
         self.validator = validators.DateTime()

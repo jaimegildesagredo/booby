@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from expects import expect
+from expects import *
 
 from booby import fields, models
 
@@ -21,8 +21,8 @@ class TestEncodeModel(object):
 
         result = user.encode()
 
-        expect(result).to.have.keys(name=ENCODED_IRRELEVANT_NAME,
-                                    email=ENCODED_IRRELEVANT_EMAIL)
+        expect(result).to(have_keys(name=ENCODED_IRRELEVANT_NAME,
+                                    email=ENCODED_IRRELEVANT_EMAIL))
 
     def test_should_return_dict_with_model_mapped_fields(self):
         class User(models.Model):
@@ -33,8 +33,8 @@ class TestEncodeModel(object):
 
         result = user.encode()
 
-        expect(result).to.have.keys(username=IRRELEVANT_NAME,
-                                    emailAddress=IRRELEVANT_EMAIL)
+        expect(result).to(have_keys(username=IRRELEVANT_NAME,
+                                    emailAddress=IRRELEVANT_EMAIL))
 
 
 class StubField(fields.Field):

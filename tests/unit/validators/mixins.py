@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from expects import expect
+from expects import *
 
 from booby import errors
 
@@ -10,5 +10,5 @@ class String(object):
         self.validator(None)
 
     def test_should_fail_if_value_is_not_a_string(self):
-        expect(lambda: self.validator(1)).to.raise_error(
-            errors.ValidationError, 'should be a string')
+        expect(lambda: self.validator(1)).to(raise_error(
+            errors.ValidationError, 'should be a string'))
