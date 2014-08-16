@@ -1,4 +1,4 @@
 nose
 coverage==3.6
--e git+git://github.com/jaimegildesagredo/expects.git#egg=expects
+expects>=0.2,<0.3
 flake8

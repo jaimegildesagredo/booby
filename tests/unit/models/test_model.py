@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import json
 
 from expects import expect
-from ._helpers import MyList
+from .._helpers import MyList, MyDict
 
 from booby import errors, fields, models
 
@@ -242,7 +242,7 @@ class UserWithEmail(UserMixin, models.Model):
 
 
 class UserWithList(User):
-    tokens = fields.Field()
+    tokens = fields.List()
 
 
 class Token(models.Model):

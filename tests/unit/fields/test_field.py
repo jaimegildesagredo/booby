@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import collections
 
 from expects import expect
-from ._helpers import Spy, stub_validator
+from .._helpers import Spy, stub_validator
 
 from booby import fields, errors, models
 
+IRRELEVANT_VALUE = 'irrelevant value'
+NUMERIC_STRING_VALUE = '137'
 
-class TestFieldInit(object):
-    def test_when_kwargs_then_field_options_is_a_dict_with_these_args(self):
+
+class TestOptions(object):
+    def test_should_be_passed_kwargs_dict(self):
         kwargs = dict(required=True, primary=True, foo='bar')
 
         field = fields.Field(**kwargs)
 
         expect(field.options).to.equal(kwargs)
 
-    def test_when_no_kwargs_then_field_options_is_an_empty_dict(self):
+    def test_should_be_empty_dict_if_no_kwargs_passed(self):
         field = fields.Field()
 
         expect(field.options).to.equal({})
@@ -84,53 +86,6 @@ class TestFieldValues(object):
         expect(User.name).to.be.a(fields.Field)
 
 
-class TestEmbeddedFieldDescriptor(object):
-    def test_when_set_field_value_with_dict_then_value_is_embedded_object_with_dict_values(self):
-        self.group.admin = {'name': 'foo', 'email': 'foo@example.com'}
-
-        expect(self.group.admin).to.be.an(User)
-        expect(self.group.admin).to.have.properties(
-            name='foo', email='foo@example.com')
-
-    def test_when_set_field_value_with_dict_with_invalid_field_then_raises_field_error(self):
-        def callback():
-            self.group.admin = {'name': 'foo', 'foo': 'bar'}
-
-        expect(callback).to.raise_error(errors.FieldError, 'foo')
-
-    def test_when_set_field_value_with_mutable_mapping_then_value_is_model_instance_with_dict_values(self):
-        self.group.admin = MyDict(name='foo', email='foo@example.com')
-
-        expect(self.group.admin).to.be.an(User)
-        expect(self.group.admin).to.have.properties(
-            name='foo', email='foo@example.com')
-
-    def test_when_set_field_value_with_not_dict_object_then_value_is_given_object(self):
-        user = User(name='foo', email='foo@example.com')
-        self.group.admin = user
-
-        expect(self.group.admin).to.be(user)
-
-    def test_when_set_field_with_not_model_instance_then_value_is_given_object(self):
-        user = object()
-        self.group.admin = user
-
-        expect(self.group.admin).to.be(user)
-
-    def setup(self):
-        self.group = Group()
-
-
-class User(models.Model):
-    name = fields.String(default='nobody')
-    email = fields.String()
-
-
-class Group(models.Model):
-    name = fields.String()
-    admin = fields.Embedded(User)
-
-
 class TestValidateField(object):
     def test_when_validate_without_validation_errors_then_does_not_raise(self):
         field = fields.Field(stub_validator, stub_validator)
@@ -187,37 +142,58 @@ class TestFieldBuiltinValidations(object):
         field.validate('foo')
 
 
-class TestEmbeddedFieldBuildtinValidators(object):
-    def test_when_value_is_not_instance_of_model_then_raises_validation_error(self):
-        expect(lambda: self.field.validate(object())).to.raise_error(
-            errors.ValidationError, 'instance of')
+class TestEncode(object):
+    def test_should_return_value_if_there_are_not_encoders(self):
+        field = fields.Field()
 
-    def test_when_embedded_model_field_has_invalid_value_then_raises_validation_error(self):
-        expect(lambda: self.field.validate(User(name=1))).to.raise_error(
-            errors.ValidationError, 'string')
+        expect(field.encode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE)
 
-    def test_when_embedded_model_validates_then_does_not_raise(self):
-        self.field.validate(User())
+    def test_should_return_value_returned_by_encoder(self):
+        def encoder(value):
+            return value.swapcase()
 
-    def setup(self):
-        self.field = fields.Embedded(User)
+        field = fields.Field(encoders=[encoder])
+
+        expect(field.encode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE.swapcase())
+
+    def test_should_return_value_returned_by_encoders_in_order(self):
+        def encoder1(value):
+            return int(value)
+
+        def encoder2(value):
+            return str(value)
+
+        field = fields.Field(encoders=[encoder1, encoder2])
+
+        expect(field.encode(NUMERIC_STRING_VALUE)).to.equal(NUMERIC_STRING_VALUE)
 
 
-class MyDict(collections.MutableMapping):
-    def __init__(self, **kwargs):
-        self._store = kwargs
+class TestDecode(object):
+    def test_should_return_value_if_there_are_not_decoders(self):
+        field = fields.Field()
 
-    def __getitem__(self, key):
-        return self._store[key]
+        expect(field.decode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE)
 
-    def __setitem__(self, key, value):
-        pass
+    def test_should_return_value_returned_by_decoder(self):
+        def decoder(value):
+            return value.swapcase()
 
-    def __delitem__(self, key):
-        pass
+        field = fields.Field(decoders=[decoder])
 
-    def __len__(self):
-        pass
+        expect(field.decode(IRRELEVANT_VALUE)).to.equal(IRRELEVANT_VALUE.swapcase())
 
-    def __iter__(self):
-        return iter(self._store)
+    def test_should_return_value_returned_by_decoders_in_order(self):
+        def decoder1(value):
+            return int(value)
+
+        def decoder2(value):
+            return str(value)
+
+        field = fields.Field(decoders=[decoder1, decoder2])
+
+        expect(field.decode(NUMERIC_STRING_VALUE)).to.equal(NUMERIC_STRING_VALUE)
+
+
+class User(models.Model):
+    name = fields.String(default='nobody')
+    email = fields.String()

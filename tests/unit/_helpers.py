@@ -33,3 +33,23 @@ class MyList(collections.MutableSequence):
 
     def insert(self, index, value):
         pass
+
+
+class MyDict(collections.MutableMapping):
+    def __init__(self, **kwargs):
+        self._store = kwargs
+
+    def __getitem__(self, key):
+        return self._store[key]
+
+    def __setitem__(self, key, value):
+        pass
+
+    def __delitem__(self, key):
+        pass
+
+    def __len__(self):
+        pass
+
+    def __iter__(self):
+        return iter(self._store)

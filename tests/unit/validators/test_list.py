@@ -15,12 +15,11 @@ class TestList(object):
     def test_should_pass_if_value_is_a_mutable_sequence(self):
         self.validator(MyList('foo', 'bar'))
 
+    def test_should_pass_if_value_is_none(self):
+        self.validator(None)
+
     def test_should_fail_if_value_is_not_a_list(self):
         expect(lambda: self.validator(object())).to.raise_error(
-            errors.ValidationError, 'should be a list')
-
-    def test_should_fail_if_value_is_none(self):
-        expect(lambda: self.validator(None)).to.raise_error(
             errors.ValidationError, 'should be a list')
 
     def test_should_fail_if_inner_validator_fails(self):

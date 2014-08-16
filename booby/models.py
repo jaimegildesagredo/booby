@@ -41,7 +41,7 @@ Something like this::
 import json
 import collections
 
-from booby import fields, errors, _utils
+from booby import mixins, fields, errors, _utils
 
 
 class ModelMeta(type):
@@ -64,7 +64,7 @@ class ModelMeta(type):
                                     _utils.repr_options(cls._fields))
 
 
-class Model(object):
+class Model(mixins.Encoder):
     """The `Model` class. All Booby models should subclass this.
 
     By default the `Model's` :func:`__init__` takes a list of keyword arguments
@@ -204,3 +204,19 @@ class Model(object):
         """
 
         return json.dumps(dict(self), *args, **kwargs)
+
+    @classmethod
+    def decode(self, raw):
+        result = {}
+
+        for name, field in self._fields.items():
+            try:
+                value = raw[field.options.get('name', name)]
+            except KeyError:
+                continue
+            else:
+                value = field.decode(value)
+
+            result[name] = value
+
+        return result

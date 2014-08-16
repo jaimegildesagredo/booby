@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The `fields` module contains a list of `Field` classes
+"""The :mod:`fields` module contains a list of `Field` classes
 for model's definition.
 
 The example below shows the most common fields and builtin validations::
@@ -34,7 +34,12 @@ The example below shows the most common fields and builtin validations::
 
 import collections
 
-from booby import validators as builtin_validators, _utils
+from booby import (
+    validators as builtin_validators,
+    encoders as builtin_encoders,
+    decoders as builtin_decoders,
+    _utils
+)
 
 
 class Field(object):
@@ -114,6 +119,18 @@ class Field(object):
         for validator in self.validators:
             validator(value)
 
+    def decode(self, value):
+        for decoder in self.options.get('decoders', []):
+            value = decoder(value)
+
+        return value
+
+    def encode(self, value):
+        for encoder in self.options.get('encoders', []):
+            value = encoder(value)
+
+        return value
+
 
 class String(Field):
     """:class:`Field` subclass with builtin `string` validation."""
@@ -150,6 +167,9 @@ class Embedded(Field):
     """
 
     def __init__(self, model, *args, **kwargs):
+        kwargs.setdefault('encoders', []).append(builtin_encoders.Model())
+        kwargs.setdefault('decoders', []).append(builtin_decoders.Model(model))
+
         super(Embedded, self).__init__(builtin_validators.Model(model), *args, **kwargs)
 
         self.model = model
@@ -166,3 +186,18 @@ class Email(Field):
 
     def __init__(self, *args, **kwargs):
         super(Email, self).__init__(builtin_validators.Email(), *args, **kwargs)
+
+
+class List(Field):
+    """:class:`Field` subclass with builtin `list` validation
+    and default value.
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('default', list)
+        kwargs.setdefault('encoders', []).append(builtin_encoders.List())
+
+        super(List, self).__init__(
+            builtin_validators.List(*kwargs.get('inner_validators', [])),
+            *args, **kwargs)
