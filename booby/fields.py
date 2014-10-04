@@ -57,6 +57,7 @@ class Field(object):
 
     :param required: If `True` this field value should not be `None`.
     :param choices: A `list` of values where this field value should be in.
+    :param read_only: If `True`, the value is treated normally in decoding but omitted during encoding.
     :param \*validators: A list of field :mod:`validators` as positional arguments.
 
     """
