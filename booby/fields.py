@@ -57,6 +57,7 @@ class Field(object):
 
     :param required: If `True` this field value should not be `None`.
     :param choices: A `list` of values where this field value should be in.
+    :param name: Specify an alternate key name to use when decoding and encoding.
     :param \*validators: A list of field :mod:`validators` as positional arguments.
 
     """
