@@ -9,6 +9,7 @@ IRRELEVANT_NAME = 'irrelevant name'
 IRRELEVANT_EMAIL = 'irrelevant email'
 DECODED_IRRELEVANT_NAME = 'decoded irrelevant name'
 DECODED_IRRELEVANT_EMAIL = 'decoded irrelevant email'
+IRRELEVANT_DATE = 'irrelevant date'
 
 
 class TestDecodeModel(object):
@@ -46,6 +47,21 @@ class TestDecodeModel(object):
         result = User.decode({'name': IRRELEVANT_NAME})
 
         expect(result).to(have_keys(name=IRRELEVANT_NAME))
+
+    def test_should_include_read_only_field(self):
+        class User(models.Model):
+            name = fields.Field()
+            last_update = fields.Field(read_only=True)
+
+        user = User(name=IRRELEVANT_NAME, last_update=IRRELEVANT_DATE)
+
+        result = User.decode({
+            'name': IRRELEVANT_NAME,
+            'last_update': IRRELEVANT_DATE
+        })
+
+        expect(result).to(have_keys(name=IRRELEVANT_NAME,
+                                    last_update=IRRELEVANT_DATE))
 
 
 class StubField(fields.Field):

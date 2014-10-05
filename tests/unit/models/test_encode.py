@@ -9,6 +9,7 @@ IRRELEVANT_NAME = 'irrelevant name'
 IRRELEVANT_EMAIL = 'irrelevant email'
 ENCODED_IRRELEVANT_NAME = 'encoded irrelevant name'
 ENCODED_IRRELEVANT_EMAIL = 'encoded irrelevant email'
+IRRELEVANT_DATE = 'irrelevant date'
 
 
 class TestEncodeModel(object):
@@ -35,6 +36,18 @@ class TestEncodeModel(object):
 
         expect(result).to(have_keys(username=IRRELEVANT_NAME,
                                     emailAddress=IRRELEVANT_EMAIL))
+
+    def test_should_skip_read_only_field(self):
+        class User(models.Model):
+            name = fields.Field()
+            last_update = fields.Field(read_only=True)
+
+        user = User(name=IRRELEVANT_NAME, last_update=IRRELEVANT_DATE)
+
+        result = user.encode()
+
+        expect(result).to(have_keys(name=IRRELEVANT_NAME))
+        expect(result).not_to(have_keys(last_update=IRRELEVANT_DATE))
 
 
 class StubField(fields.Field):
