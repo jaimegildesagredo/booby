@@ -1,11 +1,19 @@
 Booby: data modeling and validation
 ===================================
 
-.. image:: http://img.shields.io/pypi/v/booby.svg
+.. image:: https://img.shields.io/pypi/v/booby.svg
     :target: https://pypi.python.org/pypi/booby
     :alt: Latest version
 
-.. image:: http://img.shields.io/pypi/dm/booby.svg
+.. image:: https://readthedocs.org/projects/booby/badge
+    :target: http://booby.readthedocs.org/en/latest
+    :alt: Docs
+
+.. image:: https://img.shields.io/badge/Licence-Apache2-brightgreen.svg
+    :target: https://www.tldrlegal.com/l/apache2
+    :alt: License
+
+.. image:: https://img.shields.io/pypi/dm/booby.svg
     :target: https://pypi.python.org/pypi/booby
     :alt: Number of PyPI downloads
 
