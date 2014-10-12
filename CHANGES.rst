@@ -15,6 +15,7 @@ Highlights
 * The `Model` class now defines a `decode` and `encode` methods with serialization/deserialization support.
 * A `Field` now can receive lists of callable objects, `encoders` and `decoders`, to perform serialization/deserialization.
 * Added a `List` field that can be used to create fields containing lists of objects (even models).
+* Datetime validator, encoder, and decoder were added.
 
 0.5.2 (Mar 22, 2014)
 --------------------
