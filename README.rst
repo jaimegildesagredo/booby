@@ -118,8 +118,3 @@ Changes
 -------
 
 See `Changes <https://booby.readthedocs.org/en/latest/changes.html>`_.
-
-Documentation
--------------
-
-Booby docs are hosted on `Read The Docs <https://booby.readthedocs.org>`_.
