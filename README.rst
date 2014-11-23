@@ -32,20 +32,23 @@ See the sample code below to get an idea of the main features.
 
     from booby import Model, fields
 
+
     class Token(Model):
         key = fields.String()
         secret = fields.String()
+
+
+    class Address(Model):
+        line_1 = fields.String()
+        line_2 = fields.String()
+
 
     class User(Model):
         login = fields.String(required=True)
         name = fields.String()
         email = fields.Email()
         token = fields.Embedded(Token, required=True)
-        addresses = fields.Field(default=list)
-
-    class Address(Model):
-        line_1 = fields.String()
-        line_2 = fields.String()
+        addresses = fields.Collection(Address)
 
     jack = User(
         login='jack',
@@ -56,8 +59,8 @@ See the sample code below to get an idea of the main features.
             'secret': 'ds5ds4xxx'
         },
         addresses=[
-            Address(line_1='Main Street'),
-            Address(line_1='Main St')
+            {'line_1': 'Main Street'},
+            {'line_1': 'Main St'}
         ]
     )
 
