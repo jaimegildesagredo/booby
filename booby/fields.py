@@ -203,3 +203,30 @@ class List(Field):
         super(List, self).__init__(
             builtin_validators.List(*kwargs.get('inner_validators', [])),
             *args, **kwargs)
+
+
+class Collection(List):
+    """:class:`List` field subclass with builtin `list of models`
+    validation.
+
+    """
+
+    def __init__(self, model, *args, **kwargs):
+        kwargs['inner_validators'] = [builtin_validators.Model(model)]
+        kwargs.setdefault('decoders', []).append(builtin_decoders.Collection(model))
+        super(Collection, self).__init__(*args, **kwargs)
+        self.model = model
+
+    def __set__(self, instance, value):
+        if isinstance(value, collections.MutableSequence):
+            value = self._resolve(value)
+
+        super(Collection, self).__set__(instance, value)
+
+    def _resolve(self, value):
+        result = []
+        for item in value:
+            if isinstance(item, collections.MutableMapping):
+                item = self.model(**item)
+            result.append(item)
+        return result

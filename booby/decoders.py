@@ -21,21 +21,26 @@ from . import errors
 from .helpers import nullable
 
 
-class Model(object):
+class Decoder(object):
+    def __call__(self, value):
+        return self.decode(value)
+
+
+class Model(Decoder):
     def __init__(self, model):
-        self.model = model
+        self._model = model
 
     @nullable
-    def __call__(self, value):
-        return self.model.decode(value)
+    def decode(self, value):
+        return self._model.decode(value)
 
 
-class DateTime(object):
+class DateTime(Decoder):
     def __init__(self, format=None):
         self._format = format
 
     @nullable
-    def __call__(self, value):
+    def decode(self, value):
         format = self._format_for(value)
 
         try:
@@ -56,3 +61,11 @@ class DateTime(object):
 
     def _has_microseconds(self, value):
         return re.match('^.*\.[0-9]+$', value) is not None
+
+
+class Collection(Decoder):
+    def __init__(self, model):
+        self._model = model
+
+    def decode(self, value):
+        return [self._model.decode(item) for item in value]
