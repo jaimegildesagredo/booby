@@ -4,6 +4,13 @@ Changes
 0.7.0 (Not released yet)
 ------------------------
 
+Backwards-incompatible
+^^^^^^^^^^^^^^^^^^^^^^
+
+* The ``List`` encoder no longers encodes models. To achieve the old behavior pass the ``Model`` encoder as an argument instead::
+
+    a_fields = fields.Field(encoders=[encoders.List(encoders.Model())])
+
 0.6.0 (Oct 12, 2014)
 --------------------
 
