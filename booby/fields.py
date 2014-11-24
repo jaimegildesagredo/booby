@@ -206,8 +206,33 @@ class List(Field):
 
 
 class Collection(Field):
-    """:class:`List` field subclass with builtin `list of models`
-    validation.
+    """:class:`Field` subclass with builtin `list of` :class:`models.Model`
+    validation, encoding and decoding.
+
+    Example::
+
+        class Token(Model):
+            key = String()
+            secret = String()
+
+        class User(Model):
+            tokens = Collection(Token)
+
+
+        user = User({
+            'tokens': [
+                {
+                    'key': 'xxx',
+                    'secret': 'yyy'
+                },
+                {
+                    'key': 'zzz',
+                    'secret': 'xxx'
+                },
+            ]
+        })
+
+        user.tokens.append(Token(key='yyy', secret='xxx'))
 
     """
 
