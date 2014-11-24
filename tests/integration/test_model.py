@@ -54,13 +54,13 @@ class TestEncode(object):
         expect(result['token']).to(have_keys(IRRELEVANT_TOKEN))
 
     def test_should_return_dict_with_encoded_friends(self):
-        friend1, friend2 = User(), User()
-        user = User(friends=[friend1, friend2])
+        friends =  [Friend(), Friend()]
+        user = User(friends=friends)
 
         result = user.encode()
 
         expect(result['friends']).to(equal(
-            [friend1.encode(), friend2.encode()]))
+            [friends[0].encode(), friends[1].encode()]))
 
 
 class Token(models.Model):
@@ -68,9 +68,13 @@ class Token(models.Model):
     secret = fields.String()
 
 
+class Friend(models.Model):
+    name = fields.String()
+
+
 class User(models.Model):
     login = fields.String(required=True)
     email = fields.Email()
     karma = fields.Integer()
     token = fields.Embedded(Token)
-    friends = fields.List()
+    friends = fields.Collection(Friend)

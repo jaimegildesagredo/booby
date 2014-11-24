@@ -205,16 +205,18 @@ class List(Field):
             *args, **kwargs)
 
 
-class Collection(List):
+class Collection(Field):
     """:class:`List` field subclass with builtin `list of models`
     validation.
 
     """
 
     def __init__(self, model, *args, **kwargs):
-        kwargs['inner_validators'] = [builtin_validators.Model(model)]
+        kwargs.setdefault('default', list)
+
+        kwargs.setdefault('encoders', []).append(builtin_encoders.Collection())
         kwargs.setdefault('decoders', []).append(builtin_decoders.Collection(model))
-        super(Collection, self).__init__(*args, **kwargs)
+        super(Collection, self).__init__(builtin_validators.List(builtin_validators.Model(model)), *args, **kwargs)
         self.model = model
 
     def __set__(self, instance, value):

@@ -63,9 +63,21 @@ class DateTime(Decoder):
         return re.match('^.*\.[0-9]+$', value) is not None
 
 
-class Collection(Decoder):
-    def __init__(self, model):
-        self._model = model
+class List(Decoder):
+    def __init__(self, *decoders):
+        self._decoders = decoders
 
     def decode(self, value):
-        return [self._model.decode(item) for item in value]
+        result = []
+        for item in value:
+            for decoder in self._decoders:
+                item = decoder(item)
+
+            result.append(item)
+
+        return result
+
+
+class Collection(List):
+    def __init__(self, model):
+        super(Collection, self).__init__(Model(model))

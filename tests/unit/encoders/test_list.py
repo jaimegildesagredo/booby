@@ -20,12 +20,20 @@ class TestEncode(object):
 
         expect(result).to(equal(IRRELEVANT_LIST))
 
+    def test_should_return_a_list_of_models(self):
+        users = [User(), User()]
+
+        result = self.encoder(users)
+
+        expect(result).to(equal(users))
+
     def test_should_return_a_list_of_encoded_models(self):
-        user1, user2 = User(), User()
+        users = [User(), User()]
 
-        result = self.encoder([user1, user2])
+        self.encoder = encoders.List(encoders.Model())
+        result = self.encoder(users)
 
-        expect(result).to(equal([user1.encode(), user2.encode()]))
+        expect(result).to(equal([users[0].encode(), users[1].encode()]))
 
     def test_should_return_none_if_value_is_none(self):
         result = self.encoder(None)

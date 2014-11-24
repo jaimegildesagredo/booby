@@ -20,29 +20,48 @@ from . import mixins, errors
 from .helpers import nullable
 
 
-class Model(object):
-    @nullable
+class Encoder(object):
     def __call__(self, value):
+        return self.encode(value)
+
+
+class Model(Encoder):
+    @nullable
+    def encode(self, value):
         return value.encode()
 
 
-class List(object):
+class List(Encoder):
+    def __init__(self, *encoders):
+        self._encoders = encoders
+
     @nullable
-    def __call__(self, value):
+    def encode(self, value):
         if not isinstance(value, collections.MutableSequence):
             raise errors.EncodeError()
 
-        return [item.encode() if isinstance(item, mixins.Encoder) else item
-                for item in value]
+        result = []
+        for item in value:
+            for encoder in self._encoders:
+                item = encoder(item)
+
+            result.append(item)
+
+        return result
 
 
-class DateTime(object):
+class DateTime(Encoder):
     def __init__(self, format=None):
         self._format = format
 
     @nullable
-    def __call__(self, value):
+    def encode(self, value):
         if self._format is None:
             return value.isoformat()
 
         return value.strftime(self._format)
+
+
+class Collection(List):
+    def __init__(self):
+        super(Collection, self).__init__(Model())
