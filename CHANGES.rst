@@ -12,6 +12,28 @@ Backwards-incompatible
     class User(Model):
         tokens = fields.Field(encoders=[encoders.List(encoders.Model())])
 
+Highlights
+^^^^^^^^^^
+
+* Added a ``Collection`` field that works like ``Embedded`` for lists of models::
+
+    class User(Model):
+        tokens = fields.Collection(Token)
+
+    user = User({
+        'tokens': [
+            {
+                'key': 'xxx',
+                'secret': 'yyy'
+            }
+        ]
+    })
+
+    user.tokens.append(Token(key='zzz', secret='www'))
+    user.validate()
+
+See `the docs <http://booby.readthedocs.org/en/latest/fields.html#fields.Collection>`_ for more info.
+
 0.6.0 (Oct 12, 2014)
 --------------------
 
