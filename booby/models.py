@@ -179,7 +179,11 @@ class Model(mixins.Encoder):
         """
 
         for name, field in self._fields.items():
-            field.validate(getattr(self, name))
+            try:
+              field.validate(getattr(self, name))
+            except errors.ValidationError as e:
+              raise errors.ValidationError('{} {}'.format(name, e))
+
 
     @property
     def validation_errors(self):
