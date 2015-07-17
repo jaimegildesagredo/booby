@@ -1,4 +1,4 @@
 nose
 coverage==3.6
-expects
+expects>=0.8.0rc1
 flake8
