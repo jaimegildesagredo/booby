@@ -177,7 +177,6 @@ class TestModelToDict(object):
 
         user = dict(UserWithToken(name='foo', email='roo@example.com',
                                   token=self.token1))
-
         expect(user).to(have_keys(
             name='foo',
             email='roo@example.com',

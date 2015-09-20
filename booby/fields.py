@@ -245,7 +245,7 @@ class Collection(Field):
         self.model = model
 
     def __set__(self, instance, value):
-        if isinstance(value, collections.MutableSequence):
+        if hasattr(value, '__iter__'):
             value = self._resolve(value)
 
         super(Collection, self).__set__(instance, value)

@@ -157,7 +157,7 @@ class List(Validator):
 
     @nullable
     def validate(self, value):
-        if not isinstance(value, collections.MutableSequence):
+        if not hasattr(value, '__iter__'):
             raise errors.ValidationError('should be a list')
 
         for i in value:
