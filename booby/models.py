@@ -118,7 +118,7 @@ class Model(mixins.Encoder):
     def _encode_iterable(self, sequence):
         result = []
 
-        if isinstance(sequence, dict):
+        if isinstance(sequence, (dict, basestring)):
             # Although iterable, dictionaries are a special
             # case and should be used as-is
             return sequence

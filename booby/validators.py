@@ -157,7 +157,9 @@ class List(Validator):
 
     @nullable
     def validate(self, value):
-        if not hasattr(value, '__iter__'):
+        # Note: Strings are iterable in python3, but we are not going
+        # to count strings as valid lists here.
+        if not hasattr(value, '__iter__') or isinstance(value, basestring):
             raise errors.ValidationError('should be a list')
 
         for i in value:
