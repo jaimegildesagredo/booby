@@ -49,6 +49,9 @@ class ModelMeta(type):
         attrs['_fields'] = {}
 
         for base in bases:
+            if hasattr(base, '_fields'):
+                for k, v in base._fields.items():
+                    attrs['_fields'][k] = v
             for k, v in base.__dict__.items():
                 if isinstance(v, fields.Field):
                     attrs['_fields'][k] = v
