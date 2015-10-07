@@ -62,10 +62,6 @@ class ModelMeta(type):
 
         return super(ModelMeta, cls).__new__(cls, name, bases, attrs)
 
-    def __repr__(cls):
-        return '<{}.{}({})>'.format(cls.__module__, cls.__name__,
-                                    _utils.repr_options(cls._fields))
-
 
 class Model(mixins.Encoder):
     """The `Model` class. All Booby models should subclass this.
@@ -100,12 +96,6 @@ class Model(mixins.Encoder):
 
     def __init__(self, **kwargs):
         self._update(kwargs)
-
-    def __repr__(self):
-        cls = type(self)
-
-        return '<{}.{}({})>'.format(cls.__module__, cls.__name__,
-                                    _utils.repr_options(dict(self)))
 
     def __iter__(self):
         for name in self._fields:
