@@ -177,12 +177,16 @@ class Model(mixins.Encoder):
         all the :mod:`fields` within this model.
 
         If some `field` validation fails, then this method raises the same
-        exception that the :func:`field.validate` method had raised.
+        exception that the :func:`field.validate` method had raised, but
+        with the field name prepended.
 
         """
 
         for name, field in self._fields.items():
-            field.validate(getattr(self, name))
+            try:
+                field.validate(getattr(self, name))
+            except errors.ValidationError as err:
+                raise errors.ValidationError('%s %s' % (name, err))
 
     @property
     def validation_errors(self):

@@ -52,7 +52,7 @@ class TestValidateModel(object):
         user = UserWithRequiredName(email='foo@example.com')
 
         expect(lambda: user.validate()).to(raise_error(
-            errors.ValidationError, 'is required'))
+            errors.ValidationError, 'name is required'))
 
     def test_when_validate_without_errors_then_does_not_raise(self):
         user = UserWithRequiredName(name='Jack')
@@ -84,6 +84,12 @@ class TestValidateModel(object):
         errors = user.validation_errors
 
         expect(errors).to(be_empty)
+
+    def test_exceptions_contain_field_names(self):
+        user = UserWithRequiredName()
+
+        expect(user.validate).to(raise_error(errors.ValidationError,
+                                             'name is required'))
 
 
 class TestInheritedModel(object):
@@ -129,7 +135,7 @@ class TestInheritedMixin(object):
         user = User()
 
         expect(lambda: user.validate()).to(raise_error(
-            errors.ValidationError, 'is required'))
+            errors.ValidationError, 'name is required'))
 
 
 class TestDictModel(object):
