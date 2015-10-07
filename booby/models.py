@@ -113,13 +113,18 @@ class Model(mixins.Encoder):
 
             if isinstance(value, Model):
                 value = dict(value)
-            elif isinstance(value, collections.MutableSequence):
-                value = self._encode_sequence(value)
+            if hasattr(value, '__iter__'):
+                value = self._encode_iterable(value)
 
             yield name, value
 
-    def _encode_sequence(self, sequence):
+    def _encode_iterable(self, sequence):
         result = []
+
+        if isinstance(sequence, (dict, basestring)):
+            # Although iterable, dictionaries are a special
+            # case and should be used as-is
+            return sequence
 
         for value in sequence:
             if isinstance(value, Model):
