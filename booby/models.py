@@ -176,7 +176,7 @@ class Model(mixins.Encoder):
             try:
                 field.validate(getattr(self, name))
             except errors.ValidationError as err:
-                raise errors.ValidationError('%s %s' % (name, err.message))
+                raise errors.ValidationError('%s %s' % (name, err))
 
     @property
     def validation_errors(self):
