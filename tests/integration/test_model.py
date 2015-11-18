@@ -26,7 +26,7 @@ class TestValidation(object):
             user.validate()
 
         expect(callback).to(raise_error(errors.ValidationError,
-                                        'should be an integer'))
+                                        'karma should be an integer'))
 
     def test_should_fail_validation_if_token_key_is_not_a_string(self):
         def callback():
@@ -34,7 +34,7 @@ class TestValidation(object):
             user.validate()
 
         expect(callback).to(raise_error(errors.ValidationError,
-                                        'should be a string'))
+                                        'token key should be a string'))
 
     def test_should_fail_validation_if_invalid_email(self):
         def callback():
@@ -42,7 +42,7 @@ class TestValidation(object):
             user.validate()
 
         expect(callback).to(raise_error(errors.ValidationError,
-                                        'should be a valid email'))
+                                        'email should be a valid email'))
 
 
 class TestEncode(object):
