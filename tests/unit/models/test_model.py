@@ -52,7 +52,7 @@ class TestValidateModel(object):
         user = UserWithRequiredName(email='foo@example.com')
 
         expect(lambda: user.validate()).to(raise_error(
-            errors.ValidationError, 'is required'))
+            errors.ValidationError, 'name is required'))
 
     def test_when_validate_without_errors_then_does_not_raise(self):
         user = UserWithRequiredName(name='Jack')
@@ -85,6 +85,12 @@ class TestValidateModel(object):
 
         expect(errors).to(be_empty)
 
+    def test_exceptions_contain_field_names(self):
+        user = UserWithRequiredName()
+
+        expect(user.validate).to(raise_error(errors.ValidationError,
+                                             'name is required'))
+
 
 class TestInheritedModel(object):
     def test_when_pass_kwargs_then_set_fields_values(self):
@@ -105,6 +111,12 @@ class TestInheritedModel(object):
         user = UserWithoutRequiredName()
         user.validate()
 
+    def test_when_class_has_deeper_inheritance(self):
+        cat = Cat(role='lazy Animal')
+        expect(cat.role).to(equal('lazy Animal'))
+        expect(cat.category).to(equal('Mammal'))
+        expect(cat.attribute).to(equal('specific'))
+
 
 class TestInheritedMixin(object):
     def test_when_pass_kwargs_then_set_fields_values(self):
@@ -123,7 +135,7 @@ class TestInheritedMixin(object):
         user = User()
 
         expect(lambda: user.validate()).to(raise_error(
-            errors.ValidationError, 'is required'))
+            errors.ValidationError, 'name is required'))
 
 
 class TestDictModel(object):
@@ -253,3 +265,17 @@ class UserWithList(User):
 class Token(models.Model):
     key = fields.String()
     secret = fields.String()
+
+
+class Animal(models.Model):
+    role = fields.String(default='Animal')
+    attribute = fields.String(default='default')
+
+
+class Mammal(Animal):
+    category = fields.String(default='Mammal')
+    attribute = fields.String(default='specific')
+
+
+class Cat(Mammal):
+    pass
