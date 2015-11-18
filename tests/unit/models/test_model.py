@@ -232,6 +232,46 @@ class TestModelToJSON(object):
         self.user = User(name='Jack', email='jack@example.com')
 
 
+class TestReferencingModels(object):
+    """Class for testing models which reference other models."""
+
+    def setup(self):
+        self.person = Person()
+        self.person.name = 'John Doe'
+        self.address = Address()
+        self.address.street = 'Foo Street'
+        self.person.addresses = [self.address]
+        self.address.persons = [self.person]
+
+    def test_repr_on_models_which_reference_themselves_over_other_models(self):
+        """Test the call of repr on models with references
+
+        The call of repr on models that contain references to other models
+        which reference to the first model, should not result in a 'maximum
+        recursion depth' error.
+        """
+        repr(self.person)
+
+
+# There are cases where such a declaration can happen or a similar with
+# help of a MetaModel
+
+class Person(models.Model):
+    name = fields.String()
+
+
+class Address(models.Model):
+    street = fields.String()
+    # Multiple persons can live at one address
+    persons = fields.Collection(Person)
+
+
+class Person(models.Model):
+    name = fields.String()
+    # One person can have multiple addresses
+    addresses = fields.Collection(Address)
+
+
 class User(models.Model):
     name = fields.String()
     email = fields.String()
