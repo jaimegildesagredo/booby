@@ -81,15 +81,6 @@ class Field(object):
 
         self.validators.extend(validators)
 
-    def __repr__(self):
-        options = dict(self.options)
-        options['validators'] = self.validators
-
-        cls = type(self)
-
-        return '<{}.{}({})>'.format(cls.__module__, cls.__name__,
-                                    _utils.repr_options(options))
-
     def __get__(self, instance, owner):
         if instance is not None:
             try:
