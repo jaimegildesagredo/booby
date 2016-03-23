@@ -67,6 +67,7 @@ class Field(object):
         self.options = kwargs
 
         self.default = kwargs.get('default')
+        self.description = kwargs.get('description')
 
         # Setup field validators
         self.validators = []
