@@ -172,6 +172,22 @@ class Model(mixins.Encoder):
         else:
             return True
 
+    @property
+    def descriptions(self):
+        """This property returns a dict of strings with the name of propery as a key
+        and their description as a value"""
+
+        res = {}
+        for name, field in list(self._fields.items()):
+            res[name] = field.description
+        return res
+
+    def description(self, key):
+        try:
+            return self._fields[key].description
+        except KeyError:
+            return None
+            
     def validate(self):
         """This method validates the entire `model`. That is, validates
         all the :mod:`fields` within this model.
