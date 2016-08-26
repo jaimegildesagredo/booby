@@ -229,7 +229,7 @@ class IP(String):
     """:class:`Field` subclass with builtin `ip` validation."""
 
     def __init__(self, *args, **kwargs):
-        super(IP, self).__init__(builtin_validators.Email(), *args, **kwargs)
+        super(IP, self).__init__(builtin_validators.IP(), *args, **kwargs)
 
 
 class List(Field):
