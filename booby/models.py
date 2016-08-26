@@ -38,8 +38,13 @@ Something like this::
     '{"owner": {"login": "jaimegildesagredo", "name": "Jaime Gil de Sagredo"}, "name": "Booby"}'
 """
 
-import json
+import six
 import collections
+try:
+    import ujson as json
+except ImportError:
+    import json
+
 
 from booby import mixins, fields, errors, _utils
 
@@ -67,6 +72,7 @@ class ModelMeta(type):
                                     _utils.repr_options(cls._fields))
 
 
+@six.add_metaclass(ModelMeta)
 class Model(mixins.Encoder):
     """The `Model` class. All Booby models should subclass this.
 
@@ -89,8 +95,6 @@ class Model(mixins.Encoder):
     :param \*\*kwargs: Keyword arguments with the fields values to initialize the model.
 
     """
-
-    __metaclass__ = ModelMeta
 
     def __new__(cls, *args, **kwargs):
         model = super(Model, cls).__new__(cls)
@@ -243,3 +247,21 @@ class Model(mixins.Encoder):
             result[name] = value
 
         return result
+
+    @classmethod
+    def properties(cls):
+        """Get properties defined in Model without instantiate them"""
+        if hasattr(cls, "_fields"):
+            return cls._fields
+        else:
+            ret = {}
+            for k, v in six.iteritems(cls.__dict__):
+                if k.startswith("_"):
+                    continue
+            
+                ret[k] = v
+    
+        return ret
+    
+__all__ = ("Model", )
+

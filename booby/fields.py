@@ -32,6 +32,7 @@ The example below shows the most common fields and builtin validations::
         is_active = Boolean(default=False)
 """
 
+import six
 import collections
 
 from booby import (
@@ -67,18 +68,20 @@ class Field(object):
         self.options = kwargs
 
         self.default = kwargs.get('default')
-        self.description = kwargs.get('description')
+        self.description = kwargs.get('description', '')
+        self.required = kwargs.get('required', False)
+        self.choices = kwargs.get('choices', [])
+
+        assert isinstance(self.choices, list)
 
         # Setup field validators
         self.validators = []
 
-        if kwargs.get('required'):
+        if self.required:
             self.validators.append(builtin_validators.Required())
 
-        choices = kwargs.get('choices')
-
-        if choices:
-            self.validators.append(builtin_validators.In(choices))
+        if self.choices:
+            self.validators.append(builtin_validators.In(self.choices))
 
         self.validators.extend(validators)
 
@@ -134,12 +137,24 @@ class Field(object):
 
         return value
 
+    @property
+    def field_type(self):
+        """
+        :return: Python native type: int, str, float...
+        :rtype: object
+        """
+        raise NotImplemented("This property must be implemented by the subclass")
+    
 
 class String(Field):
     """:class:`Field` subclass with builtin `string` validation."""
 
     def __init__(self, *args, **kwargs):
         super(String, self).__init__(builtin_validators.String(), *args, **kwargs)
+
+    @property
+    def field_type(self):
+        return six.string_types
 
 
 class Integer(Field):
@@ -148,6 +163,10 @@ class Integer(Field):
     def __init__(self, *args, **kwargs):
         super(Integer, self).__init__(builtin_validators.Integer(), *args, **kwargs)
 
+    @property
+    def field_type(self):
+        return six.integer_types
+
 
 class Float(Field):
     """:class:`Field` subclass with builtin `float` validation."""
@@ -155,6 +174,10 @@ class Float(Field):
     def __init__(self, *args, **kwargs):
         super(Float, self).__init__(builtin_validators.Float(), *args, **kwargs)
 
+    @property
+    def field_type(self):
+        return float
+    
 
 class Boolean(Field):
     """:class:`Field` subclass with builtin `bool` validation."""
@@ -162,6 +185,10 @@ class Boolean(Field):
     def __init__(self, *args, **kwargs):
         super(Boolean, self).__init__(builtin_validators.Boolean(), *args, **kwargs)
 
+    @property
+    def field_type(self):
+        return bool
+    
 
 class Embedded(Field):
     """:class:`Field` subclass with builtin embedded :class:`models.Model`
@@ -184,11 +211,18 @@ class Embedded(Field):
         super(Embedded, self).__set__(instance, value)
 
 
-class Email(Field):
+class Email(String):
     """:class:`Field` subclass with builtin `email` validation."""
 
     def __init__(self, *args, **kwargs):
         super(Email, self).__init__(builtin_validators.Email(), *args, **kwargs)
+
+
+class URL(String):
+    """:class:`Field` subclass with builtin `email` validation."""
+
+    def __init__(self, *args, **kwargs):
+        super(URL, self).__init__(builtin_validators.Email(), *args, **kwargs)
 
 
 class List(Field):
@@ -204,6 +238,10 @@ class List(Field):
         super(List, self).__init__(
             builtin_validators.List(*kwargs.get('inner_validators', [])),
             *args, **kwargs)
+    
+    @property
+    def field_type(self):
+        return list
 
 
 class Collection(Field):
@@ -258,3 +296,5 @@ class Collection(Field):
                 item = self.model(**item)
             result.append(item)
         return result
+
+__all__ = ("Field", "String", "Integer", "Float", "Boolean", "Embedded", "Email", "URL", "List", "Collection")

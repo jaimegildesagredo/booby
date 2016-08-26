@@ -15,6 +15,5 @@
 # limitations under the License.
 
 
-from booby.models import Model
-
-__all__ = ['Model']
+from .fields import *  # noqa
+from .models import *  # noqa

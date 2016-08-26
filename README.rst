@@ -47,6 +47,7 @@ See the sample code below to get an idea of the main features.
         login = fields.String(required=True)
         name = fields.String()
         email = fields.Email()
+        site = fields.URL()
         token = fields.Embedded(Token, required=True)
         addresses = fields.Collection(Address)
 
@@ -54,6 +55,7 @@ See the sample code below to get an idea of the main features.
         login='jack',
         name='Jack',
         email='jack@example.com',
+        url='http://mysite.com',
         token={
             'key': 'vs7dfxxx',
             'secret': 'ds5ds4xxx'
@@ -73,6 +75,7 @@ See the sample code below to get an idea of the main features.
 
     {
       "email": "jack@example.com",
+      "url": "http://mysite.com",
       "login": "jack",
       "token": {
         "secret": "ds5ds4xxx",

@@ -26,6 +26,7 @@ arguments.
 """
 
 import re
+import six
 import collections
 import datetime
 
@@ -69,7 +70,7 @@ class String(Validator):
 
     @nullable
     def validate(self, value):
-        if not isinstance(value, basestring):
+        if not isinstance(value, six.string_types):
             raise errors.ValidationError('should be a string')
 
 
@@ -78,7 +79,7 @@ class Integer(Validator):
 
     @nullable
     def validate(self, value):
-        if not isinstance(value, int):
+        if not isinstance(value, six.integer_types):
             raise errors.ValidationError('should be an integer')
 
 
@@ -138,6 +139,33 @@ class Email(String):
 
         if self.pattern.match(value) is None:
             raise errors.ValidationError('should be a valid email')
+
+
+class URL(String):
+    """This validator forces fields values to be strings and match a
+    valid email address.
+
+    """
+
+    def __init__(self):
+        super(URL, self).__init__()
+
+        # From Django validator:
+        #   https://github.com/django/django/blob/master/django/core/validators.py#L47
+        self.pattern = re.compile(
+            r'^https?://'  # http:// or https://
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+
+    @nullable
+    def validate(self, value):
+        super(URL, self).validate(value)
+
+        if self.pattern.match(value) is None:
+            raise errors.ValidationError('should be a valid URL')
 
 
 class List(Validator):
