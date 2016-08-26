@@ -219,10 +219,17 @@ class Email(String):
 
 
 class URL(String):
-    """:class:`Field` subclass with builtin `email` validation."""
+    """:class:`Field` subclass with builtin `URL` validation."""
 
     def __init__(self, *args, **kwargs):
-        super(URL, self).__init__(builtin_validators.Email(), *args, **kwargs)
+        super(URL, self).__init__(builtin_validators.URL(), *args, **kwargs)
+
+
+class IP(String):
+    """:class:`Field` subclass with builtin `ip` validation."""
+
+    def __init__(self, *args, **kwargs):
+        super(IP, self).__init__(builtin_validators.Email(), *args, **kwargs)
 
 
 class List(Field):
