@@ -104,6 +104,8 @@ class Field(object):
         return self
 
     def __set__(self, instance, value):
+        if not value:
+            value = self.default
         instance._data[self] = value
 
     def _default(self, model):
