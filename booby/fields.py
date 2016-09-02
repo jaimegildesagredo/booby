@@ -313,4 +313,5 @@ class Collection(Field):
             result.append(item)
         return result
 
-__all__ = ("Field", "String", "Integer", "Float", "Boolean", "Embedded", "Email", "URL", "List", "Collection", "IP")
+__all__ = ("Field", "String", "Integer", "Float", "Boolean", "Embedded", "Email", "URL", "List", "Collection", "IP",
+           "Raw")
