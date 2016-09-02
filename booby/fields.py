@@ -238,7 +238,7 @@ class Raw(Field):
     """:class:`Field` raw input data"""
 
     def __init__(self, *args, **kwargs):
-        super(Raw, self).__init__([], *args, **kwargs)
+        super(Raw, self).__init__(*args, **kwargs)
 
 
 class List(Field):
