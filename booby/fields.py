@@ -234,6 +234,13 @@ class IP(String):
         super(IP, self).__init__(builtin_validators.IP(), *args, **kwargs)
 
 
+class Raw(Field):
+    """:class:`Field` raw input data"""
+
+    def __init__(self, *args, **kwargs):
+        super(Raw, self).__init__([], *args, **kwargs)
+
+
 class List(Field):
     """:class:`Field` subclass with builtin `list` validation
     and default value.
