@@ -33,6 +33,7 @@ The example below shows the most common fields and builtin validations::
 """
 
 import six
+import datetime
 import collections
 
 from booby import (
@@ -248,7 +249,7 @@ class List(Field):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('default', list)
+        kwargs.setdefault('default', [])
         kwargs.setdefault('encoders', []).append(builtin_encoders.List())
 
         super(List, self).__init__(
