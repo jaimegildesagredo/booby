@@ -33,8 +33,13 @@ The example below shows the most common fields and builtin validations::
 """
 
 import six
-import datetime
 import collections
+
+try:
+    # Python 3 compatiblity
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 
 from booby import (
     validators as builtin_validators,
@@ -235,6 +240,13 @@ class IP(String):
         super(IP, self).__init__(builtin_validators.IP(), *args, **kwargs)
 
 
+class URI(String):
+    """:class:`Field` subclass with builtin `ip` validation."""
+
+    def __init__(self, *args, **kwargs):
+        super(URI, self).__init__(builtin_validators.IP(), *args, **kwargs)
+
+
 class Raw(Field):
     """:class:`Field` raw input data"""
 
@@ -315,4 +327,4 @@ class Collection(Field):
         return result
 
 __all__ = ("Field", "String", "Integer", "Float", "Boolean", "Embedded", "Email", "URL", "List", "Collection", "IP",
-           "Raw")
+           "Raw", "URI")
