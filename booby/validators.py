@@ -200,7 +200,7 @@ class URI(String):
     def __init__(self):
         super(URI, self).__init__()
 
-        self.uri_regex = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+        self.uri_regex = re.compile(r'([a-z0-9+.-]+)://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
     @nullable
     def validate(self, value):
