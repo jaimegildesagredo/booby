@@ -305,7 +305,7 @@ class Collection(Field):
     """
 
     def __init__(self, model, *args, **kwargs):
-        kwargs.setdefault('default', list)
+        kwargs.setdefault('default', [])
 
         kwargs.setdefault('encoders', []).append(builtin_encoders.Collection())
         kwargs.setdefault('decoders', []).append(builtin_decoders.Collection(model))
