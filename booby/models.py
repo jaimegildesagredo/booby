@@ -99,6 +99,7 @@ class Model(mixins.Encoder):
     def __new__(cls, *args, **kwargs):
         model = super(Model, cls).__new__(cls)
         model._data = {}
+        model.ignore_missing = bool(getattr(model, "__ignore_missing__", False))
 
         return model
 
