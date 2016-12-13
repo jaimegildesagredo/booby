@@ -11,7 +11,7 @@ with open('README.rst') as f:
 
 setup(
     name='booby-ng',
-    version='0.8.3-1',
+    version='0.8.4',
     install_requires=required,
     description='Data modeling and validation Python library',
     long_description=long_description,

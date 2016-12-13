@@ -241,8 +241,8 @@ class IP(String):
 
 
 class URI(String):
-    """:class:`Field` subclass with builtin `ip` validation."""
-
+    """:class:`Field` subclass with builtin `URI` validation."""
+    
     def __init__(self, *args, **kwargs):
         super(URI, self).__init__(builtin_validators.URI(), *args, **kwargs)
 
