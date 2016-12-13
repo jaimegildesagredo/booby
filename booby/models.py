@@ -38,8 +38,13 @@ Something like this::
     '{"owner": {"login": "jaimegildesagredo", "name": "Jaime Gil de Sagredo"}, "name": "Booby"}'
 """
 
-import json
+import six
 import collections
+try:
+    import ujson as json
+except ImportError:
+    import json
+
 
 from booby import mixins, fields, errors, _utils
 
@@ -67,6 +72,7 @@ class ModelMeta(type):
                                     _utils.repr_options(cls._fields))
 
 
+@six.add_metaclass(ModelMeta)
 class Model(mixins.Encoder):
     """The `Model` class. All Booby models should subclass this.
 
@@ -90,11 +96,10 @@ class Model(mixins.Encoder):
 
     """
 
-    __metaclass__ = ModelMeta
-
     def __new__(cls, *args, **kwargs):
         model = super(Model, cls).__new__(cls)
         model._data = {}
+        model.ignore_missing = bool(getattr(model, "__ignore_missing__", False))
 
         return model
 
@@ -172,6 +177,22 @@ class Model(mixins.Encoder):
         else:
             return True
 
+    @property
+    def descriptions(self):
+        """This property returns a dict of strings with the name of propery as a key
+        and their description as a value"""
+
+        res = {}
+        for name, field in list(self._fields.items()):
+            res[name] = field.description
+        return res
+
+    def description(self, key):
+        try:
+            return self._fields[key].description
+        except KeyError:
+            return None
+            
     def validate(self):
         """This method validates the entire `model`. That is, validates
         all the :mod:`fields` within this model.
@@ -227,3 +248,21 @@ class Model(mixins.Encoder):
             result[name] = value
 
         return result
+
+    @classmethod
+    def properties(cls):
+        """Get properties defined in Model without instantiate them"""
+        if hasattr(cls, "_fields"):
+            return cls._fields
+        else:
+            ret = {}
+            for k, v in six.iteritems(cls.__dict__):
+                if k.startswith("_"):
+                    continue
+            
+                ret[k] = v
+    
+        return ret
+    
+__all__ = ("Model", )
+

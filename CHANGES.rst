@@ -1,6 +1,17 @@
 Changes
 =======
 
+0.7.1 (Aug 26, 2016)
+--------------------
+
+* Added new type: URL.
+* Added new property to fields: Description.
+* Added the optional use os UstraJSON, ultra fast JSON serializer.
+* Added 'properties' classmethod to Models. With it, you can get the fields defined in a Model, without instantiate it.
+* Improved validation. Now, types derived from basic types has strong checks: int, fload, bool, string, list.
+* Improved compatibility with Python 3.
+
+
 0.7.0 (Dec 3, 2014)
 -------------------
 

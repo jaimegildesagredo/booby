@@ -26,6 +26,8 @@ arguments.
 """
 
 import re
+
+import six
 import collections
 import datetime
 
@@ -69,7 +71,7 @@ class String(Validator):
 
     @nullable
     def validate(self, value):
-        if not isinstance(value, basestring):
+        if not isinstance(value, six.string_types):
             raise errors.ValidationError('should be a string')
 
 
@@ -78,7 +80,7 @@ class Integer(Validator):
 
     @nullable
     def validate(self, value):
-        if not isinstance(value, int):
+        if not isinstance(value, six.integer_types):
             raise errors.ValidationError('should be an integer')
 
 
@@ -140,6 +142,74 @@ class Email(String):
             raise errors.ValidationError('should be a valid email')
 
 
+class URL(String):
+    """This validator forces fields values to be strings and match a
+    valid URL.
+
+    """
+
+    def __init__(self):
+        super(URL, self).__init__()
+
+        # From Django validator:
+        #   https://github.com/django/django/blob/master/django/core/validators.py#L47
+        self.pattern = re.compile(
+            r'^https?://'  # http:// or https://
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+
+    @nullable
+    def validate(self, value):
+        super(URL, self).validate(value)
+
+        if self.pattern.match(value) is None:
+            raise errors.ValidationError('should be a valid URL')
+
+
+class IP(String):
+    """This validator forces fields values to be strings and match a
+    valid IP address.
+
+    """
+
+    def __init__(self):
+        super(IP, self).__init__()
+
+        # Regex from:
+        #   https://gist.github.com/mnordhoff/2213179
+        self.ipv4 = re.compile(r'^(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$')
+        self.ipv6 = re.compile(r'^(?:(?:[0-9A-Fa-f]{1,4}:){6}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|::(?:[0-9A-Fa-f]{1,4}:){5}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){4}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){3}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,2}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:){2}(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,3}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}:(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,4}[0-9A-Fa-f]{1,4})?::(?:[0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{1,4}|(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|(?:(?:[0-9A-Fa-f]{1,4}:){,5}[0-9A-Fa-f]{1,4})?::[0-9A-Fa-f]{1,4}|(?:(?:[0-9A-Fa-f]{1,4}:){,6}[0-9A-Fa-f]{1,4})?::)$')
+
+    @nullable
+    def validate(self, value):
+        super(IP, self).validate(value)
+
+        if self.ipv4.match(value) is None and self.ipv6 is None:
+            raise errors.ValidationError('should be a valid IPv4 or IPv6 address')
+
+
+class URI(String):
+    """This validator forces fields values to be strings and match a
+    valid URI.
+
+    """
+
+    def __init__(self):
+        super(URI, self).__init__()
+
+        self.uri_regex = re.compile(r'([a-z0-9+.-]+)://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
+    @nullable
+    def validate(self, value):
+        super(URI, self).validate(value)
+
+        if self.uri_regex.match(value) is None:
+            raise errors.ValidationError('should be a valid URI')
+        
+
 class List(Validator):
     """This validator forces field values to be a :keyword:`list`.
     Also a list of inner :mod:`validators` could be specified to validate
@@ -157,7 +227,7 @@ class List(Validator):
 
     @nullable
     def validate(self, value):
-        if not isinstance(value, collections.MutableSequence):
+        if not isinstance(value, collections.Sequence):
             raise errors.ValidationError('should be a list')
 
         for i in value:
