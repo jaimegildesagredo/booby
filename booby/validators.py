@@ -170,3 +170,9 @@ class DateTime(Validator):
     def validate(self, value):
         if not isinstance(value, datetime.datetime):
             raise errors.ValidationError('should be a datetime')
+
+class Date(Validator):
+    @nullable
+    def validate(self, value):
+        if not isinstance(value, datetime.date):
+            raise errors.ValidationError('should be a date')

@@ -257,3 +257,17 @@ class Collection(Field):
                 item = self.model(**item)
             result.append(item)
         return result
+
+
+class Date(Field):
+    """:class:`Field` subclass with builtin `Date` validation."""
+
+    def __init__(self, *args, **kwargs):
+        super(Date, self).__init__(builtin_validators.Date(), *args, **kwargs)
+
+
+class DateTime(Field):
+    """:class:`Field` subclass with builtin `DateTime` validation."""
+
+    def __init__(self, *args, **kwargs):
+        super(DateTime, self).__init__(builtin_validators.DateTime(), *args, **kwargs)
