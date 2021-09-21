@@ -67,7 +67,7 @@ class ModelMeta(type):
                                     _utils.repr_options(cls._fields))
 
 
-class Model(mixins.Encoder):
+class Model(mixins.Encoder, metaclass=ModelMeta):
     """The `Model` class. All Booby models should subclass this.
 
     By default the `Model's` :func:`__init__` takes a list of keyword arguments
@@ -89,8 +89,6 @@ class Model(mixins.Encoder):
     :param \*\*kwargs: Keyword arguments with the fields values to initialize the model.
 
     """
-
-    __metaclass__ = ModelMeta
 
     def __new__(cls, *args, **kwargs):
         model = super(Model, cls).__new__(cls)
