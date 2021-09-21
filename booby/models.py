@@ -50,13 +50,13 @@ class ModelMeta(type):
 
         for base in bases:
             if hasattr(base, '_fields'):
-                for k, v in list(base._fields.items()):
+                for k, v in base._fields.items():
                     attrs['_fields'][k] = v
-            for k, v in list(base.__dict__.items()):
+            for k, v in base.__dict__.items():
                 if isinstance(v, fields.Field):
                     attrs['_fields'][k] = v
 
-        for k, v in list(attrs.items()):
+        for k, v in attrs.items():
             if isinstance(v, fields.Field):
                 attrs['_fields'][k] = v
 
@@ -149,7 +149,7 @@ class Model(mixins.Encoder, metaclass=ModelMeta):
         self._update(dict(*args, **kwargs))
 
     def _update(self, values):
-        for k, v in list(values.items()):
+        for k, v in values.items():
             self[k] = v
 
     @property
@@ -180,7 +180,7 @@ class Model(mixins.Encoder, metaclass=ModelMeta):
 
         """
 
-        for name, field in list(self._fields.items()):
+        for name, field in self._fields.items():
             try:
                 field.validate(getattr(self, name))
             except errors.ValidationError as err:
@@ -193,7 +193,7 @@ class Model(mixins.Encoder, metaclass=ModelMeta):
 
         """
 
-        for name, field in list(self._fields.items()):
+        for name, field in self._fields.items():
             try:
                 field.validate(getattr(self, name))
             except errors.ValidationError as err:
@@ -214,7 +214,7 @@ class Model(mixins.Encoder, metaclass=ModelMeta):
     def decode(self, raw):
         result = {}
 
-        for name, field in list(self._fields.items()):
+        for name, field in self._fields.items():
             try:
                 value = raw[field.options.get('name', name)]
             except KeyError:

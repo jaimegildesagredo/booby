@@ -16,4 +16,4 @@
 
 
 def repr_options(options):
-    return ', '.join('{}={!r}'.format(k, v) for k, v in list(options.items()))
+    return ', '.join('{}={!r}'.format(k, v) for k, v in options.items())

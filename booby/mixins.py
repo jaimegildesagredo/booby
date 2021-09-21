@@ -19,6 +19,6 @@ class Encoder(object):
     def encode(self):
         return {
             field.options.get('name', name): field.encode(getattr(self, name))
-                for name, field in list(self._fields.items())
+                for name, field in self._fields.items()
                 if not field.options.get('read_only', False)
         }
