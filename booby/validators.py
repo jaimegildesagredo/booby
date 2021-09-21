@@ -69,7 +69,7 @@ class String(Validator):
 
     @nullable
     def validate(self, value):
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             raise errors.ValidationError('should be a string')
 
 
